@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Inter, Noto_Serif_JP } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/src/components/Navbar";
-import { Locale, locales } from "@/i18nConfig";
+import { locales } from "@/i18nConfig";
+import { Locale } from "@/src/lib/types";
 
 // const inter = Inter({ subsets: ["latin"] });
 const noto_serif = Noto_Serif_JP({

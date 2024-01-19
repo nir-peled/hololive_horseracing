@@ -1,30 +1,22 @@
+import LoginForm from "@/src/components/LoginForm";
 import TranslationsProvider from "@/src/components/TranslationProvider";
-import { get_user_data } from "@/src/lib/database";
 import initTranslations from "@/src/lib/i18n";
 
-const namespaces = ["home"];
-
 interface Props {
-	params: {
-		locale: string;
-	};
+	params: { locale: string };
 }
+
+const namespaces = ["home", "auth"];
 
 export default async function Home({ params: { locale } }: Props) {
 	const { t, resources } = await initTranslations(locale, namespaces);
-	const user = await get_user_data();
-	// console.log(`user:`); // debug
-	// console.log(user); // debug
-
 	return (
 		<TranslationsProvider namespaces={namespaces} locale={locale} resources={resources}>
 			<main className="flex min-h-screen flex-col items-center p-24">
-				<h1 className="text-3xl font-bold underline p-2">{t("home-welcome")}</h1>
-				{user && (
-					<h2 className="text-xl p-2">
-						{t("home-greeting", { name: user.display_name })}
-					</h2>
-				)}
+				<h1 className="text-3xl font-bold underline p-10">
+					{t("login-title", { ns: "auth" })}
+				</h1>
+				<LoginForm locale={locale} />
 			</main>
 		</TranslationsProvider>
 	);

@@ -8,4 +8,3 @@ const i18nConfig = {
 
 export default i18nConfig;
 export { locales };
-export type Locale = (typeof locales)[number];

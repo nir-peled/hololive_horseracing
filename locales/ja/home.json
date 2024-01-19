@@ -1,3 +1,4 @@
 {
-	"home-hello": " ようこそ、ホロレーシングへ"
+	"home-welcome": "ホロレーシングへようこそ",
+	"home-greeting": "{{name}},いらしゃいませ！"
 }

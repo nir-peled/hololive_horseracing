@@ -1,5 +1,6 @@
 {
 	"races-link": "Races",
 	"bets-link": "Bets",
-	"bank-link": "Bank"
+	"bank-link": "Bank",
+	"signout-button": "Log Out"
 }

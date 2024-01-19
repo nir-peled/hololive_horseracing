@@ -1,3 +1,4 @@
 {
-	"home-hello": "Hello, HoloRacing!"
+	"home-welcome": "Welcome to HoloRacing!",
+	"home-greeting": "{{name}}, Welcome!"
 }

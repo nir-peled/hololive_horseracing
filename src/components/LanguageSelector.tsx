@@ -4,13 +4,14 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Locale, locales } from "@/i18nConfig";
+import { locales } from "@/i18nConfig";
+import { Locale } from "@/src/lib/types";
 
 interface Props {
 	locale: Locale;
 }
 
-function LanguageSelector({ locale: current_locale }: Props) {
+export default function LanguageSelector({ locale: current_locale }: Props) {
 	const other_locales = locales.filter((locale: Locale) => locale != current_locale);
 	const current_pathname = usePathname();
 
@@ -48,5 +49,3 @@ function LanguageSelector({ locale: current_locale }: Props) {
 		</div>
 	);
 }
-
-export default LanguageSelector;
