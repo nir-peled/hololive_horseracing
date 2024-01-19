@@ -17,7 +17,7 @@ export default async function initTranslations(
 		i18nInstance.use(
 			resourcesToBackend(
 				(language: string, namespace: string) =>
-					import(`@/locales/${language}/${namespace}.json`)
+					import(`${i18nConfig.localizationFolder}/${language}/${namespace}.json`)
 			)
 		);
 	}
@@ -40,7 +40,6 @@ export default async function initTranslations(
 	};
 }
 
-export function get_locale_from_path(url: string): string | null {
-	let result = locales.find((locale) => url.startsWith(`/${locale}`));
-	return result ? result : null;
+export function get_locale_from_path(url: string): string | undefined {
+	return locales.find((locale) => url.startsWith(`/${locale}`));
 }

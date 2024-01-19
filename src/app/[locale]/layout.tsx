@@ -1,15 +1,9 @@
 import type { Metadata } from "next";
-import { Inter, Noto_Serif_JP } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/src/components/Navbar";
 import { locales } from "@/i18nConfig";
 import { Locale } from "@/src/lib/types";
-
-// const inter = Inter({ subsets: ["latin"] });
-const noto_serif = Noto_Serif_JP({
-	subsets: ["latin"],
-	weight: "400",
-});
+import { get_font } from "@/src/lib/fonts";
 
 export const metadata: Metadata = {
 	title: "HoloRacing",
@@ -30,9 +24,11 @@ export async function generateStaticParams() {
 }
 
 export default async function RootLayout({ children, params: { locale } }: Props) {
+	const font = get_font(locale);
+
 	return (
 		<html lang={locale}>
-			<body className={noto_serif.className}>
+			<body className={font.className}>
 				<Navbar locale={locale} />
 				{children}
 			</body>
