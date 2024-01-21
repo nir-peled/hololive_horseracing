@@ -18,9 +18,9 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-	return locales.map((locale: Locale) => {
-		locale;
-	});
+	return locales.map((locale: Locale) => ({
+		locale,
+	}));
 }
 
 export default async function RootLayout({ children, params: { locale } }: Props) {
