@@ -9,6 +9,7 @@ export default async function initTranslations(
 	i18nInstance?: i18n,
 	resources?: Resource
 ) {
+	// console.log(`localization folder: .${i18nConfig.localizationFolder}.`); // debug
 	i18nInstance = i18nInstance || createInstance();
 
 	i18nInstance.use(initReactI18next);
@@ -17,7 +18,7 @@ export default async function initTranslations(
 		i18nInstance.use(
 			resourcesToBackend(
 				(language: string, namespace: string) =>
-					import(`${i18nConfig.localizationFolder}/${language}/${namespace}.json`)
+					import(`@/locales/${language}/${namespace}.json`)
 			)
 		);
 	}
