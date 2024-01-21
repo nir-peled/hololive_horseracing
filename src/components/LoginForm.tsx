@@ -49,7 +49,7 @@ export default function LoginForm({ locale }: Props) {
 						className="input input-bordered w-full max-w-xs"
 					/>
 				</div>
-				<Button type="submit" disabled={pending}>
+				<Button type="submit" disabled={pending} className="m-2">
 					{t("login-submit")}
 				</Button>
 			</label>

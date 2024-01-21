@@ -1,6 +1,5 @@
 import { locales } from "@/i18nConfig";
 import { NextMiddleware } from "next/server";
-import { User as NextUser } from "next-auth";
 
 export type Locale = (typeof locales)[number];
 

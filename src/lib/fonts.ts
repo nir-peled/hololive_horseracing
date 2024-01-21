@@ -5,14 +5,18 @@ import { locales } from "@/i18nConfig";
 
 export type FontMap = { [language: Locale]: NextFont };
 
+export const inter = Inter({ subsets: ["latin"] });
+export const noto_serif = Noto_Serif_JP({
+	subsets: ["latin"],
+	weight: "400",
+});
+export const rubik = Rubik({ weight: "400", subsets: ["arabic", "hebrew", "latin"] });
+
 export const fonts: FontMap = {
-	en: Inter({ subsets: ["latin"] }),
-	ja: Noto_Serif_JP({
-		subsets: ["latin"],
-		weight: "400",
-	}),
-	he: Rubik({ weight: "400" }),
-	ar: Rubik({ weight: "400" }),
+	en: inter,
+	ja: noto_serif,
+	he: rubik,
+	ar: rubik,
 };
 
 export function get_font(locale: Locale): NextFont {

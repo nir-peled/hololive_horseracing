@@ -40,7 +40,7 @@ export default async function Navbar({ locale }: Props) {
 				</div>
 			</div>
 			<div className="navbar-center justify-between">
-				<ul className="menu menu-horizontal px-1 justify-between space-x-10">
+				<ul className="menu menu-horizontal px-1 justify-between mt-3 z-[1] p-2">
 					<li>
 						<Link href="/races" className="btn btn-ghost text-xl">
 							{t("races-link")}
