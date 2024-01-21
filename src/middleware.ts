@@ -1,10 +1,10 @@
 import { i18nRouter } from "next-i18n-router";
 import i18nConfig from "../i18nConfig";
 import { NextRequest } from "next/server";
-import { NextAuthRequest } from "next-auth/lib";
+// import { NextAuthRequest } from "next-auth/src/lib";
 import { auth } from "./lib/auth";
 
-export default auth((request: NextAuthRequest) => {
+export default auth((request) => {
 	return i18nRouter(request, i18nConfig);
 });
 
