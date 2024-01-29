@@ -3,7 +3,8 @@ import { Inter, Noto_Serif_JP, Rubik } from "next/font/google";
 import { Locale } from "./types";
 import { locales } from "@/i18nConfig";
 
-export type FontMap = { [language: Locale]: NextFont };
+// doesn't let me do language: Locale
+export type FontMap = { [language: string]: NextFont };
 
 export const inter = Inter({ subsets: ["latin"] });
 export const noto_serif = Noto_Serif_JP({
