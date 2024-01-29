@@ -2,7 +2,8 @@
 
 import { AuthError } from "next-auth";
 import { signIn, signOut } from "./auth";
-import { Locale } from "./types";
+import { Locale, UserFormData } from "./types";
+import { create_user, is_user_exists } from "./database";
 
 export async function authenticate(prevState: string | undefined, form_data: FormData) {
 	try {
@@ -35,4 +36,18 @@ export async function logout(locale: Locale) {
 		throw error;
 	}
 	// await signOut();
+}
+
+export async function new_user(params: UserFormData): Promise<boolean> {
+	const isUser = await is_user_exists(params.username);
+	if (isUser) return false;
+
+	try {
+		await create_user(params);
+		return true;
+	} catch (error) {
+		console.log("error creating user:"); // debug
+		console.log(error); // debug
+		return false;
+	}
 }

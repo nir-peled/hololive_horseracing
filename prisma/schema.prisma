@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("PRISMA_ACCELERATE_URL") // uses connection pooling
+  // directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+model User {
+  id           BigInt           @id @default(autoincrement())
+  name         String           @unique
+  password     String
+  display_name String
+  role         String
+  image        Bytes?
+  competes_in  RaceContestant[]
+  bets         Bet[]
+  balance      Int              @default(0)
+  dept         Int              @default(0)
+
+  @@index([name])
+}
+
+model Horse {
+  id          BigInt           @id @default(autoincrement())
+  name        String           @unique
+  image       Bytes
+  competes_in RaceContestant[]
+
+  @@index([name])
+}
+
+model Race {
+  id          BigInt           @id @default(autoincrement())
+  name        String           @unique
+  competitors RaceContestant[]
+  isOpenBets  Boolean          @default(true)
+
+  @@index([name])
+}
+
+model RaceContestant {
+  id                BigInt @id @default(autoincrement())
+  jockey_id         BigInt
+  horse_id          BigInt
+  race_id           BigInt
+  jockey            User   @relation(fields: [jockey_id], references: [id])
+  horse             Horse  @relation(fields: [horse_id], references: [id])
+  race              Race   @relation(fields: [race_id], references: [id])
+  bets              Bet[]
+  place             Int?
+  odds_denominator  Int
+  odds_numerator    Int
+  house_cut_percent Int
+  win_cut_percent   Int
+  place_cut_percent Int
+  show_cut_percent  Int
+
+  @@unique([race_id, jockey_id])
+  @@unique([race_id, horse_id])
+}
+
+model Bet {
+  id            BigInt         @id @default(autoincrement())
+  user_id       BigInt
+  contestant_id BigInt
+  user          User           @relation(fields: [user_id], references: [id])
+  contestant    RaceContestant @relation(fields: [contestant_id], references: [id])
+  amount        Int
+
+  @@unique([user_id, contestant_id])
+}

@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 interface Props {
 	children: React.ReactNode;
 	params: {
-		locale: string;
+		locale: Locale;
 	};
 }
 

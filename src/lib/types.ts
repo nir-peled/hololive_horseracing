@@ -3,16 +3,24 @@ import { NextMiddleware } from "next/server";
 
 export type Locale = (typeof locales)[number];
 
-export interface UserData {
-	id: string;
-	role: "user" | "banker" | "manager";
+export const userRoles = ["user", "banker", "manager"] as const;
+export type UserRole = (typeof userRoles)[number];
+
+export interface UserFormData {
+	username: string;
+	password: string;
+	confirm_password?: string;
+	role: UserRole;
 	display_name: string;
-	image: string;
+	image?: File;
 }
 
-export interface User extends UserData {
-	name: string;
-	password: string;
+export interface UserData {
+	role: UserRole;
+	display_name: string;
+	image?: Buffer;
+	balance: Number;
+	dept: Number;
 }
 
 export type MiddlewareFactory = (middleware: NextMiddleware) => NextMiddleware;

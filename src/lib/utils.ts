@@ -1,0 +1,36 @@
+import { pbkdf2Sync, randomBytes } from "crypto";
+
+export async function hash_password(
+	password: string,
+	salt: string | undefined = undefined
+): Promise<string> {
+	if (!salt) salt = randomBytes(Number(process.env.SALT_BYTES)).toString("hex");
+	let hash = pbkdf2Sync(
+		password,
+		salt,
+		Number(process.env.HASH_ROUNDS),
+		Number(process.env.HASH_KEYLEN),
+		process.env.HASH_METHOD as string
+	).toString(`hex`);
+
+	return `${salt}#${hash}`;
+}
+
+export async function compare_passwords(
+	password: string,
+	hash: string
+): Promise<boolean> {
+	let [salt] = hash.split("#");
+
+	let hashed_new_pass = await hash_password(password, salt);
+	return hashed_new_pass == hash;
+}
+
+export async function image_as_buffer(
+	image: File | Blob | null | undefined
+): Promise<Buffer | null> {
+	if (!image) return null;
+
+	let array_buffer = await image.arrayBuffer();
+	return Buffer.from(array_buffer);
+}

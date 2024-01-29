@@ -1,23 +1,25 @@
-import { NextAuthConfig } from "next-auth";
+import { NextAuthConfig, User } from "next-auth";
 import { NextResponse } from "next/server";
 import CredentialsProvider from "next-auth/providers/credentials";
-// import { get_locale_from_path } from "@/src/lib/i18n";
+import { get_user_data, is_user_password } from "@/src/lib/database";
+import { UserData } from "@/src/lib/types";
+import { get_locale_from_path } from "@/src/lib/i18n";
 
 export const authConfig: NextAuthConfig = {
 	callbacks: {
 		// to add: restricting path by user role
 		authorized({ auth, request: { nextUrl } }) {
-			const is_logged_in = !!auth?.user;
+			const user = auth?.user as UserData | undefined;
+			const is_logged_in = !!user;
 			const is_on_login = nextUrl.pathname.endsWith("/login");
-			// const locale = get_locale_from_path(nextUrl.pathname); // don't think it's needed
-			// console.log(`\n\nnext URL: ${nextUrl.pathname}`); // debug
-			// console.log(`is logged in: ${is_logged_in}`); // debug
-			// console.log(`is on login: ${is_on_login}`); // debug
-			// console.log(`locale: .${locale}.`);
-			// if (auth?.user) {
-			// 	console.log("user:");
-			// 	console.log(auth.user);
-			// }
+			const locale = get_locale_from_path(nextUrl.pathname); // don't think it's needed
+			console.log(`\n\nnext URL: ${nextUrl.pathname}`); // debug
+			console.log(`is logged in: ${is_logged_in}`); // debug
+			console.log(`is on login: ${is_on_login}`); // debug
+			if (auth?.user) {
+				console.log("user:");
+				console.log(auth.user);
+			}
 
 			// if logged in, can't log in
 			if (is_logged_in && is_on_login)
@@ -30,23 +32,55 @@ export const authConfig: NextAuthConfig = {
 			return true;
 			// return false;
 		},
+
+		// add user data to token & to session
+		async jwt({ token, user }) {
+			// console.log("\n\ncallback jwt"); // debug
+			// console.log("token:"); // debug
+			// console.log(token); // debug
+			// console.log(`user:`); // debug
+			// console.log(user); // debug
+			if (!user) user = token;
+			// console.log("jwt get_user_data:"); // debug
+			// console.log(user); // debug
+			return { ...token, user_data: await get_user_data({ user }) };
+		},
+		session(params: any) {
+			// cannot let me extract token otherwise for some reason
+			// console.log("\n\ncallback session"); // debug
+			let { session, token } = params;
+			// console.log("token:"); // debug
+			// console.log(token); // debug
+			// console.log("session:"); // debug
+			// console.log(session); // debug
+			session.user = { name: token.name, ...token.user_data };
+			// console.log("session after:"); // debug
+			// console.log(session); // debug
+			return session;
+		},
 	},
 	providers: [
 		CredentialsProvider({
-			async authorize(credentials, request) {
+			async authorize(credentials, request): Promise<User | null> {
 				if (!credentials?.username || !credentials?.password) {
-					// console.log(`no username or password`); // debug
+					console.log(`no username or password`); // debug
 					return null;
 				}
 
-				let { username, password } = credentials;
-				// console.log(`username: ${username}`); // debug
-				// console.log(`password: ${password}`); // debug
+				let { username, password } = credentials as {
+					username: string;
+					password: string;
+				};
+				console.log(`username: ${username}`); // debug
+				console.log(`password: ${password}`); // debug
 
-				// for testing
+				let is_password = await is_user_password(username, password);
+				console.log(`is user password: ${is_password}`);
+
+				if (!is_password) return null;
+
 				return {
-					id: "1",
-					name: "nir",
+					name: username,
 				};
 			},
 		}),
@@ -61,4 +95,5 @@ export const authConfig: NextAuthConfig = {
 		// 	console.log(message); // debug
 		// },
 	},
+	trustHost: true,
 };

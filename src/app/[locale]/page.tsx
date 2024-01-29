@@ -13,8 +13,8 @@ interface Props {
 export default async function Home({ params: { locale } }: Props) {
 	const { t, resources } = await initTranslations(locale, namespaces);
 	const user = await get_user_data();
-	// console.log(`user:`); // debug
-	// console.log(user); // debug
+	console.log(`Home: user:`); // debug
+	console.log(user); // debug
 
 	return (
 		<TranslationsProvider namespaces={namespaces} locale={locale} resources={resources}>

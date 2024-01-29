@@ -3,26 +3,21 @@ import Link from "next/link";
 import Image from "next/image";
 import LanguageSelector from "./LanguageSelector";
 import initTranslations from "@/src/lib/i18n";
-import Button from "./Button";
-import { signOut } from "@/src/lib/auth";
+import { auth, signOut } from "@/src/lib/auth";
 import { get_user_data } from "../lib/database";
 import LogoutButton from "./LogoutButton";
+import { Locale } from "../lib/types";
 
 const namespaces = ["common"];
 
 interface Props {
-	locale: string;
+	locale: Locale;
 }
 
 export default async function Navbar({ locale }: Props) {
 	const { t } = await initTranslations(locale, namespaces);
-	const user = await get_user_data();
-
-	const logout = async () => {
-		"use server";
-		// signOut({ redirectTo: `/${locale}/login`, redirect: true });
-		signOut();
-	};
+	// const user = await get_user_data();
+	const user = (await auth())?.user;
 
 	return (
 		<div className="navbar bg-secondary-content">
