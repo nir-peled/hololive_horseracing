@@ -6,9 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("PRISMA_ACCELERATE_URL") // uses connection pooling
-  // directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  provider  = "postgresql"
+  url       = env("PRISMA_ACCELERATE_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
 model User {
@@ -36,30 +36,30 @@ model Horse {
 }
 
 model Race {
-  id          BigInt           @id @default(autoincrement())
-  name        String           @unique
-  competitors RaceContestant[]
-  isOpenBets  Boolean          @default(true)
+  id                BigInt           @id @default(autoincrement())
+  name              String           @unique
+  competitors       RaceContestant[]
+  isOpenBets        Boolean          @default(true)
+  house_cut_percent Int
+  win_cut_percent   Int
+  place_cut_percent Int
+  show_cut_percent  Int
 
   @@index([name])
 }
 
 model RaceContestant {
-  id                BigInt @id @default(autoincrement())
-  jockey_id         BigInt
-  horse_id          BigInt
-  race_id           BigInt
-  jockey            User   @relation(fields: [jockey_id], references: [id])
-  horse             Horse  @relation(fields: [horse_id], references: [id])
-  race              Race   @relation(fields: [race_id], references: [id])
-  bets              Bet[]
-  place             Int?
-  odds_denominator  Int
-  odds_numerator    Int
-  house_cut_percent Int
-  win_cut_percent   Int
-  place_cut_percent Int
-  show_cut_percent  Int
+  id               BigInt @id @default(autoincrement())
+  jockey_id        BigInt
+  horse_id         BigInt
+  race_id          BigInt
+  jockey           User   @relation(fields: [jockey_id], references: [id])
+  horse            Horse  @relation(fields: [horse_id], references: [id])
+  race             Race   @relation(fields: [race_id], references: [id])
+  bets             Bet[]
+  place            Int?
+  odds_denominator Int
+  odds_numerator   Int
 
   @@unique([race_id, jockey_id])
   @@unique([race_id, horse_id])
