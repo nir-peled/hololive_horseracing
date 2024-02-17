@@ -1,18 +1,16 @@
-import { locales } from "@/i18nConfig";
 import { Locale } from "@/src/lib/types";
+import { generate_locale_params } from "@/src/lib/utils";
 import React from "react";
 
 interface Props {
 	children: React.ReactNode;
 	params: {
-		locale: string;
+		locale: Locale;
 	};
 }
 
 export async function generateStaticParams() {
-	return locales.map((locale: Locale) => ({
-		locale,
-	}));
+	return generate_locale_params();
 }
 
 // empty for no, TODO later

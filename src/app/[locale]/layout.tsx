@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/src/components/Navbar";
-import { locale_direction, locales } from "@/i18nConfig";
+import { locale_direction } from "@/i18nConfig";
 import { Locale } from "@/src/lib/types";
 import { get_font } from "@/src/lib/fonts";
+import { generate_locale_params } from "@/src/lib/utils";
 
 export const metadata: Metadata = {
 	title: "HoloRacing",
@@ -18,9 +19,7 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-	return locales.map((locale: Locale) => ({
-		locale,
-	}));
+	return generate_locale_params();
 }
 
 export default async function RootLayout({ children, params: { locale } }: Props) {

@@ -76,14 +76,18 @@ export default function NewUserForm({ locale }: Props) {
 		<form onSubmit={handleSubmit(submit_form)} id="new_user_form">
 			<Alert
 				type="success"
-				message={t("new-user-success")}
+				message={t("new-user-success", { ns: "management" })}
 				active={isSubmitSuccessful && !isFailed}
 			/>
-			<Alert type="error" message={t("new-user-fail")} active={isFailed} />
+			<Alert
+				type="error"
+				message={t("new-user-fail", { ns: "management" })}
+				active={isFailed}
+			/>
 			<label className="form-control w-full max-w-lg">
 				{/* input display name */}
 				<TextInput
-					label={t("user-display-name-label")}
+					label={t("user-display-name-label", { ns: "management" })}
 					field_name="display_name"
 					register={register}
 					error={errors?.display_name?.message}
@@ -93,7 +97,7 @@ export default function NewUserForm({ locale }: Props) {
 				<br />
 				{/* input confirm password */}
 				<TextInput
-					label={t("password-confirm-label")}
+					label={t("password-confirm-label", { ns: "management" })}
 					field_name="confirm_password"
 					register={register}
 					type="password"
@@ -102,17 +106,19 @@ export default function NewUserForm({ locale }: Props) {
 				<br />
 				{/* select role. perhaps moce to a component? */}
 				<div>
-					<FormInput label={t("role-label")} error={errors?.role?.message}>
+					<FormInput
+						label={t("role-label", { ns: "management" })}
+						error={errors?.role?.message}>
 						<select
 							className="select select-bordered"
 							{...register("role")}
 							defaultValue="select_title">
 							<option disabled value="select_title">
-								{t("role-select")}
+								{t("role-select", { ns: "management" })}
 							</option>
 							{userRoles.map((role, i) => (
 								<option value={role} key={i}>
-									{t(`role-${role}`)}
+									{t(`role-${role}`, { ns: "management" })}
 								</option>
 							))}
 						</select>
@@ -120,7 +126,7 @@ export default function NewUserForm({ locale }: Props) {
 				</div>
 				<br />
 				{/* upload user avatar */}
-				<FormInput label={t("user-image")}>
+				<FormInput label={t("user-image", { ns: "management" })}>
 					<input
 						type="file"
 						className="file-input file-input-bordered w-full max-w-xs"
@@ -128,7 +134,7 @@ export default function NewUserForm({ locale }: Props) {
 					/>
 				</FormInput>
 				<Button type="submit" disabled={isValid && isSubmitted} className="m-2">
-					{t("new-user-submit")}
+					{t("new-user-submit", { ns: "management" })}
 				</Button>
 			</label>
 		</form>
@@ -138,18 +144,24 @@ export default function NewUserForm({ locale }: Props) {
 function create_user_schema(t: TFunction) {
 	return z
 		.object({
-			display_name: z.string().min(3, { message: t("display-name-too-short") }),
-			username: z.string().min(3, { message: t("username-too-short") }),
+			display_name: z
+				.string()
+				.min(3, { message: t("display-name-too-short", { ns: "management" }) }),
+			username: z
+				.string()
+				.min(3, { message: t("username-too-short", { ns: "management" }) }),
 			password: z
 				.string()
-				.min(8, { message: t("password-too-short") })
-				.max(30, { message: t("password-too-long") }),
+				.min(8, { message: t("password-too-short", { ns: "management" }) })
+				.max(30, { message: t("password-too-long", { ns: "management" }) }),
 			confirm_password: z.string(),
-			role: z.enum(userRoles, { errorMap: () => ({ message: t("role-not-selected") }) }),
+			role: z.enum(userRoles, {
+				errorMap: () => ({ message: t("role-not-selected", { ns: "management" }) }),
+			}),
 			image: z.any(), // no option for file
 		})
 		.refine((data) => data.password == data.confirm_password, {
-			message: t("password-different-from-confirm"),
+			message: t("password-different-from-confirm", { ns: "management" }),
 			path: ["confirm_password"],
 		});
 }

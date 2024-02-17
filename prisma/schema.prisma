@@ -8,7 +8,7 @@ generator client {
 datasource db {
   provider  = "postgresql"
   url       = env("PRISMA_ACCELERATE_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection, mainly for migrations
 }
 
 model User {
@@ -74,4 +74,13 @@ model Bet {
   amount        Int
 
   @@unique([user_id, contestant_id])
+}
+
+model Cache {
+  id          BigInt   @id @default(autoincrement())
+  key         String   @unique
+  value       String?
+  lastUpdated DateTime @updatedAt
+
+  @@index([key])
 }

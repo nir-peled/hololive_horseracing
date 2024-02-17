@@ -1,0 +1,19 @@
+{
+	"new-user-title": "יצירת משתמש חדש",
+	"new-user-success": "נוצר משתמש חדש!",
+	"new-user-fail": "שגיאה בנסיון ליצור משתמש חדש",
+	"user-display-name-label": "שם מלא:",
+	"password-confirm-label": "וידוי סיסמא:",
+	"role-label": "תפקיד:",
+	"role-select": "בח\\י תפקיד",
+	"role-user": "משתמש",
+	"role-banker": "בנקאי",
+	"role-manager": "מנהל",
+	"user-image": "תמונת משתמש:",
+	"new-user-submit": "יצירה",
+	"display-name-too-short": "שם מלא חייב להיות לפחות 3 תווים",
+	"username-too-short": "שם משתמש חייב להיות לפחות 3 תווים",
+	"password-too-short": "סיסמא חייבת להיות לפחות 8 תווים",
+	"password-too-long": "סיסמא חייבת להיות עד 30 תווים",
+	"password-different-from-confirm": "הסיסמאות אינן זהות"
+}

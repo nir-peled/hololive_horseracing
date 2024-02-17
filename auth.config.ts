@@ -4,6 +4,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { get_user_data, is_user_password } from "@/src/lib/database";
 import { UserData } from "@/src/lib/types";
 import { get_locale_from_path } from "@/src/lib/i18n";
+import { locales } from "./i18nConfig";
 
 export const authConfig: NextAuthConfig = {
 	callbacks: {
@@ -12,25 +13,26 @@ export const authConfig: NextAuthConfig = {
 			const user = auth?.user as UserData | undefined;
 			const is_logged_in = !!user;
 			const is_on_login = nextUrl.pathname.endsWith("/login");
-			const locale = get_locale_from_path(nextUrl.pathname); // don't think it's needed
+			let locale = get_locale_from_path(nextUrl.pathname);
 			console.log(`\n\nnext URL: ${nextUrl.pathname}`); // debug
 			console.log(`is logged in: ${is_logged_in}`); // debug
 			console.log(`is on login: ${is_on_login}`); // debug
-			if (auth?.user) {
+			if (user) {
 				console.log("user:");
-				console.log(auth.user);
+				console.log(user);
 			}
+
+			if (!locale) locale = locales[0];
 
 			// if logged in, can't log in
 			if (is_logged_in && is_on_login)
-				return NextResponse.redirect(new URL(`/`, nextUrl));
+				return NextResponse.redirect(new URL(`/${locale}/`, nextUrl));
 			// if not logged in, go to login
 			if (!is_logged_in && !is_on_login)
-				return NextResponse.redirect(new URL(`/login`, nextUrl));
+				return NextResponse.redirect(new URL(`/${locale}/login`, nextUrl));
 
 			// console.log("all OK, go on"); // debug
 			return true;
-			// return false;
 		},
 
 		// add user data to token & to session
@@ -75,7 +77,7 @@ export const authConfig: NextAuthConfig = {
 				console.log(`password: ${password}`); // debug
 
 				let is_password = await is_user_password(username, password);
-				console.log(`is user password: ${is_password}`);
+				console.log(`is user password: ${is_password}`); // debug
 
 				if (!is_password) return null;
 

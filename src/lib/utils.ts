@@ -1,4 +1,6 @@
+import { locales } from "@/i18nConfig";
 import { pbkdf2Sync, randomBytes } from "crypto";
+import { Locale } from "./types";
 
 export async function hash_password(
 	password: string,
@@ -33,4 +35,10 @@ export async function image_as_buffer(
 
 	let array_buffer = await image.arrayBuffer();
 	return Buffer.from(array_buffer);
+}
+
+export async function generate_locale_params() {
+	return locales.map((locale: Locale) => ({
+		locale,
+	}));
 }

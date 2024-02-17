@@ -1,6 +1,7 @@
 import TranslationsProvider from "@/src/components/TranslationProvider";
 import { get_user_data } from "@/src/lib/database";
 import initTranslations from "@/src/lib/i18n";
+import { generate_locale_params } from "@/src/lib/utils";
 
 const namespaces = ["home"];
 
@@ -8,6 +9,10 @@ interface Props {
 	params: {
 		locale: string;
 	};
+}
+
+export async function generateStaticParams() {
+	return generate_locale_params();
 }
 
 export default async function Home({ params: { locale } }: Props) {

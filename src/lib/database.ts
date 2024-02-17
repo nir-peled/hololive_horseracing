@@ -1,8 +1,8 @@
 import { Session, User as AuthUser } from "next-auth";
-import { auth } from "./auth";
-import { UserData, UserFormData } from "./types";
 import { Prisma, PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
+import { auth } from "./auth";
+import { UserData, UserFormData } from "./types";
 import { compare_passwords, hash_password, image_as_buffer } from "./utils";
 
 interface UserDataOps {
