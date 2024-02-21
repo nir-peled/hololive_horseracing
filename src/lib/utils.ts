@@ -42,3 +42,10 @@ export async function generate_locale_params() {
 		locale,
 	}));
 }
+
+export function users_filtered_by_display_name<
+	PartialUser extends { display_name: string }
+>(users: PartialUser[], filter: string): PartialUser[] {
+	filter = filter.toLowerCase();
+	return users.filter((user) => user.display_name.toLowerCase().includes(filter));
+}

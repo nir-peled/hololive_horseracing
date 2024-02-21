@@ -2,8 +2,13 @@
 
 import { AuthError } from "next-auth";
 import { signIn, signOut } from "./auth";
-import { Locale, UserFormData } from "./types";
-import { create_user, is_user_exists } from "./database";
+import { Locale, UserData, UserFormData } from "./types";
+import {
+	create_user,
+	get_user_as_form_data,
+	get_usernames,
+	is_user_exists,
+} from "./database";
 
 export async function authenticate(prevState: string | undefined, form_data: FormData) {
 	try {
@@ -50,4 +55,15 @@ export async function new_user(params: UserFormData): Promise<boolean> {
 		console.log(error); // debug
 		return false;
 	}
+}
+
+export async function fetch_usernames(
+	select?: Partial<{ [key in keyof UserData | "name"]: true }>
+): Promise<ReturnType<typeof get_usernames>> {
+	if (select) return await get_usernames({ select });
+	return await get_usernames();
+}
+
+export async function fetch_user_form_data(username: string | undefined) {
+	return await get_user_as_form_data(username);
 }

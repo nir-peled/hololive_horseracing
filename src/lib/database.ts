@@ -86,3 +86,38 @@ export async function get_user_image(name: string): Promise<Buffer | null> {
 	if (!user_data?.image) return null;
 	return user_data.image;
 }
+
+export async function get_user_as_form_data(
+	username: string | undefined
+): Promise<{ [key in keyof UserFormData]: any }> {
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	// TEMPORATY, FILL LATER
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	return {
+		username: "",
+		password: "",
+		confirm_password: "",
+		role: "select_role",
+		display_name: "",
+	};
+}
+
+export async function get_usernames({
+	filter,
+	select,
+}: {
+	filter?: string;
+	select?: Partial<{ [key in keyof UserData | "name"]: true }>;
+} = {}): Promise<{ name: string; display_name: string }[]> {
+	if (!filter) filter = "";
+	if (!select) select = { name: true, display_name: true };
+
+	let data = await prisma.user.findMany({
+		select: select,
+		where: {
+			name: { contains: filter },
+		},
+	});
+
+	return data;
+}

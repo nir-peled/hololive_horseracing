@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Button from "./Button";
+import Button from "../Button";
 import { logout } from "@/src/lib/actions";
 import { Locale } from "@/src/lib/types";
 

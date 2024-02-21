@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Navbar from "@/src/components/Navbar";
+import Navbar from "@/src/components/navbar/Navbar";
 import { locale_direction } from "@/i18nConfig";
 import { Locale } from "@/src/lib/types";
 import { get_font } from "@/src/lib/fonts";

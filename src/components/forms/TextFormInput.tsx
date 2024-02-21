@@ -8,6 +8,8 @@ interface Props {
 	register?: UseFormRegister<any>;
 	error?: string;
 	type?: "text" | "password";
+	default_value?: string | undefined;
+	disabled?: boolean;
 }
 
 export default function TextInput({
@@ -16,6 +18,8 @@ export default function TextInput({
 	register,
 	error,
 	type = "text",
+	default_value,
+	disabled,
 }: Props) {
 	const get_attrs = () =>
 		register ? register(field_name) : { id: field_name, name: field_name };
@@ -26,6 +30,8 @@ export default function TextInput({
 				{...get_attrs()}
 				type={type}
 				className="input input-bordered w-full max-w-xs"
+				disabled={disabled}
+				defaultValue={default_value}
 			/>
 		</FormInput>
 	);

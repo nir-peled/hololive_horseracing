@@ -3,10 +3,9 @@ import Link from "next/link";
 import Image from "next/image";
 import LanguageSelector from "./LanguageSelector";
 import initTranslations from "@/src/lib/i18n";
-import { auth, signOut } from "@/src/lib/auth";
-import { get_user_data } from "../lib/database";
+import { auth } from "@/src/lib/auth";
 import LogoutButton from "./LogoutButton";
-import { Locale } from "../lib/types";
+import { Locale } from "../../lib/types";
 
 const namespaces = ["common"];
 
@@ -49,6 +48,11 @@ export default async function Navbar({ locale }: Props) {
 					<li>
 						<Link href="/bank" className="btn btn-ghost text-xl">
 							{t("bank-link")}
+						</Link>
+					</li>
+					<li>
+						<Link href="/management" className="btn btn-ghost text-xl">
+							{t("management-link")}
 						</Link>
 					</li>
 				</ul>
