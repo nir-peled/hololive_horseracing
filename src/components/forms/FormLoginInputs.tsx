@@ -24,7 +24,7 @@ export default function FomLoginInputs({ register, errors, username }: Props) {
 				field_name="username"
 				register={register}
 				error={errors?.username?.message}
-				default_value={username && ""}
+				default_value={username || ""}
 				disabled={!!username}
 			/>
 			{/* <br /> */}

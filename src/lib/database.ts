@@ -93,12 +93,34 @@ export async function get_user_as_form_data(
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	// TEMPORATY, FILL LATER
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	const result =
+		username &&
+		(await prisma.user.findUnique({
+			where: { name: username },
+			select: {
+				name: true,
+				display_name: true,
+				role: true,
+				image: true,
+			},
+		}));
+
+	if (!result)
+		return {
+			username: "",
+			password: "",
+			confirm_password: "",
+			role: "select_role",
+			display_name: "",
+		};
+
 	return {
-		username: "",
+		username: result.name,
 		password: "",
 		confirm_password: "",
-		role: "select_role",
-		display_name: "",
+		role: result.role,
+		display_name: result.display_name,
+		image: result.image,
 	};
 }
 

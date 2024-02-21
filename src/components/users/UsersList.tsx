@@ -43,14 +43,15 @@ export default function UsersList() {
 						</tr>
 					</thead>
 					<tbody>
+						<UserListRow user={{ name: "", display_name: "" }} hidden />
 						{filtered_users.map((user, i) => (
 							<UserListRow
 								user={user}
 								key={i}
 								on_error={set_error}
 								on_delete={(name) => {
-									mutate(users.filter((user_) => user_.name != name));
 									set_deleted_name(name);
+									mutate(users.filter((user_) => user_.name != name));
 								}}
 							/>
 						))}

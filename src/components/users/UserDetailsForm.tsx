@@ -6,15 +6,16 @@ import { useTranslation } from "react-i18next";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TFunction } from "i18next";
 import { z } from "zod";
+import useSWR from "swr";
 import { UserRole, userRoles } from "@/src/lib/types";
+import { json_fetcher } from "@/src/lib/hooks";
 import FormLoginInputs from "../forms/FormLoginInputs";
 import Button from "../Button";
 import Alert from "../Alert";
 import TextInput from "../forms/TextFormInput";
 import FormInput from "../forms/FormInput";
 import SelectOption from "../SelectOption";
-import useSWR from "swr";
-import { json_fetcher } from "@/src/lib/hooks";
+import LoadingMarker from "../LoadingMarker";
 
 const namespaces = ["management"];
 
@@ -31,13 +32,15 @@ interface UserFormData {
 	image: FileList | null;
 }
 
-export default async function UserDetailsForm({ edit_user }: Props) {
+export default function UserDetailsForm({ edit_user }: Props) {
 	const { t } = useTranslation(namespaces);
 	const UserSchema = create_user_schema(t);
 
+	console.log(`edit user = ${edit_user}`); // debug
+
 	// if edit_user is given, those are the user's details.
 	// otherwise, they are empty
-	const { data: default_values } = useSWR<Partial<UserFormData>>(
+	const { data: default_values, isLoading } = useSWR<Partial<UserFormData>>(
 		"/api/users/form_data",
 		(url: string) => {
 			if (edit_user)
@@ -45,6 +48,9 @@ export default async function UserDetailsForm({ edit_user }: Props) {
 			else return {};
 		}
 	);
+
+	console.log("default values = "); // debug
+	console.log(default_values);
 
 	// get user values every time edit_user changes
 	// inelegant react way of doing things
@@ -88,6 +94,8 @@ export default async function UserDetailsForm({ edit_user }: Props) {
 			setIsFailed(true);
 		}
 	}
+
+	if (isLoading) return <LoadingMarker />;
 
 	return (
 		<form onSubmit={handleSubmit(submit_form)} id="new_user_form">

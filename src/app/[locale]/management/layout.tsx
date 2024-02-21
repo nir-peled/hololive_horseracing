@@ -15,5 +15,5 @@ export async function generateStaticParams() {
 
 // empty for no, TODO later
 export default async function ManagementLayout({ children, params: { locale } }: Props) {
-	return <div>{children}</div>;
+	return <>{children}</>;
 }

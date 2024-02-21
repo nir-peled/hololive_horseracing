@@ -9,11 +9,12 @@ interface Props {
 	name: string;
 	on_error?: (error: string) => void;
 	on_delete?: (name: string) => void;
+	hidden?: true | undefined;
 }
 
 const namespaces = ["management"];
 
-export default function DeleteUserButton({ name, on_error, on_delete }: Props) {
+export default function DeleteUserButton({ name, on_error, on_delete, hidden }: Props) {
 	const { t } = useTranslation(namespaces);
 	const [_, dispatch] = useFormState(send_delete, undefined);
 	const { pending } = useFormStatus();
@@ -37,7 +38,9 @@ export default function DeleteUserButton({ name, on_error, on_delete }: Props) {
 
 	return (
 		<form action={dispatch}>
-			<Button disabled={pending}>{t("user-delete-button")}</Button>
+			<Button disabled={pending} className={hidden && "max-h-0"}>
+				{t("user-delete-button")}
+			</Button>
 		</form>
 	);
 }

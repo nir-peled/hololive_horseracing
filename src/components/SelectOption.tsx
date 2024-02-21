@@ -1,6 +1,7 @@
 import React from "react";
 import { UseFormRegister } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import LoadingMarker from "./LoadingMarker";
 
 interface Props {
 	register?: UseFormRegister<any>;
@@ -26,7 +27,9 @@ export default function SelectOption({
 	const get_attrs = () => {
 		let attrs: any = register ? register(name) : { id: name, name: name };
 		// add default value if not already given by <register>
-		attrs.defaultValue ||= defaultValue ? defaultValue : "no_option";
+		// attrs.defaultValue ||= defaultValue ? defaultValue : "no_option";
+		if (!attrs.defaultValue)
+			attrs.defaultValue = defaultValue ? defaultValue : "no_option";
 		// for use without form hook
 		if (onChange && !register)
 			attrs.onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -37,16 +40,13 @@ export default function SelectOption({
 		return attrs;
 	};
 
+	if (loading) return <LoadingMarker />;
+
 	return (
 		<select {...get_attrs()} className="select select-bordered">
 			<option disabled value="no_option">
 				{placeholder}
 			</option>
-			{loading && (
-				<option disabled value="">
-					<span className="loading loading-spinner loading-sm"></span>
-				</option>
-			)}
 			{!loading &&
 				options.map((value, i) => (
 					<option value={value} key={i}>

@@ -22,7 +22,7 @@ export default async function Navbar({ locale }: Props) {
 		<div className="navbar bg-secondary-content">
 			<div className="navbar-start">
 				<div className="avatar">
-					<div className="w-12 h-16">
+					<div className="w-12 h-16 mx-2">
 						<Image
 							src="/logo.svg"
 							alt="Hololive Horseracing Logo"
@@ -34,7 +34,7 @@ export default async function Navbar({ locale }: Props) {
 				</div>
 			</div>
 			<div className="navbar-center justify-between">
-				<ul className="menu menu-horizontal px-1 justify-between mt-3 z-[1] p-2">
+				<ul className="menu menu-horizontal px-1 justify-between mt-3 z-[1] p-2 space-x-1">
 					<li>
 						<Link href="/races" className="btn btn-ghost text-xl">
 							{t("races-link")}
@@ -57,7 +57,7 @@ export default async function Navbar({ locale }: Props) {
 					</li>
 				</ul>
 			</div>
-			<div className="navbar-end">
+			<div className="navbar-end space-x-1">
 				{/* {user && <Button onClick={logout}>{t("signout-button")}</Button>} */}
 				{user && <LogoutButton label={t("signout-button")} locale={locale} />}
 				<LanguageSelector locale={locale} />
