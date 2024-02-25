@@ -1,27 +1,33 @@
 import { NextAuthConfig, User } from "next-auth";
 import { NextResponse } from "next/server";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { get_user_data, is_user_password } from "@/src/lib/database";
-import { UserData } from "@/src/lib/types";
+import { get_user_data, get_user_image, is_user_password } from "@/src/lib/database";
+import { UserData, UserRole } from "@/src/lib/types";
 import { get_locale_from_path } from "@/src/lib/i18n";
-import { locales } from "./i18nConfig";
+import { locales } from "@/i18nConfig";
+import { is_path_authorized } from "@/src/lib/auth";
 
 export const authConfig: NextAuthConfig = {
 	callbacks: {
 		// to add: restricting path by user role
-		authorized({ auth, request: { nextUrl } }) {
+		async authorized({ auth, request: { nextUrl } }) {
 			const user = auth?.user as UserData | undefined;
 			const is_logged_in = !!user;
 			const is_on_login = nextUrl.pathname.endsWith("/login");
 			let locale = get_locale_from_path(nextUrl.pathname);
+			let user_role: UserRole | undefined;
+			const page = locale ? nextUrl.pathname.replace(`/${locale}`, "") : nextUrl.pathname;
 			console.log(`\n\nnext URL: ${nextUrl.pathname}`); // debug
 			console.log(`is logged in: ${is_logged_in}`); // debug
 			console.log(`is on login: ${is_on_login}`); // debug
+			console.log(`page: ${page}`); // debug
 			if (user) {
 				console.log("user:");
-				console.log(user);
+				console.log(user.name);
+				user_role = user.role;
 			}
 
+			// default locale in not included, to avoid double redirect
 			if (!locale) locale = locales[0];
 
 			// if logged in, can't log in
@@ -30,6 +36,10 @@ export const authConfig: NextAuthConfig = {
 			// if not logged in, go to login
 			if (!is_logged_in && !is_on_login)
 				return NextResponse.redirect(new URL(`/${locale}/login`, nextUrl));
+			// check user is authorized to go to this page
+			// if not logged in, already handled
+			if (is_logged_in && !(await is_path_authorized(page, user_role)))
+				return NextResponse.redirect(new URL(`/${locale}/`, nextUrl), { status: 401 });
 
 			// console.log("all OK, go on"); // debug
 			return true;
@@ -37,17 +47,12 @@ export const authConfig: NextAuthConfig = {
 
 		// add user data to token & to session
 		async jwt({ token, user }) {
-			// console.log("\n\ncallback jwt"); // debug
-			// console.log("token:"); // debug
-			// console.log(token); // debug
-			// console.log(`user:`); // debug
-			// console.log(user); // debug
 			if (!user) user = token;
-			// console.log("jwt get_user_data:"); // debug
-			// console.log(user); // debug
-			return { ...token, user_data: await get_user_data({ user }) };
+			return { ...token, user_data: await get_user_data({ user, to_token: true }) };
 		},
-		session(params: any) {
+
+		// add user data to session from token, plus user image
+		async session(params: any) {
 			// cannot let me extract token otherwise for some reason
 			// console.log("\n\ncallback session"); // debug
 			let { session, token } = params;
@@ -55,7 +60,7 @@ export const authConfig: NextAuthConfig = {
 			// console.log(token); // debug
 			// console.log("session:"); // debug
 			// console.log(session); // debug
-			session.user = { name: token.name, ...token.user_data };
+			session.user = { ...token.user_data };
 			// console.log("session after:"); // debug
 			// console.log(session); // debug
 			return session;
@@ -63,6 +68,7 @@ export const authConfig: NextAuthConfig = {
 	},
 	providers: [
 		CredentialsProvider({
+			// check if credentials are authorized. return user or null
 			async authorize(credentials, request): Promise<User | null> {
 				if (!credentials?.username || !credentials?.password) {
 					console.log(`no username or password`); // debug

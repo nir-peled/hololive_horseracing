@@ -16,6 +16,7 @@ import TextInput from "../forms/TextFormInput";
 import FormInput from "../forms/FormInput";
 import SelectOption from "../SelectOption";
 import LoadingMarker from "../LoadingMarker";
+import ImageFormInput from "../forms/ImageFormInput";
 
 const namespaces = ["management"];
 
@@ -41,7 +42,7 @@ export default function UserDetailsForm({ edit_user }: Props) {
 	// if edit_user is given, those are the user's details.
 	// otherwise, they are empty
 	const { data: default_values, isLoading } = useSWR<Partial<UserFormData>>(
-		"/api/users/form_data",
+		"/api/management/users/form_data",
 		(url: string) => {
 			if (edit_user)
 				return json_fetcher(url + "?" + new URLSearchParams({ username: edit_user }));
@@ -50,10 +51,8 @@ export default function UserDetailsForm({ edit_user }: Props) {
 	);
 
 	console.log("default values = "); // debug
-	console.log(default_values);
+	console.log(default_values); // debug
 
-	// get user values every time edit_user changes
-	// inelegant react way of doing things
 	const {
 		register,
 		handleSubmit,
@@ -68,7 +67,7 @@ export default function UserDetailsForm({ edit_user }: Props) {
 
 	async function submit_form(data: UserFormData, event?: BaseSyntheticEvent) {
 		if (event) event.preventDefault();
-		const endpoint = `/api/users/${edit_user ? "edit" : "new"}`;
+		const endpoint = `/api/management/users/${edit_user ? "edit" : "new"}`;
 
 		let form_data = new FormData();
 		for (let [key, value] of Object.entries(data)) {
@@ -129,7 +128,6 @@ export default function UserDetailsForm({ edit_user }: Props) {
 					error={errors?.confirm_password?.message}
 				/>
 				<br />
-				{/* select role. perhaps move to a component? */}
 				<div>
 					<FormInput label={t("role-label")} error={errors?.role?.message}>
 						<SelectOption
@@ -143,13 +141,12 @@ export default function UserDetailsForm({ edit_user }: Props) {
 				</div>
 				<br />
 				{/* upload user avatar */}
-				<FormInput label={t("user-image")}>
-					<input
-						type="file"
-						className="file-input file-input-bordered w-full max-w-xs"
-						{...register("image")}
-					/>
-				</FormInput>
+				<ImageFormInput
+					label={t("user-image")}
+					field_name="image"
+					register={register}
+					preview={true}
+				/>
 				<Button type="submit" disabled={isValid && isSubmitted} className="m-2">
 					{t("new-user-submit")}
 				</Button>
@@ -159,6 +156,10 @@ export default function UserDetailsForm({ edit_user }: Props) {
 }
 
 function create_user_schema(t: TFunction) {
+	const max_file_size = process.env.NEXT_PUBLIC_MAX_USER_ICON_SIZE;
+	const allowed_files_str = process.env.NEXT_PUBLIC_USER_ICON_TYPES;
+	const allowed_files = allowed_files_str && allowed_files_str.split(",");
+
 	return z
 		.object({
 			display_name: z.string().min(3, { message: t("display-name-too-short") }),
@@ -166,7 +167,7 @@ function create_user_schema(t: TFunction) {
 			password: z
 				.string()
 				.min(8, { message: t("password-too-short") })
-				.max(30, { message: t("password-too-long") }),
+				.max(31, { message: t("password-too-long") }),
 			confirm_password: z.string(),
 			role: z.enum(userRoles, {
 				errorMap: () => ({ message: t("role-not-selected") }),
@@ -176,5 +177,27 @@ function create_user_schema(t: TFunction) {
 		.refine((data) => data.password == data.confirm_password, {
 			message: t("password-different-from-confirm"),
 			path: ["confirm_password"],
-		});
+		})
+		.refine(
+			(data) => {
+				if (!max_file_size || !data.image) return true;
+				let files: FileList = data.image;
+				return files.length == 0 || files[0].size <= Number(max_file_size);
+			},
+			{
+				message: t("image-too-large", {
+					max_file_size,
+				}),
+				path: ["image"],
+			}
+		)
+		.refine(
+			(data) => {
+				let files: FileList = data.image;
+				return (
+					!allowed_files || files.length == 0 || allowed_files.includes(files[0].type)
+				);
+			},
+			{ message: t("image-type-not-allowed"), path: ["image"] }
+		);
 }

@@ -15,10 +15,10 @@ export const json_fetcher = (input: URL | RequestInfo, init?: RequestInit | unde
 	fetch(input, init).then((res) => res.json());
 
 export function useUsersList(
-	select?: Partial<{ [key in keyof UserData | "name"]: true }>
+	select?: Partial<{ [key in keyof UserData]: true }>
 ): UseUsersListReturn {
 	const { data, error, isLoading, mutate } = useSWR<UsersList>(
-		"/api/users/all",
+		"/api/management/users/all",
 		json_fetcher
 	);
 

@@ -1,11 +1,12 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import LanguageSelector from "./LanguageSelector";
 import initTranslations from "@/src/lib/i18n";
 import { auth } from "@/src/lib/auth";
-import LogoutButton from "./LogoutButton";
-import { Locale } from "../../lib/types";
+import { Locale, UserData } from "@/src/lib/types";
+import { get_user_image_as_str } from "@/src/lib/utils";
+import LanguageSelector from "./LanguageSelector";
+import UserIconMenu from "./UserIconMenu";
 
 const namespaces = ["common"];
 
@@ -16,7 +17,10 @@ interface Props {
 export default async function Navbar({ locale }: Props) {
 	const { t } = await initTranslations(locale, namespaces);
 	// const user = await get_user_data();
-	const user = (await auth())?.user;
+	const user = (await auth())?.user as UserData | null;
+	const user_image = user && (await get_user_image_as_str(user));
+	console.log("user image:"); // debug
+	console.log(user_image); // debug
 
 	return (
 		<div className="navbar bg-secondary-content">
@@ -25,7 +29,7 @@ export default async function Navbar({ locale }: Props) {
 					<div className="w-12 h-16 mx-2">
 						<Image
 							src="/logo.svg"
-							alt="Hololive Horseracing Logo"
+							alt="HoloRacing Logo"
 							width={40}
 							height={50}
 							priority
@@ -58,8 +62,13 @@ export default async function Navbar({ locale }: Props) {
 				</ul>
 			</div>
 			<div className="navbar-end space-x-1">
-				{/* {user && <Button onClick={logout}>{t("signout-button")}</Button>} */}
-				{user && <LogoutButton label={t("signout-button")} locale={locale} />}
+				{user && (
+					<UserIconMenu
+						label={t("signout-button")}
+						locale={locale}
+						image={user_image || undefined}
+					/>
+				)}
 				<LanguageSelector locale={locale} />
 			</div>
 		</div>

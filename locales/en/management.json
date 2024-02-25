@@ -15,5 +15,6 @@
 	"username-too-short": "Username must at least 3 characters",
 	"password-too-short": "Password must be at least 8 characters",
 	"password-too-long": "Password must be no more than 30 characters",
-	"password-different-from-confirm": "Passwords don't match"
+	"password-different-from-confirm": "Passwords don't match",
+	"image-too-large": "Image must be smaller than {{max_file_size, number(style:unit, unit:kilobyte, unitDisplay:short)}}"
 }

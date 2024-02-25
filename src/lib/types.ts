@@ -16,6 +16,7 @@ export interface UserFormData {
 }
 
 export interface UserData {
+	name: string;
 	role: UserRole;
 	display_name: string;
 	image?: Buffer;

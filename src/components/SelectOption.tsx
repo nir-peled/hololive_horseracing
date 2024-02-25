@@ -25,14 +25,15 @@ export default function SelectOption({
 	defaultValue,
 }: Props) {
 	const get_attrs = () => {
-		let attrs: any = register ? register(name) : { id: name, name: name };
+		let attrs: any = register ? register(name) : { name: name };
 		// add default value if not already given by <register>
 		// attrs.defaultValue ||= defaultValue ? defaultValue : "no_option";
-		if (!attrs.defaultValue)
-			attrs.defaultValue = defaultValue ? defaultValue : "no_option";
+		if (!attrs.defaultValue) attrs.defaultValue = defaultValue || "no_option";
 		// for use without form hook
-		if (onChange && !register)
+		const former_on_change = attrs.onChange;
+		if (onChange)
 			attrs.onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+				if (former_on_change) former_on_change(event);
 				const new_option = event.target.value;
 				if (new_option != "no_option") onChange(new_option);
 			};
