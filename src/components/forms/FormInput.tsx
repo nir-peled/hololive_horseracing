@@ -1,5 +1,4 @@
 import React, { ReactNode } from "react";
-import { UseFormRegister } from "react-hook-form";
 
 interface Props {
 	label: string;

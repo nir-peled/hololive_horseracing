@@ -1,9 +1,13 @@
-import { new_user } from "@/src/lib/actions";
-import { UserFormData, UserRole } from "@/src/lib/types";
 import { NextRequest, NextResponse } from "next/server";
+import { new_user } from "@/src/lib/actions";
+import { check_api_authorized } from "@/src/lib/auth";
+import { UserFormData } from "@/src/lib/types";
 
 export async function POST(request: NextRequest) {
-	console.log("got POST /api/users/new"); // debug
+	console.log("got POST /api/management/users/new"); // debug
+	let res = await check_api_authorized(request);
+	if (res) return res;
+
 	let data = await request.formData();
 	if (!data) {
 		console.log("no form data, bad request"); // debug

@@ -1,9 +1,14 @@
 "use server";
 
 import { AuthError } from "next-auth";
-import { signIn, signOut } from "./auth";
-import { Locale, UserFormData } from "./types";
-import { create_user, is_user_exists } from "./database";
+import { check_server_action_authorized, signIn, signOut } from "./auth";
+import { Locale, UserData, UserFormData } from "./types";
+import {
+	create_user,
+	get_user_as_form_data,
+	get_usernames,
+	is_user_exists,
+} from "./database";
 
 export async function authenticate(prevState: string | undefined, form_data: FormData) {
 	try {
@@ -39,8 +44,7 @@ export async function logout(locale: Locale) {
 }
 
 export async function new_user(params: UserFormData): Promise<boolean> {
-	const isUser = await is_user_exists(params.username);
-	if (isUser) return false;
+	check_server_action_authorized("manager");
 
 	try {
 		await create_user(params);
@@ -50,4 +54,17 @@ export async function new_user(params: UserFormData): Promise<boolean> {
 		console.log(error); // debug
 		return false;
 	}
+}
+
+export async function fetch_usernames(
+	select?: Partial<{ [key in keyof UserData]: true }>
+): Promise<ReturnType<typeof get_usernames>> {
+	check_server_action_authorized("manager"); // maybe change?
+	if (select) return await get_usernames({ select });
+	return await get_usernames();
+}
+
+export async function fetch_user_form_data(username: string | undefined) {
+	check_server_action_authorized("manager");
+	return await get_user_as_form_data(username);
 }

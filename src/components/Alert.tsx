@@ -7,7 +7,7 @@ interface Props {
 }
 
 function Alert({ type, active, message }: Props) {
-	if (!active) return null;
+	if (active === false) return null;
 
 	let alert_type = type ? `alert-${type}` : "";
 

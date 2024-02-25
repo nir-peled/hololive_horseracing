@@ -1,22 +1,19 @@
 "use client";
 
 import React from "react";
-import Button from "./Button";
+import Button from "../Button";
 import { logout } from "@/src/lib/actions";
 import { Locale } from "@/src/lib/types";
-
-const namespaces = ["common"];
 
 interface Props {
 	label: string;
 	locale: Locale;
 }
 
-function LogoutButton({ label, locale }: Props) {
+export default function LogoutButton({ label, locale }: Props) {
 	async function submit() {
 		logout(locale);
 	}
-	// const { t } = useTranslation(namespaces);
 
 	return (
 		<form action={submit}>
@@ -24,5 +21,3 @@ function LogoutButton({ label, locale }: Props) {
 		</form>
 	);
 }
-
-export default LogoutButton;

@@ -1,6 +1,7 @@
-import { Locale } from "@/src/lib/types";
-import { generate_locale_params } from "@/src/lib/utils";
 import Link from "next/link";
+import { generate_locale_params } from "@/src/lib/utils";
+import { Locale } from "@/src/lib/types";
+import Button from "@/src/components/Button";
 
 interface Props {
 	params: {
@@ -13,5 +14,12 @@ export async function generateStaticParams() {
 }
 
 export default async function ManagementPage({ params: { locale } }: Props) {
-	<Link href="./users">Users</Link>;
+	// temporary
+	return (
+		<main className="flex min-h-screen flex-col items-center p-24 w-fit self-center">
+			<Button>
+				<Link href={`${locale}/management/users`}>Users</Link>
+			</Button>
+		</main>
+	);
 }

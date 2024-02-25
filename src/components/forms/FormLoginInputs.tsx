@@ -1,7 +1,7 @@
 import React from "react";
 import { UseFormRegister } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import TextInput from "./TextInput";
+import TextInput from "./TextFormInput";
 
 const namespaces = ["auth"];
 
@@ -11,13 +11,11 @@ interface Props {
 		username?: { message?: string };
 		password?: { message?: string };
 	};
+	username?: string | undefined;
 }
 
-export default function FomLoginInputs({ register, errors }: Props) {
+export default function FomLoginInputs({ register, errors, username }: Props) {
 	const { t } = useTranslation(namespaces);
-
-	const get_attrs = (field: string) =>
-		register ? register(field) : { id: field, name: field };
 
 	return (
 		<>
@@ -26,6 +24,8 @@ export default function FomLoginInputs({ register, errors }: Props) {
 				field_name="username"
 				register={register}
 				error={errors?.username?.message}
+				default_value={username || ""}
+				disabled={!!username}
 			/>
 			{/* <br /> */}
 			<TextInput

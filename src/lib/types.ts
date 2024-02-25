@@ -16,11 +16,19 @@ export interface UserFormData {
 }
 
 export interface UserData {
+	name: string;
 	role: UserRole;
 	display_name: string;
 	image?: Buffer;
 	balance: Number;
 	dept: Number;
+}
+
+export interface UserDefaultValues {
+	username: string;
+	role: string;
+	display_name: string;
+	image?: Buffer | null;
 }
 
 export type MiddlewareFactory = (middleware: NextMiddleware) => NextMiddleware;

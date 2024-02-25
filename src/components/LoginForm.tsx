@@ -6,7 +6,7 @@ import { authenticate } from "../lib/actions";
 import { useTranslation } from "react-i18next";
 import Alert from "./Alert";
 import Button from "./Button";
-import FormLoginInputs from "./FormLoginInputs";
+import FormLoginInputs from "./forms/FormLoginInputs";
 
 const namespaces = ["auth"];
 

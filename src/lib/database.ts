@@ -2,12 +2,13 @@ import { Session, User as AuthUser } from "next-auth";
 import { Prisma, PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { auth } from "./auth";
-import { UserData, UserFormData } from "./types";
+import { UserData, UserFormData, UserDefaultValues } from "./types";
 import { compare_passwords, hash_password, image_as_buffer } from "./utils";
 
 interface UserDataOps {
 	session?: Session | null;
 	user?: AuthUser;
+	to_token?: boolean;
 }
 
 const prisma = new PrismaClient().$extends(withAccelerate());
@@ -53,11 +54,12 @@ export async function create_user(params: UserFormData) {
 export async function get_user_data({
 	session,
 	user,
+	to_token,
 }: UserDataOps = {}): Promise<UserData | null> {
 	if (!user) {
 		if (!session) session = await auth();
-		console.log("session: "); // debug
-		console.log(session); // debug
+		// console.log("session: "); // debug
+		// console.log(session); // debug
 		user = session?.user;
 		if (!user) return null;
 	}
@@ -67,10 +69,12 @@ export async function get_user_data({
 	let user_data = (await prisma.user.findUnique({
 		where: { name: user.name },
 		select: {
+			name: true,
 			role: true,
 			display_name: true,
 			balance: true,
 			dept: true,
+			image: !to_token,
 		},
 	})) as UserData | null;
 
@@ -85,4 +89,57 @@ export async function get_user_image(name: string): Promise<Buffer | null> {
 
 	if (!user_data?.image) return null;
 	return user_data.image;
+}
+
+export async function get_user_as_form_data(
+	username: string | undefined
+): Promise<UserDefaultValues> {
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	// TEMPORATY, FILL LATER
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	const result =
+		username &&
+		(await prisma.user.findUnique({
+			where: { name: username },
+			select: {
+				name: true,
+				display_name: true,
+				role: true,
+				image: true,
+			},
+		}));
+
+	if (!result)
+		return {
+			username: "",
+			role: "select_role",
+			display_name: "",
+		};
+
+	return {
+		username: result.name,
+		role: result.role,
+		display_name: result.display_name,
+		image: result.image,
+	};
+}
+
+export async function get_usernames({
+	filter,
+	select,
+}: {
+	filter?: string;
+	select?: Partial<{ [key in keyof UserData]: true }>;
+} = {}): Promise<{ name: string; display_name: string }[]> {
+	if (!filter) filter = "";
+	if (!select) select = { name: true, display_name: true };
+
+	let data = await prisma.user.findMany({
+		select: select,
+		where: {
+			name: { contains: filter },
+		},
+	});
+
+	return data;
 }
