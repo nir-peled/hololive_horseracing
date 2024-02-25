@@ -24,4 +24,11 @@ export interface UserData {
 	dept: Number;
 }
 
+export interface UserDefaultValues {
+	username: string;
+	role: string;
+	display_name: string;
+	image?: Buffer | null;
+}
+
 export type MiddlewareFactory = (middleware: NextMiddleware) => NextMiddleware;

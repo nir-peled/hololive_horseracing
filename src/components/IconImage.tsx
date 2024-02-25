@@ -16,9 +16,6 @@ export default function IconImage({ icon }: Props) {
 		} else set_image_uri(icon);
 	}, [icon]);
 
-	console.log(`icon: (type ${typeof icon})`);
-	console.log(icon);
-
 	if (typeof icon == "string" && !icon.startsWith("data")) return icon;
 	// icon is just a string
 

@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { TFunction } from "i18next";
 import { z } from "zod";
 import useSWR from "swr";
-import { UserRole, userRoles } from "@/src/lib/types";
+import { UserDefaultValues, UserRole, userRoles } from "@/src/lib/types";
 import { json_fetcher } from "@/src/lib/hooks";
 import FormLoginInputs from "../forms/FormLoginInputs";
 import Button from "../Button";
@@ -41,7 +41,7 @@ export default function UserDetailsForm({ edit_user }: Props) {
 
 	// if edit_user is given, those are the user's details.
 	// otherwise, they are empty
-	const { data: default_values, isLoading } = useSWR<Partial<UserFormData>>(
+	const { data: default_values, isLoading } = useSWR<Partial<UserDefaultValues>>(
 		"/api/management/users/form_data",
 		(url: string) => {
 			if (edit_user)
@@ -60,7 +60,6 @@ export default function UserDetailsForm({ edit_user }: Props) {
 		reset,
 	} = useForm<UserFormData>({
 		resolver: zodResolver(UserSchema),
-		defaultValues: default_values,
 	});
 
 	const [isFailed, setIsFailed] = useState<boolean>(false);
@@ -72,7 +71,7 @@ export default function UserDetailsForm({ edit_user }: Props) {
 		let form_data = new FormData();
 		for (let [key, value] of Object.entries(data)) {
 			if (key != "image" && value)
-				if (default_values && value != default_values[key as keyof UserFormData])
+				if (default_values && value != default_values[key as keyof UserDefaultValues])
 					form_data.append(key, value);
 		}
 
@@ -111,6 +110,7 @@ export default function UserDetailsForm({ edit_user }: Props) {
 					field_name="display_name"
 					register={register}
 					error={errors?.display_name?.message}
+					default_value={default_values?.display_name}
 				/>
 				{/* input username & password */}
 				<FormLoginInputs
@@ -136,6 +136,7 @@ export default function UserDetailsForm({ edit_user }: Props) {
 							options={userRoles.map((role) => role)} // copy userRoles
 							labels={userRoles.map((role) => t(`role-${role}`))}
 							placeholder={t("role-select")}
+							defaultValue={default_values?.role}
 						/>
 					</FormInput>
 				</div>
@@ -146,6 +147,7 @@ export default function UserDetailsForm({ edit_user }: Props) {
 					field_name="image"
 					register={register}
 					preview={true}
+					default_display={default_values?.image}
 				/>
 				<Button type="submit" disabled={isValid && isSubmitted} className="m-2">
 					{t("new-user-submit")}

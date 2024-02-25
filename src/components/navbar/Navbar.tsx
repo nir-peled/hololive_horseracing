@@ -19,8 +19,6 @@ export default async function Navbar({ locale }: Props) {
 	// const user = await get_user_data();
 	const user = (await auth())?.user as UserData | null;
 	const user_image = user && (await get_user_image_as_str(user));
-	console.log("user image:"); // debug
-	console.log(user_image); // debug
 
 	return (
 		<div className="navbar bg-secondary-content">

@@ -2,7 +2,7 @@ import { Session, User as AuthUser } from "next-auth";
 import { Prisma, PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { auth } from "./auth";
-import { UserData, UserFormData } from "./types";
+import { UserData, UserFormData, UserDefaultValues } from "./types";
 import { compare_passwords, hash_password, image_as_buffer } from "./utils";
 
 interface UserDataOps {
@@ -88,15 +88,12 @@ export async function get_user_image(name: string): Promise<Buffer | null> {
 	});
 
 	if (!user_data?.image) return null;
-
-	console.log(`image: (type = ${typeof user_data.image})`); // debug
-	console.log(user_data.image); // debug
 	return user_data.image;
 }
 
 export async function get_user_as_form_data(
 	username: string | undefined
-): Promise<{ [key in keyof UserFormData]: string | Buffer | null }> {
+): Promise<UserDefaultValues> {
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	// TEMPORATY, FILL LATER
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -115,16 +112,12 @@ export async function get_user_as_form_data(
 	if (!result)
 		return {
 			username: "",
-			password: "",
-			confirm_password: "",
 			role: "select_role",
 			display_name: "",
 		};
 
 	return {
 		username: result.name,
-		password: "",
-		confirm_password: "",
 		role: result.role,
 		display_name: result.display_name,
 		image: result.image,

@@ -55,25 +55,21 @@ export function users_filtered_by_display_name<
 
 export async function get_user_image_as_str(user: UserData): Promise<string> {
 	let image = await get_user_image(user.name);
-	console.log("user image (get image str):"); // debug
-	console.log(image); // debug
 	if (!image) return user.display_name.slice(0, 2);
 
-	// let mime_type = (await fileTypeFromBuffer(user.image))?.mime;
-	// if (mime_type == "application/xml") mime_type = "image/svg+xml"; // fix
-	let mime_type = file_mime_from_buffer(image); // temp
-	// if no mime_type found (or no image), use user.display_name's first 2 letters
-	if (!mime_type) return user.display_name.slice(0, 2);
+	let image_str = get_image_buffer_as_str(image);
+	return image_str || user.display_name.slice(0, 2);
+}
 
+export function get_image_buffer_as_str(image: Buffer): string | undefined {
+	let mime_type = file_mime_from_buffer(image);
+	if (!mime_type) return;
 	return `data:${mime_type};base64,${image.toString("base64")}`;
 }
 
 function file_mime_from_buffer(input: Buffer): string | undefined {
 	if (!input) return;
-	if (input.length <= 1) {
-		console.log(`buffer too short - ${input.length}`); // debug
-		return;
-	}
+	if (input.length <= 1) return;
 
 	// could possibly do that faster, but too much effort
 	if (check_buffer_start(input, [0xff, 0xd8, 0xff])) return "image/jpeg";
@@ -95,12 +91,9 @@ function file_mime_from_buffer(input: Buffer): string | undefined {
 }
 
 function check_buffer_start(buffer: Buffer, signature: number[]): boolean {
-	console.log(".");
 	if (buffer.length < signature.length) return false;
 
-	console.log(`checking length ${signature.length}`); // debug
 	for (let i = 0; i < signature.length; ++i) {
-		console.log(`comparing i=${i}, value=${buffer[i]}`); // debug
 		if (signature[i] > 0 && buffer[i] != signature[i]) return false;
 	}
 
