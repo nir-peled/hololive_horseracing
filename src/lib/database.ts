@@ -93,9 +93,6 @@ export async function get_user_image(name: string): Promise<Buffer | null> {
 export async function get_user_as_form_data(
 	username: string | undefined
 ): Promise<UserDefaultValues> {
-	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	// TEMPORATY, FILL LATER
-	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	const result =
 		username &&
 		(await prisma.user.findUnique({
