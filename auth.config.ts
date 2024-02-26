@@ -1,8 +1,8 @@
 import { NextAuthConfig, User } from "next-auth";
 import { NextResponse } from "next/server";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { get_user_data, get_user_image, is_user_password } from "@/src/lib/database";
-import { UserData, UserRole } from "@/src/lib/types";
+import { get_user_data, is_user_password } from "@/src/lib/database";
+import { UserRole } from "@/src/lib/types";
 import { get_locale_from_path } from "@/src/lib/i18n";
 import { locales } from "@/i18nConfig";
 import { is_path_authorized } from "@/src/lib/auth";
@@ -11,7 +11,7 @@ export const authConfig: NextAuthConfig = {
 	callbacks: {
 		// to add: restricting path by user role
 		async authorized({ auth, request: { nextUrl } }) {
-			const user = auth?.user as UserData | undefined;
+			const user = auth?.user;
 			const is_logged_in = !!user;
 			const is_on_login = nextUrl.pathname.endsWith("/login");
 			let locale = get_locale_from_path(nextUrl.pathname);
@@ -47,8 +47,13 @@ export const authConfig: NextAuthConfig = {
 
 		// add user data to token & to session
 		async jwt({ token, user }) {
-			if (!user) user = token;
-			return { ...token, user_data: await get_user_data({ user, to_token: true }) };
+			// if (!user) user = token;
+			let username = user ? user.name : token.name;
+			if (!username) return token; // should never happen
+			return {
+				...token,
+				user_data: await get_user_data({ user: username, to_token: true }),
+			};
 		},
 
 		// add user data to session from token, plus user image

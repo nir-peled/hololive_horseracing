@@ -33,6 +33,8 @@ export default function LanguageSelector({ locale: current_locale }: Props) {
 				{other_locales.map((new_locale: Locale, i: number) => (
 					<li key={i} role="button" className="btn btn-ghost btn-circle avatar">
 						<div className="h-10 w-10 rounded-full">
+							{/* not using protected link because there is no reason to, since
+							it's going to the same page */}
 							<Link
 								href={current_pathname.replace(`/${current_locale}`, `/${new_locale}`)}>
 								<Image

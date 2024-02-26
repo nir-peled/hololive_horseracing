@@ -1,8 +1,8 @@
 import React from "react";
-import Link from "next/link";
-import Button from "../Button";
-import DeleteUserButton from "./DeleteUserButton";
 import { useTranslation } from "react-i18next";
+import Button from "../Button";
+import ProtectedLink from "../ProtectedLink";
+import DeleteUserButton from "./DeleteUserButton";
 
 interface Props {
 	user: { name: string; display_name: string };
@@ -29,13 +29,13 @@ export default function UserListRow({
 			<td>{name}</td>
 			<td>
 				<Button className={hidden && "max-h-0"}>
-					<Link
+					<ProtectedLink
 						href={{
 							pathname: "/management/users/edit",
 							query: { user: name },
 						}}>
 						{t("edit-user-button")}
-					</Link>
+					</ProtectedLink>
 				</Button>
 			</td>
 			<td>

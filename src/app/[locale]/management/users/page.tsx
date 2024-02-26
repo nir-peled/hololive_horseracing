@@ -1,10 +1,10 @@
 import React from "react";
-import Link from "next/link";
 import TranslationsProvider from "@/src/components/TranslationProvider";
 import initTranslations from "@/src/lib/i18n";
 import { generate_locale_params } from "@/src/lib/utils";
 import UsersList from "@/src/components/users/UsersList";
 import Button from "@/src/components/Button";
+import ProtectedLink from "@/src/components/ProtectedLink";
 
 interface Props {
 	params: { locale: string };
@@ -25,7 +25,9 @@ export default async function UsersPage({ params: { locale } }: Props) {
 					{t("users-title", { ns: "management" })}
 				</h1>
 				<Button className="self-start mb-2">
-					<Link href="/management/users/new">{t("new-user-button")}</Link>
+					<ProtectedLink href="/management/users/new">
+						{t("new-user-button")}
+					</ProtectedLink>
 				</Button>
 				<UsersList />
 			</main>

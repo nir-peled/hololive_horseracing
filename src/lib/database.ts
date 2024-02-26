@@ -7,7 +7,7 @@ import { compare_passwords, hash_password, image_as_buffer } from "./utils";
 
 interface UserDataOps {
 	session?: Session | null;
-	user?: AuthUser;
+	user?: string;
 	to_token?: boolean;
 }
 
@@ -60,14 +60,13 @@ export async function get_user_data({
 		if (!session) session = await auth();
 		// console.log("session: "); // debug
 		// console.log(session); // debug
-		user = session?.user;
-		if (!user) return null;
+		user = session?.user?.name;
 	}
 
-	if (!user.name) return null;
+	if (!user) return null;
 
 	let user_data = (await prisma.user.findUnique({
-		where: { name: user.name },
+		where: { name: user },
 		select: {
 			name: true,
 			role: true,

@@ -1,5 +1,4 @@
 import React from "react";
-import Link from "next/link";
 import Image from "next/image";
 import initTranslations from "@/src/lib/i18n";
 import { auth } from "@/src/lib/auth";
@@ -7,6 +6,7 @@ import { Locale, UserData } from "@/src/lib/types";
 import { get_user_image_as_str } from "@/src/lib/utils";
 import LanguageSelector from "./LanguageSelector";
 import UserIconMenu from "./UserIconMenu";
+import ProtectedLink from "../ProtectedLink";
 
 const namespaces = ["common"];
 
@@ -17,7 +17,7 @@ interface Props {
 export default async function Navbar({ locale }: Props) {
 	const { t } = await initTranslations(locale, namespaces);
 	// const user = await get_user_data();
-	const user = (await auth())?.user as UserData | null;
+	const user = (await auth())?.user;
 	const user_image = user && (await get_user_image_as_str(user));
 
 	return (
@@ -38,24 +38,33 @@ export default async function Navbar({ locale }: Props) {
 			<div className="navbar-center justify-between">
 				<ul className="menu menu-horizontal px-1 justify-between mt-3 z-[1] p-2 space-x-1">
 					<li>
-						<Link href="/races" className="btn btn-ghost text-xl">
+						<ProtectedLink
+							href="/races"
+							className="btn btn-ghost text-xl"
+							use_role="user">
 							{t("races-link")}
-						</Link>
+						</ProtectedLink>
 					</li>
 					<li>
-						<Link href="/bets" className="btn btn-ghost text-xl">
+						<ProtectedLink href="/bets" className="btn btn-ghost text-xl" use_role="user">
 							{t("bets-link")}
-						</Link>
+						</ProtectedLink>
 					</li>
 					<li>
-						<Link href="/bank" className="btn btn-ghost text-xl">
+						<ProtectedLink
+							href="/bank"
+							className="btn btn-ghost text-xl"
+							use_role="banker">
 							{t("bank-link")}
-						</Link>
+						</ProtectedLink>
 					</li>
 					<li>
-						<Link href="/management" className="btn btn-ghost text-xl">
+						<ProtectedLink
+							href="/management"
+							className="btn btn-ghost text-xl"
+							use_role="manager">
 							{t("management-link")}
-						</Link>
+						</ProtectedLink>
 					</li>
 				</ul>
 			</div>
