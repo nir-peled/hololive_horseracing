@@ -249,7 +249,7 @@ export async function get_active_races(): Promise<RaceData[]> {
 	return results.map(race_result_to_race_data) as RaceData[];
 }
 
-export async function create_horse(horse_data: HorseData): Promise<boolean> {
+export async function create_horse(horse_data: Omit<HorseData, "id">): Promise<boolean> {
 	let horse = await prisma.horse.create({ data: horse_data });
 	return !!horse;
 }
