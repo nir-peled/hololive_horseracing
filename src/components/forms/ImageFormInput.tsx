@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { UseFormRegister } from "react-hook-form";
 import FormInput from "./FormInput";
 import IconImage from "../IconImage";
-import { get_image_buffer_as_str } from "@/src/lib/utils";
+import { get_image_buffer_as_str } from "@/src/lib/images";
 
 interface Props {
 	register?: UseFormRegister<any>;

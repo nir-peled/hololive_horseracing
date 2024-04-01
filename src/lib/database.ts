@@ -13,7 +13,8 @@ import {
 	RaceFormData,
 } from "./types";
 import { compare_passwords, hash_password } from "./auth";
-import { image_as_buffer } from "./utils";
+import { get_image_buffer_as_str, image_as_buffer } from "./images";
+import { default_user_image } from "./images";
 
 const prisma = new PrismaClient().$extends(withAccelerate());
 
@@ -467,4 +468,11 @@ async function find_contestants_to_new_remove(
 	// 		...contestant,
 	// 	})),
 	// });
+}
+export async function get_user_image_as_str(user: UserData | HorseData): Promise<string> {
+	let image = user.image || (await get_user_image(user.name));
+	if (!image) return default_user_image(user);
+
+	let image_str = get_image_buffer_as_str(image);
+	return image_str || default_user_image(user);
 }

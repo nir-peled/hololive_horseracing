@@ -5,7 +5,7 @@ import { TFunction } from "i18next";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { refine_schema_for_image } from "@/src/lib/utils";
+import { refine_schema_for_image } from "@/src/lib/images";
 import Alert from "../Alert";
 import ImageFormInput from "../forms/ImageFormInput";
 import TextFormInput from "../forms/TextFormInput";

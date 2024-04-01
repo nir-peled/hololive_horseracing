@@ -17,7 +17,7 @@ import FormInput from "../forms/FormInput";
 import SelectOption from "../SelectOption";
 import LoadingMarker from "../LoadingMarker";
 import ImageFormInput from "../forms/ImageFormInput";
-import { refine_schema_for_image } from "@/src/lib/utils";
+import { refine_schema_for_image } from "@/src/lib/images";
 
 const namespaces = ["management"];
 

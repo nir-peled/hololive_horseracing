@@ -5,7 +5,7 @@ import { get_horses } from "@/src/lib/database";
 import IconImage from "../IconImage";
 import HorseDeleteButton from "./HorseDeleteButton";
 import { auth, is_path_authorized } from "@/src/lib/auth";
-import { get_image_buffer_as_str } from "@/src/lib/utils";
+import { get_image_buffer_as_str } from "@/src/lib/images";
 
 interface Props {
 	locale: Locale;

@@ -3,7 +3,7 @@ import Image from "next/image";
 import initTranslations from "@/src/lib/i18n";
 import { auth } from "@/src/lib/auth";
 import { Locale, UserData } from "@/src/lib/types";
-import { get_user_image_as_str } from "@/src/lib/images";
+import { get_user_image_as_str } from "@/src/lib/database";
 import LanguageSelector from "./LanguageSelector";
 import UserIconMenu from "./UserIconMenu";
 import NavbarLinks from "./NavbarLinks";

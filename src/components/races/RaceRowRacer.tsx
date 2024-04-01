@@ -1,6 +1,6 @@
 import React from "react";
 import { HorseData, UserData } from "@/src/lib/types";
-import { get_user_image_as_str } from "@/src/lib/images";
+import { get_user_image_as_str } from "@/src/lib/database";
 import IconImage from "../IconImage";
 
 interface Props {

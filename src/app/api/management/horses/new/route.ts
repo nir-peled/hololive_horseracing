@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { check_api_authorized } from "@/src/lib/auth";
-import { image_as_buffer } from "@/src/lib/utils";
+import { image_as_buffer } from "@/src/lib/images";
 import { create_horse } from "@/src/lib/database";
 
 export async function POST(request: NextRequest) {
