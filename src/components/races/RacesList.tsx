@@ -33,9 +33,9 @@ export default async function RacesList({ locale, is_management }: Props) {
 					</tr>
 				</thead>
 				<tbody>
-					{races.map(async (race, i) => (
+					{races.map(async (race) => (
 						<RacesListRow
-							key={i}
+							key={race.id}
 							id={race.id}
 							name={race.name}
 							contestants={race.contestants}

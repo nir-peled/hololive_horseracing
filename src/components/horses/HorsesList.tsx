@@ -32,8 +32,8 @@ export default async function HorsesList({ locale }: Props) {
 					</tr>
 				</thead>
 				<tbody>
-					{horses.map((horse, i) => (
-						<tr key={i}>
+					{horses.map((horse) => (
+						<tr key={horse.id}>
 							<td>{horse.name}</td>
 							<td>
 								{horse.image && (

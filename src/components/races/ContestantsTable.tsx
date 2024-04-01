@@ -31,7 +31,7 @@ export default function ContestantsTable({ contestants, remove_contestant }: Pro
 					</tr>
 				</thead>
 				<tbody>
-					{contestants.map(async ({ id, jockey, horse }, i) => {
+					{contestants.map(async ({ id, jockey, horse }) => {
 						// for ech of jockey, horse: display name, and image only if exists
 						let jockey_data = await fetch_user_data(jockey);
 						let jockey_image =
@@ -51,7 +51,12 @@ export default function ContestantsTable({ contestants, remove_contestant }: Pro
 									<div className="font-bold">{horse}</div>
 								</td>
 								<td>
-									<Button className="btn-primary" onClick={() => remove_contestant(i)}>
+									<Button
+										className="btn-primary"
+										// dynamic index lookup in case list changes
+										onClick={() =>
+											remove_contestant(contestants.findIndex((val) => val.id == id))
+										}>
 										{t("race-remove-contestant", { ns: "management" })}
 									</Button>
 								</td>

@@ -39,11 +39,12 @@ export default function UsersList() {
 						</tr>
 					</thead>
 					<tbody>
+						{/* for spacing */}
 						<UserListRow user={{ name: "", display_name: "" }} hidden />
-						{filtered_users.map((user, i) => (
+						{filtered_users.map((user) => (
 							<UserListRow
 								user={user}
-								key={i}
+								key={user.name}
 								on_error={set_error}
 								on_delete={(name) => {
 									set_deleted_name(name);

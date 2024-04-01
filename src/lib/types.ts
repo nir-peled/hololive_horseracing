@@ -52,6 +52,7 @@ export interface UserDefaultValues {
 }
 
 export interface HorseData {
+	id: bigint;
 	name: string;
 	image?: Buffer | null;
 }

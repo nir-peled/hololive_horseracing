@@ -41,6 +41,7 @@ const user_data_select = {
 };
 
 const horse_data_select = {
+	id: true,
 	name: true,
 	image: true,
 };
