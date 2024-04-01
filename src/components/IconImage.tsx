@@ -19,6 +19,8 @@ export default function IconImage({ icon, size }: Props) {
 			set_image_uri(URL.createObjectURL(icon));
 			return () => URL.revokeObjectURL(image_uri);
 		} else set_image_uri(icon);
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [icon]);
 
 	if (typeof icon == "string" && !icon.startsWith("data")) return icon;

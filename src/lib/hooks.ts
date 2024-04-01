@@ -19,7 +19,7 @@ export const json_fetcher = (input: URL | RequestInfo, init?: RequestInit | unde
 export function useUsersList(
 	select?: Partial<{ [key in keyof UserData]: true }> // ignored for now
 ): UseListReturnType<UseUsersData> {
-	return use_swr_list<UseUsersData>("/api/management/users/all");
+	return useFetchList<UseUsersData>("/api/management/users/all");
 }
 
 export function useRaceData(
@@ -55,10 +55,10 @@ export function useCountdown(deadline: Date) {
 
 export function useHorsesList(images: boolean = false): UseListReturnType<UseHorsesData> {
 	const url = "/api/horses/all" + (images ? "?images=true" : "");
-	return use_swr_list<UseHorsesData>(url);
+	return useFetchList<UseHorsesData>(url);
 }
 
-function use_swr_list<TValue>(url: string): UseListReturnType<TValue> {
+export function useFetchList<TValue>(url: string): UseListReturnType<TValue> {
 	const { data, error, isLoading, mutate } = useSWR<TValue[]>(url, json_fetcher);
 
 	return { data: data ? data : [], loading: isLoading, error, mutate };
