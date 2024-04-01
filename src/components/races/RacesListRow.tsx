@@ -29,8 +29,8 @@ export default async function RacesListRow({
 			<tr className="min-h-12">
 				<td>{name}</td>
 				<td className="grid grid-rows-2 grid-flow-col gap-1">
-					{contestants.map((racer) => (
-						<RaceRowRacer user={racer.jockey} horse={racer.horse} />
+					{contestants.map((racer, i) => (
+						<RaceRowRacer key={i} user={racer.jockey} horse={racer.horse} />
 					))}
 				</td>
 				<td>{deadline && <DeadlineCounter deadline={deadline} />}</td>

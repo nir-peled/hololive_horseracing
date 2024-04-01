@@ -48,7 +48,7 @@ export function useCountdown(deadline: Date) {
 		}, 1000);
 
 		return () => clearInterval(interval);
-	}, [deadline]);
+	}, [deadline_time]);
 
 	return get_countdown_parts(countdown);
 }
