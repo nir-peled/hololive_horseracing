@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { UrlObject } from "url";
-import { Locale, UserData, UserRole } from "@/src/lib/types";
+import { Locale, UserRole } from "@/src/lib/types";
 import { auth, is_path_authorized } from "@/src/lib/auth";
 
 interface Props {
@@ -39,16 +39,18 @@ export default async function ProtectedLink({
 
 	if (!is_path_authorized(href, use_role) && !force) return;
 
-	if (typeof href == "string") href = `/${locale}/${href}`;
-	else href.pathname = `/${locale}/${href.pathname}`;
+	if (locale) {
+		if (typeof href == "string") href = `/${locale}${href}`;
+		else href.pathname = `/${locale}${href.pathname}`;
+	}
 
 	return (
 		<Link
 			href={href}
-			className={className}
 			replace={replace}
 			scroll={scroll}
-			prefetch={prefetch}>
+			prefetch={prefetch}
+			className={className}>
 			{children}
 		</Link>
 	);

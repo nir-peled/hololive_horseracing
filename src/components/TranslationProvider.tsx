@@ -1,5 +1,4 @@
 "use client";
-
 import { I18nextProvider } from "react-i18next";
 import initTranslations from "@/src/lib/i18n";
 import { Resource, createInstance } from "i18next";

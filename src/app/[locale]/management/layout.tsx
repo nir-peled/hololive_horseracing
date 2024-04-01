@@ -1,3 +1,4 @@
+import UpwardLink from "@/src/components/UpwardLink";
 import { Locale } from "@/src/lib/types";
 import { generate_locale_params } from "@/src/lib/utils";
 import React from "react";
@@ -15,5 +16,10 @@ export async function generateStaticParams() {
 
 // empty for no, TODO later
 export default async function ManagementLayout({ children, params: { locale } }: Props) {
-	return <>{children}</>;
+	return (
+		<>
+			<UpwardLink locale={locale} />
+			{children}
+		</>
+	);
 }

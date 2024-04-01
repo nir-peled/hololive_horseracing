@@ -18,9 +18,9 @@ export const authConfig: NextAuthConfig = {
 			let user_role: UserRole | undefined;
 			const page = locale ? nextUrl.pathname.replace(`/${locale}`, "") : nextUrl.pathname;
 			console.log(`\n\nnext URL: ${nextUrl.pathname}`); // debug
-			console.log(`is logged in: ${is_logged_in}`); // debug
-			console.log(`is on login: ${is_on_login}`); // debug
-			console.log(`page: ${page}`); // debug
+			// console.log(`is logged in: ${is_logged_in}`); // debug
+			// console.log(`is on login: ${is_on_login}`); // debug
+			// console.log(`page: ${page}`); // debug
 			if (user) {
 				console.log("user:");
 				console.log(user.name);
@@ -38,7 +38,7 @@ export const authConfig: NextAuthConfig = {
 				return NextResponse.redirect(new URL(`/${locale}/login`, nextUrl));
 			// check user is authorized to go to this page
 			// if not logged in, already handled
-			if (is_logged_in && !(await is_path_authorized(page, user_role)))
+			if (is_logged_in && !is_path_authorized(page, user_role))
 				return NextResponse.redirect(new URL(`/${locale}/`, nextUrl), { status: 401 });
 
 			// console.log("all OK, go on"); // debug

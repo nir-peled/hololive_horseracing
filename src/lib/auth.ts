@@ -1,29 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import NextAuth from "next-auth";
 import { authConfig } from "@/auth.config";
-import { UserData, UserRole } from "./types";
+import { UserRole } from "./types";
 import { UrlObject } from "url";
+import { randomBytes, pbkdf2Sync } from "crypto";
 
 export const { auth, signIn, signOut } = NextAuth(authConfig);
 
-// doesn't work - takes only last overload
-// type ReplaceReturnType<T extends (...a: any) => any, TNewReturn> = (
-// 	...a: Parameters<T>
-// ) => TNewReturn;
-
-// type SessionWithUserData = Omit<Session, "user"> & {
-// 	user: UserData;
-// };
-
-// type authParams = Parameters<typeof auth>;
-
-// const auth_with_use_data = auth as AuthWithUserData;
-// export { auth_with_use_data as auth, signIn, signOut };
-
-export async function is_path_authorized(
+export function is_path_authorized(
 	url: string | UrlObject,
 	role: UserRole | undefined
-): Promise<boolean> {
+): boolean {
 	let path: string;
 	if (typeof url == "string") path = url;
 	else if (url.pathname) path = url.pathname;
@@ -33,8 +20,8 @@ export async function is_path_authorized(
 	if (path.startsWith("/api")) path = path.replace("/api", "");
 
 	if (path == "/login") return role == undefined;
-	if (path.startsWith("management")) return await check_role_authorized("manager", role);
-	if (path.startsWith("bank")) return check_role_authorized("banker", role);
+	if (path.startsWith("/management")) return check_role_authorized("manager", role);
+	if (path.startsWith("/bank")) return check_role_authorized("banker", role);
 	return check_role_authorized("user", role);
 }
 
@@ -46,10 +33,10 @@ export async function check_api_authorized(
 		return new NextResponse(null, { status: 401 }); // unauthorized
 }
 
-async function check_role_authorized(
+function check_role_authorized(
 	required_role: UserRole | undefined,
 	user_role: UserRole | undefined
-): Promise<boolean> {
+): boolean {
 	if (!required_role) return true;
 	if (!user_role) return !required_role;
 
@@ -71,4 +58,30 @@ export async function check_server_action_authorized(
 	let user_role = (await auth())?.user?.role;
 	let is_allowed = await check_role_authorized(required_role, user_role);
 	if (!is_allowed) throw new Error("unauthorized");
+}
+
+export async function hash_password(
+	password: string,
+	salt: string | undefined = undefined
+): Promise<string> {
+	if (!salt) salt = randomBytes(Number(process.env.SALT_BYTES)).toString("hex");
+	let hash = pbkdf2Sync(
+		password,
+		salt,
+		Number(process.env.HASH_ROUNDS),
+		Number(process.env.HASH_KEYLEN),
+		process.env.HASH_METHOD as string
+	).toString(`hex`);
+
+	return `${salt}#${hash}`;
+}
+
+export async function compare_passwords(
+	password: string,
+	hash: string
+): Promise<boolean> {
+	let [salt] = hash.split("#");
+
+	let hashed_new_pass = await hash_password(password, salt);
+	return hashed_new_pass == hash;
 }

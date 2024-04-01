@@ -2,6 +2,7 @@ import { Resource, createInstance, i18n } from "i18next";
 import { initReactI18next } from "react-i18next/initReactI18next";
 import resourcesToBackend from "i18next-resources-to-backend";
 import i18nConfig, { locales } from "@/i18nConfig";
+import { Locale } from "./types";
 
 export default async function initTranslations(
 	locale: string,
@@ -41,6 +42,6 @@ export default async function initTranslations(
 	};
 }
 
-export function get_locale_from_path(url: string): string | undefined {
+export function get_locale_from_path(url: string): Locale | undefined {
 	return locales.find((locale) => url.startsWith(`/${locale}`));
 }

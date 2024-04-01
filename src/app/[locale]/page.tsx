@@ -18,8 +18,8 @@ export async function generateStaticParams() {
 export default async function Home({ params: { locale } }: Props) {
 	const { t, resources } = await initTranslations(locale, namespaces);
 	const user = await get_user_data();
-	console.log(`Home: user:`); // debug
-	console.log(user?.name); // debug
+	// console.log(`Home: user:`); // debug
+	// console.log(user?.name); // debug
 
 	return (
 		<TranslationsProvider namespaces={namespaces} locale={locale} resources={resources}>

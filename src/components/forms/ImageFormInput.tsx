@@ -41,20 +41,22 @@ export default function ImageFormInput({
 
 	return (
 		<FormInput label={label} error={error}>
-			<input
-				type="file"
-				accept="image/*"
-				className="file-input file-input-bordered w-full max-w-xs"
-				{...get_attr()}
-			/>
-			{/* if preview: if image chosen, display image. */}
-			{/* otherwise, if default display, display it */}
-			{preview &&
-				(image ? (
-					<IconImage icon={image} />
-				) : (
-					default_display_str && <IconImage icon={default_display_str} />
-				))}
+			<div className="flex gap-2">
+				<input
+					type="file"
+					accept="image/*"
+					className="file-input file-input-bordered w-full max-w-xs"
+					{...get_attr()}
+				/>
+				{/* if preview: if image chosen, display image. */}
+				{/* otherwise, if default display, display it */}
+				{preview &&
+					(image ? (
+						<IconImage icon={image} />
+					) : (
+						default_display_str && <IconImage icon={default_display_str} />
+					))}
+			</div>
 		</FormInput>
 	);
 }

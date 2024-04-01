@@ -4,10 +4,15 @@ import Image from "next/image";
 
 interface Props {
 	icon: string | Blob;
+	size?: "regular" | "small" | "large";
 }
 
-export default function IconImage({ icon }: Props) {
+// ADD SOME WAY TO DISPLAY TINY IMAGES
+export default function IconImage({ icon, size }: Props) {
 	const [image_uri, set_image_uri] = useState<string>("");
+
+	if (size == "small") throw Error("CANNOT DISPLAY SMALL IMAGES");
+	if (size == "large") throw Error("CANNOT DISPLAY LARGE IMAGES");
 
 	useEffect(() => {
 		if (icon instanceof Blob) {
@@ -19,5 +24,5 @@ export default function IconImage({ icon }: Props) {
 	if (typeof icon == "string" && !icon.startsWith("data")) return icon;
 	// icon is just a string
 
-	return <Image src={image_uri} alt="" width={10} height={10} />;
+	return <Image src={image_uri} alt="" height={50} width={50} />;
 }

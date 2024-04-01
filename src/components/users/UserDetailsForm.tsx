@@ -1,7 +1,7 @@
 "use client";
 
 import React, { BaseSyntheticEvent, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TFunction } from "i18next";
@@ -12,11 +12,12 @@ import { json_fetcher } from "@/src/lib/hooks";
 import FormLoginInputs from "../forms/FormLoginInputs";
 import Button from "../Button";
 import Alert from "../Alert";
-import TextInput from "../forms/TextFormInput";
+import TextFormInput from "../forms/TextFormInput";
 import FormInput from "../forms/FormInput";
 import SelectOption from "../SelectOption";
 import LoadingMarker from "../LoadingMarker";
 import ImageFormInput from "../forms/ImageFormInput";
+import { refine_schema_for_image } from "@/src/lib/utils";
 
 const namespaces = ["management"];
 
@@ -37,7 +38,7 @@ export default function UserDetailsForm({ edit_user }: Props) {
 	const { t } = useTranslation(namespaces);
 	const UserSchema = create_user_schema(t);
 
-	console.log(`edit user = ${edit_user}`); // debug
+	// console.log(`edit user = ${edit_user}`); // debug
 
 	// if edit_user is given, those are the user's details.
 	// otherwise, they are empty
@@ -54,6 +55,7 @@ export default function UserDetailsForm({ edit_user }: Props) {
 	console.log(default_values); // debug
 
 	const {
+		control,
 		register,
 		handleSubmit,
 		formState: { errors, isSubmitted, isSubmitSuccessful, isValid },
@@ -105,7 +107,7 @@ export default function UserDetailsForm({ edit_user }: Props) {
 			<Alert type="error" message={t("new-user-fail")} active={isFailed} />
 			<label className="form-control w-full max-w-lg">
 				{/* input display name */}
-				<TextInput
+				<TextFormInput
 					label={t("user-display-name-label")}
 					field_name="display_name"
 					register={register}
@@ -120,7 +122,7 @@ export default function UserDetailsForm({ edit_user }: Props) {
 				/>
 				<br />
 				{/* input confirm password */}
-				<TextInput
+				<TextFormInput
 					label={t("password-confirm-label")}
 					field_name="confirm_password"
 					register={register}
@@ -130,13 +132,25 @@ export default function UserDetailsForm({ edit_user }: Props) {
 				<br />
 				<div>
 					<FormInput label={t("role-label")} error={errors?.role?.message}>
-						<SelectOption
+						<Controller
 							name="role"
-							register={register}
-							options={userRoles.map((role) => role)} // copy userRoles
-							labels={userRoles.map((role) => t(`role-${role}`))}
-							placeholder={t("role-select")}
-							defaultValue={default_values?.role}
+							control={control}
+							defaultValue={
+								default_values?.role ? (default_values.role as UserRole) : undefined
+							}
+							render={({ field: { onChange, value, onBlur, ref, name } }) => (
+								<SelectOption
+									name={name}
+									options={userRoles.map((role) => role)} // copy userRoles
+									labels={userRoles.map((role) => t(`role-${role}`))}
+									placeholder={t("role-select")}
+									defaultValue={default_values?.role}
+									onChange={onChange}
+									value={value}
+									onBlur={onBlur}
+									ref={ref}
+								/>
+							)}
 						/>
 					</FormInput>
 				</div>
@@ -158,11 +172,7 @@ export default function UserDetailsForm({ edit_user }: Props) {
 }
 
 function create_user_schema(t: TFunction) {
-	const max_file_size = process.env.NEXT_PUBLIC_MAX_USER_ICON_SIZE;
-	const allowed_files_str = process.env.NEXT_PUBLIC_USER_ICON_TYPES;
-	const allowed_files = allowed_files_str && allowed_files_str.split(",");
-
-	return z
+	let schema = z
 		.object({
 			display_name: z.string().min(3, { message: t("display-name-too-short") }),
 			username: z.string().min(3, { message: t("username-too-short") }),
@@ -179,27 +189,7 @@ function create_user_schema(t: TFunction) {
 		.refine((data) => data.password == data.confirm_password, {
 			message: t("password-different-from-confirm"),
 			path: ["confirm_password"],
-		})
-		.refine(
-			(data) => {
-				if (!max_file_size || !data.image) return true;
-				let files: FileList = data.image;
-				return files.length == 0 || files[0].size <= Number(max_file_size);
-			},
-			{
-				message: t("image-too-large", {
-					max_file_size,
-				}),
-				path: ["image"],
-			}
-		)
-		.refine(
-			(data) => {
-				let files: FileList = data.image;
-				return (
-					!allowed_files || files.length == 0 || allowed_files.includes(files[0].type)
-				);
-			},
-			{ message: t("image-type-not-allowed"), path: ["image"] }
-		);
+		});
+
+	return refine_schema_for_image(schema, t);
 }

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import Button from "../Button";
 import ProtectedLink from "../ProtectedLink";
 import DeleteUserButton from "./DeleteUserButton";
+import type { Locale } from "@/src/lib/types";
 
 interface Props {
 	user: { name: string; display_name: string };
@@ -21,7 +22,7 @@ export default function UserListRow({
 	on_delete,
 	hidden,
 }: Props) {
-	const { t } = useTranslation(namespaces);
+	const { t, i18n } = useTranslation(namespaces);
 
 	return (
 		<tr className={hidden && "collapse max-h-0"}>
@@ -31,9 +32,10 @@ export default function UserListRow({
 				<Button className={hidden && "max-h-0"}>
 					<ProtectedLink
 						href={{
-							pathname: "/management/users/edit",
+							pathname: "management/users/edit",
 							query: { user: name },
-						}}>
+						}}
+						locale={i18n.language as Locale}>
 						{t("edit-user-button")}
 					</ProtectedLink>
 				</Button>

@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
 	return NextResponse.json(user_data);
 }
 
-// don't allow GET to this path
+// don't allow POST to this path
 export async function POST() {
 	return new NextResponse(null, { status: 405 }); // method not allowed
 }
