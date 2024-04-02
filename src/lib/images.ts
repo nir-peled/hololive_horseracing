@@ -11,17 +11,20 @@ export function default_user_image(user: UserData | HorseData): string {
 // for more flexible usage, should use database
 
 export function get_file_limitations() {
-	const max_file_size = process.env.NEXT_PUBLIC_MAX_USER_ICON_SIZE;
+	const max_file_size_str = process.env.NEXT_PUBLIC_MAX_USER_ICON_SIZE;
 	const allowed_files_str = process.env.NEXT_PUBLIC_USER_ICON_TYPES;
 	const allowed_files = allowed_files_str && allowed_files_str.split(",");
+
+	const max_file_size =
+		typeof max_file_size_str == "undefined" ? 0 : Number(max_file_size_str);
 
 	return { max_file_size, allowed_files };
 }
 
 export function refine_schema_for_image<
-	SchemaType extends z.ZodType<Record<FieldName, FileList>>,
+	SchemaType extends z.ZodType<{ [K in FieldName]?: any }>,
 	FieldName extends string = "image"
->(schema: SchemaType, t: TFunction, field_name?: FieldName) {
+>(schema: SchemaType, t: TFunction, field_name?: FieldName, namespace?: string) {
 	if (!field_name) field_name = "image" as FieldName;
 	const { max_file_size, allowed_files } = get_file_limitations();
 
@@ -30,11 +33,12 @@ export function refine_schema_for_image<
 			(data) => {
 				if (!max_file_size || !data[field_name]) return true;
 				let files = data[field_name];
-				return files.length == 0 || files[0].size <= Number(max_file_size);
+				return (files && files.length == 0) || files[0].size <= max_file_size;
 			},
 			{
 				message: t("image-too-large", {
 					max_file_size,
+					ns: namespace,
 				}),
 				path: [field_name],
 			}
@@ -43,10 +47,13 @@ export function refine_schema_for_image<
 			(data) => {
 				let files = data[field_name];
 				return (
-					!allowed_files || files.length == 0 || allowed_files.includes(files[0].type)
+					!allowed_files ||
+					!files ||
+					files.length == 0 ||
+					allowed_files.includes(files[0].type)
 				);
 			},
-			{ message: t("image-type-not-allowed"), path: [field_name] }
+			{ message: t("image-type-not-allowed", { ns: namespace }), path: [field_name] }
 		);
 }
 
