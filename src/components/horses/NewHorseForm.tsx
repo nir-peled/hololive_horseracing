@@ -87,7 +87,7 @@ export default function NewHorseForm() {
 function get_horse_schema(t: TFunction) {
 	let schema = z.object({
 		name: z.string().min(2, { message: t("horse-name-too-short") }),
-		image: z.any(), // no option for file
+		image: z.instanceof(FileList),
 	});
 
 	return refine_schema_for_image(schema, t);

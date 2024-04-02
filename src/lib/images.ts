@@ -18,18 +18,18 @@ export function get_file_limitations() {
 	return { max_file_size, allowed_files };
 }
 
-export function refine_schema_for_image<T extends z.Schema<any, any>>(
-	schema: T,
-	t: TFunction,
-	field_name: string = "image"
-) {
+export function refine_schema_for_image<
+	SchemaType extends z.ZodType<Record<FieldName, FileList>>,
+	FieldName extends string = "image"
+>(schema: SchemaType, t: TFunction, field_name?: FieldName) {
+	if (!field_name) field_name = "image" as FieldName;
 	const { max_file_size, allowed_files } = get_file_limitations();
 
 	return schema
 		.refine(
 			(data) => {
 				if (!max_file_size || !data[field_name]) return true;
-				let files: FileList = data[field_name];
+				let files = data[field_name];
 				return files.length == 0 || files[0].size <= Number(max_file_size);
 			},
 			{
@@ -41,7 +41,7 @@ export function refine_schema_for_image<T extends z.Schema<any, any>>(
 		)
 		.refine(
 			(data) => {
-				let files: FileList = data[field_name];
+				let files = data[field_name];
 				return (
 					!allowed_files || files.length == 0 || allowed_files.includes(files[0].type)
 				);
@@ -49,11 +49,13 @@ export function refine_schema_for_image<T extends z.Schema<any, any>>(
 			{ message: t("image-type-not-allowed"), path: [field_name] }
 		);
 }
+
 export function get_image_buffer_as_str(image: Buffer): string | undefined {
 	let mime_type = file_mime_from_buffer(image);
 	if (!mime_type) return;
 	return `data:${mime_type};base64,${image.toString("base64")}`;
 }
+
 // using this instead of a package because the package doesn't fit
 // a browser environment
 function file_mime_from_buffer(input: Buffer): string | undefined {
@@ -62,15 +64,14 @@ function file_mime_from_buffer(input: Buffer): string | undefined {
 
 	// could possibly do that faster, but too much effort
 	if (check_buffer_start(input, [255, 216, 255])) return "image/jpeg";
-	if (check_buffer_start(input, [137, 80, 78, 71, 13, 10, 26, 10]))
-		return check_png_type(input); // 'image/png' or 'image/apng'
+	if (check_buffer_start(input, [137, 80, 78, 71, 13, 10, 26, 10])) {
+		let type = check_png_type(input);
+		if (type) return type;
+	}
 	if (isSvg(input.toString())) return "image/svg+xml";
 	if (check_buffer_start(input, [11, 119])) return "image/bmp";
-	if (
-		// -1 is ignored
-		check_buffer_start(input, [-1, -1, -1, -1, -1, -1, -1, -1, 87, 69, 66, 80])
-	)
-		return "image/webp";
+	// empty cells are ignored
+	if (check_buffer_start(input, [, , , , , , , , 87, 69, 66, 80])) return "image/webp";
 	if (check_buffer_start(input, [71, 73, 70])) return "image/gif";
 	if (check_buffer_start(input, [73, 73, 188])) return "image/vnd.ms-photo";
 	if (check_buffer_start(input, [255, 216, 255, 247])) return "image/jls";
@@ -78,15 +79,17 @@ function file_mime_from_buffer(input: Buffer): string | undefined {
 	if (check_buffer_start(input, [56, 66, 80, 83])) return "image/vnd.adobe.photoshop";
 	// can add more, but probably no reason to
 }
-function check_buffer_start(buffer: Buffer, signature: number[]): boolean {
+
+function check_buffer_start(buffer: Buffer, signature: (number | undefined)[]): boolean {
 	if (buffer.length < signature.length) return false;
 
 	for (let i = 0; i < signature.length; ++i) {
-		if (signature[i] > 0 && buffer[i] != signature[i]) return false;
+		if (signature[i] && buffer[i] != signature[i]) return false;
 	}
 
 	return true;
 }
+
 function check_png_type(buffer: Buffer): "image/png" | "image/apng" | undefined {
 	let i = 8; // ignore first 8
 

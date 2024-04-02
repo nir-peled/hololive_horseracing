@@ -184,7 +184,7 @@ function create_user_schema(t: TFunction) {
 			role: z.enum(userRoles, {
 				errorMap: () => ({ message: t("role-not-selected") }),
 			}),
-			image: z.any(), // no option for file
+			image: z.instanceof(FileList),
 		})
 		.refine((data) => data.password == data.confirm_password, {
 			message: t("password-different-from-confirm"),

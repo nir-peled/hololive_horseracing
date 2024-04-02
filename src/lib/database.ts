@@ -469,6 +469,7 @@ async function find_contestants_to_new_remove(
 	// 	})),
 	// });
 }
+
 export async function get_user_image_as_str(user: UserData | HorseData): Promise<string> {
 	let image = user.image || (await get_user_image(user.name));
 	if (!image) return default_user_image(user);
