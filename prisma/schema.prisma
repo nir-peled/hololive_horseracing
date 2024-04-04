@@ -29,7 +29,7 @@ model User {
 model Horse {
   id          BigInt           @id @default(autoincrement())
   name        String           @unique
-  image       Bytes
+  image       Bytes?
   competes_in RaceContestant[]
 
   @@index([name])
@@ -39,11 +39,13 @@ model Race {
   id                BigInt           @id @default(autoincrement())
   name              String           @unique
   competitors       RaceContestant[]
-  isOpenBets        Boolean          @default(true)
-  house_cut_percent Int
-  win_cut_percent   Int
-  place_cut_percent Int
-  show_cut_percent  Int
+  isOpenBets        Boolean          @default(false)
+  isEnded           Boolean          @default(false)
+  deadline          DateTime?
+  house_cut_percent Int              @default(0)
+  win_cut_percent   Int              @default(0)
+  place_cut_percent Int              @default(0)
+  show_cut_percent  Int              @default(0)
 
   @@index([name])
 }
@@ -53,27 +55,29 @@ model RaceContestant {
   jockey_id        BigInt
   horse_id         BigInt
   race_id          BigInt
-  jockey           User   @relation(fields: [jockey_id], references: [id])
-  horse            Horse  @relation(fields: [horse_id], references: [id])
-  race             Race   @relation(fields: [race_id], references: [id])
+  jockey           User   @relation(fields: [jockey_id], references: [id], onDelete: Cascade)
+  horse            Horse  @relation(fields: [horse_id], references: [id], onDelete: Cascade)
+  race             Race   @relation(fields: [race_id], references: [id], onDelete: Cascade)
   bets             Bet[]
   place            Int?
-  odds_denominator Int
-  odds_numerator   Int
+  odds_denominator Int    @default(0)
+  odds_numerator   Int    @default(0)
 
   @@unique([race_id, jockey_id])
   @@unique([race_id, horse_id])
+  @@index([race_id])
 }
 
 model Bet {
   id            BigInt         @id @default(autoincrement())
   user_id       BigInt
   contestant_id BigInt
-  user          User           @relation(fields: [user_id], references: [id])
-  contestant    RaceContestant @relation(fields: [contestant_id], references: [id])
+  user          User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  contestant    RaceContestant @relation(fields: [contestant_id], references: [id], onDelete: Cascade)
   amount        Int
 
   @@unique([user_id, contestant_id])
+  @@index([user_id])
 }
 
 model Cache {

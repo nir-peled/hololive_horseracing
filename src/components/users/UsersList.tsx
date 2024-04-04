@@ -1,13 +1,9 @@
 "use client";
-
 import React, { useState } from "react";
-import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import { useUsersList } from "@/src/lib/hooks";
 import { users_filtered_by_display_name } from "@/src/lib/utils";
 import FilterSearchBar from "../FilterSearchBar";
-import Button from "../Button";
-import DeleteUserButton from "./DeleteUserButton";
 import Alert from "../Alert";
 import UserListRow from "./UserListRow";
 
@@ -15,12 +11,12 @@ const namespaces = ["management"];
 
 export default function UsersList() {
 	const { t } = useTranslation(namespaces);
-	let { users, mutate } = useUsersList();
+	let { data, mutate } = useUsersList();
 	const [filter, set_filter] = useState<string>("");
 	const [error, set_error] = useState<string | undefined>();
 	const [deleted_name, set_deleted_name] = useState<string | undefined>();
 
-	const filtered_users = users_filtered_by_display_name(users, filter);
+	const filtered_users = users_filtered_by_display_name(data, filter);
 
 	return (
 		<div>
@@ -43,15 +39,16 @@ export default function UsersList() {
 						</tr>
 					</thead>
 					<tbody>
+						{/* for spacing */}
 						<UserListRow user={{ name: "", display_name: "" }} hidden />
-						{filtered_users.map((user, i) => (
+						{filtered_users.map((user) => (
 							<UserListRow
 								user={user}
-								key={i}
+								key={user.name}
 								on_error={set_error}
 								on_delete={(name) => {
 									set_deleted_name(name);
-									mutate(users.filter((user_) => user_.name != name));
+									mutate(data.filter((user_) => user_.name != name));
 								}}
 							/>
 						))}

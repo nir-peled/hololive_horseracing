@@ -1,7 +1,8 @@
+"use client";
 import React from "react";
 import { UseFormRegister } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import TextInput from "./TextFormInput";
+import TextFormInput from "./TextFormInput";
 
 const namespaces = ["auth"];
 
@@ -19,16 +20,16 @@ export default function FomLoginInputs({ register, errors, username }: Props) {
 
 	return (
 		<>
-			<TextInput
+			<TextFormInput
 				label={t("username-label")}
 				field_name="username"
 				register={register}
 				error={errors?.username?.message}
-				default_value={username || ""}
-				disabled={!!username}
+				default_value={username}
+				readonly={!!username}
 			/>
 			{/* <br /> */}
-			<TextInput
+			<TextFormInput
 				label={t("password-label")}
 				field_name="password"
 				type="password"

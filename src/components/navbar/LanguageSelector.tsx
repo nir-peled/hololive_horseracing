@@ -18,7 +18,7 @@ export default function LanguageSelector({ locale: current_locale }: Props) {
 	return (
 		<div className="dropdown dropdown-end">
 			<div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
-				<div className="w-10 rounded-full">
+				<div className="w-12 rounded-full">
 					<Image
 						src={`/locale_icons/${current_locale}.svg`}
 						width={10}
@@ -30,9 +30,11 @@ export default function LanguageSelector({ locale: current_locale }: Props) {
 			<ul
 				tabIndex={0}
 				className="dropdown-content p-2 bg-base-100 rounded-box mt-3 z-[1] ">
-				{other_locales.map((new_locale: Locale, i: number) => (
-					<li key={i} role="button" className="btn btn-ghost btn-circle avatar">
-						<div className="h-10 w-10 rounded-full">
+				{other_locales.map((new_locale: Locale) => (
+					<li key={new_locale} role="button" className="btn btn-ghost btn-circle avatar">
+						<div className="h-12 w-12 rounded-full">
+							{/* not using protected link because there is no reason to, since
+							it's going to the same page */}
 							<Link
 								href={current_pathname.replace(`/${current_locale}`, `/${new_locale}`)}>
 								<Image

@@ -1,5 +1,4 @@
 "use client";
-
 import React, { ReactNode } from "react";
 
 interface Props {
@@ -16,7 +15,7 @@ function Button({ type, className, children, disabled, onClick }: Props) {
 			className={`btn ${className ? className : ""}`}
 			type={type}
 			disabled={disabled}
-			onClick={onClick ? () => onClick() : undefined}>
+			onClick={onClick}>
 			{children}
 		</button>
 	);

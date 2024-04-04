@@ -1,59 +1,78 @@
+"use client";
 import React from "react";
-import { UseFormRegister } from "react-hook-form";
-import { useTranslation } from "react-i18next";
+import Select from "react-select";
 import LoadingMarker from "./LoadingMarker";
+import { RefCallBack } from "react-hook-form";
 
 interface Props {
-	register?: UseFormRegister<any>;
-	name: string;
+	name?: string;
+	value?: string | null;
 	placeholder?: string;
 	options: string[];
-	labels?: string[];
-	onChange?: (new_option: string) => void;
+	labels: string[];
+	disabled_options?: string[];
+	onChange?: (new_option: string | null) => void;
 	loading?: boolean;
 	defaultValue?: string | null;
+	filter?: boolean;
+	onBlur?: (e: React.FocusEvent<HTMLInputElement, Element>) => void;
+	ref?: RefCallBack;
 }
 
+type value_t = { value: string; label: string };
+
 export default function SelectOption({
-	register,
 	name,
+	value,
 	placeholder,
 	options,
 	labels,
+	disabled_options,
 	onChange,
 	loading,
 	defaultValue,
+	filter,
+	onBlur,
+	ref,
 }: Props) {
-	const get_attrs = () => {
-		let attrs: any = register ? register(name) : { name: name };
-		// add default value if not already given by <register>
-		// attrs.defaultValue ||= defaultValue ? defaultValue : "no_option";
-		if (!attrs.defaultValue) attrs.defaultValue = defaultValue || "no_option";
-		// for use without form hook
-		const former_on_change = attrs.onChange;
-		if (onChange)
-			attrs.onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-				if (former_on_change) former_on_change(event);
-				const new_option = event.target.value;
-				if (new_option != "no_option") onChange(new_option);
-			};
-
-		return attrs;
-	};
-
 	if (loading) return <LoadingMarker />;
 
+	let using_options = options.map((value, i) => ({ value, label: labels[i] }));
+
 	return (
-		<select {...get_attrs()} className="select select-bordered">
-			<option disabled value="no_option">
-				{placeholder}
-			</option>
-			{!loading &&
-				options.map((value, i) => (
-					<option value={value} key={i}>
-						{labels ? labels[i] : value}
-					</option>
-				))}
-		</select>
+		<Select<value_t, false>
+			name={name}
+			className="select select-bordered"
+			options={using_options}
+			defaultValue={
+				typeof defaultValue == "string"
+					? using_options.find((op) => op.value === defaultValue)
+					: defaultValue
+			}
+			isSearchable={filter}
+			isClearable={true}
+			filterOption={(option, input) => option.label.includes(input)}
+			isOptionDisabled={(option) =>
+				!!disabled_options && disabled_options.includes(option.value)
+			}
+			placeholder={placeholder}
+			value={
+				typeof value == "string" ? using_options.find((op) => op.value == value) : value
+			}
+			onChange={(option) => onChange && onChange(option && option.value)}
+			onBlur={onBlur}
+			ref={ref}
+		/>
 	);
+	// <select {...get_attrs()} className="select select-bordered">
+	// 	<option disabled value="no_option">
+	// 		{placeholder}
+	// 	</option>
+	// 	{!loading &&
+	// 		options.map((value, i) => (
+	// 			<option value={value} key={i}>
+	// 				{labels ? labels[i] : value}
+	// 			</option>
+	// 		))}
+	// </select>;
 }

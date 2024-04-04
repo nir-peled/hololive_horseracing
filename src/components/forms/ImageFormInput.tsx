@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { UseFormRegister } from "react-hook-form";
 import FormInput from "./FormInput";
 import IconImage from "../IconImage";
-import { get_image_buffer_as_str } from "@/src/lib/utils";
+import { get_image_buffer_as_str } from "@/src/lib/images";
 
 interface Props {
 	register?: UseFormRegister<any>;
@@ -41,20 +41,22 @@ export default function ImageFormInput({
 
 	return (
 		<FormInput label={label} error={error}>
-			<input
-				type="file"
-				accept="image/*"
-				className="file-input file-input-bordered w-full max-w-xs"
-				{...get_attr()}
-			/>
-			{/* if preview: if image chosen, display image. */}
-			{/* otherwise, if default display, display it */}
-			{preview &&
-				(image ? (
-					<IconImage icon={image} />
-				) : (
-					default_display_str && <IconImage icon={default_display_str} />
-				))}
+			<div className="flex gap-2">
+				<input
+					type="file"
+					accept="image/*"
+					className="file-input file-input-bordered w-full max-w-xs"
+					{...get_attr()}
+				/>
+				{/* if preview: if image chosen, display image. */}
+				{/* otherwise, if default display, display it */}
+				{preview &&
+					(image ? (
+						<IconImage icon={image} />
+					) : (
+						default_display_str && <IconImage icon={default_display_str} />
+					))}
+			</div>
 		</FormInput>
 	);
 }
