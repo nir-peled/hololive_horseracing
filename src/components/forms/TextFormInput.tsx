@@ -15,6 +15,7 @@ interface Props<T extends value_t> {
 	default_value?: (T extends "number" ? number : string) | undefined;
 	readonly?: boolean;
 	disabled?: boolean;
+	step?: string;
 	// clear?: () => void;
 }
 

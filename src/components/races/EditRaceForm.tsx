@@ -136,6 +136,7 @@ export default function EditRaceForm({ id }: Props) {
 										: undefined
 								}
 								disabled={!enabled}
+								step={process.env.NEXT_PUBLIC_DATETIME_STEP}
 							/>
 						);
 					}}

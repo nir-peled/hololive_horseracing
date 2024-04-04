@@ -39,9 +39,11 @@ export function datetime_local_to_date(datetime_str: string) {
  * @returns datetime-local string of date in timezone env.NEXT_PUBLIC_TIMEZONE
  */
 export function date_to_datetime_local(date: Date) {
+	const OFFSET_TO_UTC_OFFSET = 60000; // minutes to milliseconds
 	let epoch_offset = new Date("1907T" + process.env.NEXT_PUBLIC_TIMEZONE);
-	let fixed_date = new Date(date.getTime() - epoch_offset.getTime());
-	return fixed_date.toISOString();
+	let original_offset = date.getTimezoneOffset() * OFFSET_TO_UTC_OFFSET;
+	let fixed_date = new Date(date.getTime() - original_offset + epoch_offset.getTime());
+	return fixed_date.toISOString().slice(0, 16);
 }
 
 export function validate_race_form_data(
