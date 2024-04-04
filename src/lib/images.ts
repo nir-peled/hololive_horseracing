@@ -13,7 +13,8 @@ export function default_user_image(user: UserData | HorseData): string {
 export function get_file_limitations() {
 	const max_file_size_str = process.env.NEXT_PUBLIC_MAX_USER_ICON_SIZE;
 	const allowed_files_str = process.env.NEXT_PUBLIC_USER_ICON_TYPES;
-	const allowed_files = allowed_files_str && allowed_files_str.split(",");
+	const allowed_files =
+		typeof allowed_files_str == "undefined" ? undefined : allowed_files_str.split(",");
 
 	const max_file_size =
 		typeof max_file_size_str == "undefined" ? 0 : Number(max_file_size_str);
@@ -22,7 +23,7 @@ export function get_file_limitations() {
 }
 
 export function refine_schema_for_image<
-	SchemaType extends z.ZodType<{ [K in FieldName]?: any }>,
+	SchemaType extends z.ZodType<{ [K in FieldName]?: FileList }>,
 	FieldName extends string = "image"
 >(schema: SchemaType, t: TFunction, field_name?: FieldName, namespace?: string) {
 	if (!field_name) field_name = "image" as FieldName;
@@ -32,8 +33,8 @@ export function refine_schema_for_image<
 		.refine(
 			(data) => {
 				if (!max_file_size || !data[field_name]) return true;
-				let files = data[field_name];
-				return (files && files.length == 0) || files[0].size <= max_file_size;
+				let file = filelist_get_file(data[field_name]);
+				return !file || file.size <= max_file_size;
 			},
 			{
 				message: t("image-too-large", {
@@ -45,16 +46,15 @@ export function refine_schema_for_image<
 		)
 		.refine(
 			(data) => {
-				let files = data[field_name];
-				return (
-					!allowed_files ||
-					!files ||
-					files.length == 0 ||
-					allowed_files.includes(files[0].type)
-				);
+				let file = filelist_get_file(data[field_name]);
+				return !allowed_files || !file || allowed_files.includes(file.type);
 			},
 			{ message: t("image-type-not-allowed", { ns: namespace }), path: [field_name] }
 		);
+}
+
+function filelist_get_file(data: FileList | undefined): File | undefined {
+	return data && data.length > 0 ? data[0] : undefined;
 }
 
 export function get_image_buffer_as_str(image: Buffer): string | undefined {
