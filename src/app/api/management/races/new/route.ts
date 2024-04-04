@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { check_api_authorized } from "@/src/lib/auth";
-import { create_race } from "@/src/lib/database";
 import { validate_race_form_data } from "@/src/lib/utils";
 import { RaceFormData } from "@/src/lib/types";
+import { database_factory } from "@/src/lib/database";
 
 export async function POST(request: NextRequest) {
 	let res = await check_api_authorized(request);
@@ -20,7 +20,9 @@ export async function POST(request: NextRequest) {
 	if (!race_data.name || !race_data.contestants)
 		return new NextResponse(null, { status: 400 });
 
-	let success = await create_race(race_data as RaceFormData);
+	let success = await database_factory
+		.race_database()
+		.create_race(race_data as RaceFormData);
 	if (success) return new NextResponse(null, { status: 200 });
 	return new NextResponse(null, { status: 500 });
 }

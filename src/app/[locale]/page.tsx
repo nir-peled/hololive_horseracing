@@ -1,5 +1,5 @@
 import TranslationsProvider from "@/src/components/TranslationProvider";
-import { get_user_data } from "@/src/lib/database";
+import { database_factory } from "@/src/lib/database";
 import initTranslations from "@/src/lib/i18n";
 import { generate_locale_params } from "@/src/lib/utils";
 
@@ -17,7 +17,7 @@ export async function generateStaticParams() {
 
 export default async function Home({ params: { locale } }: Props) {
 	const { t, resources } = await initTranslations(locale, namespaces);
-	const user = await get_user_data();
+	const user = await database_factory.user_database().get_user_data();
 	// console.log(`Home: user:`); // debug
 	// console.log(user?.name); // debug
 

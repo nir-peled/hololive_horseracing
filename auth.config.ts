@@ -1,11 +1,11 @@
 import { NextAuthConfig, User } from "next-auth";
 import { NextResponse } from "next/server";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { get_user_data, is_user_password } from "@/src/lib/database";
 import { UserRole } from "@/src/lib/types";
 import { get_locale_from_path } from "@/src/lib/i18n";
 import { locales } from "@/i18nConfig";
 import { is_path_authorized } from "@/src/lib/auth";
+import { database_factory } from "@/src/lib/database";
 
 export const authConfig: NextAuthConfig = {
 	callbacks: {
@@ -52,7 +52,9 @@ export const authConfig: NextAuthConfig = {
 			if (!username) return token; // should never happen
 			return {
 				...token,
-				user_data: await get_user_data({ user: username, to_token: true }),
+				user_data: await database_factory
+					.user_database()
+					.get_user_data({ user: username, to_token: true }),
 			};
 		},
 
@@ -87,7 +89,9 @@ export const authConfig: NextAuthConfig = {
 				console.log(`username: ${username}`); // debug
 				console.log(`password: ${password}`); // debug
 
-				let is_password = await is_user_password(username, password);
+				let is_password = await database_factory
+					.user_database()
+					.is_user_password(username, password);
 				console.log(`is user password: ${is_password}`); // debug
 
 				if (!is_password) return null;
