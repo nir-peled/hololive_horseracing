@@ -263,6 +263,11 @@ export async function get_horses(): Promise<HorseData[]> {
 	return result;
 }
 
+export async function try_delete_horse(name: string): Promise<boolean> {
+	let result = await prisma.horse.delete({ where: { name } });
+	return result && result.name == name;
+}
+
 export async function get_race_parameters(id: bigint) {
 	return await prisma.race.findUnique({
 		where: { id },

@@ -27,7 +27,7 @@ export default function HorseDeleteButton({ name, on_delete, on_error, hidden }:
 			body: JSON.stringify({ name }),
 		});
 
-		if (response.ok) if (on_delete) return on_delete(name);
+		if (response.ok && on_delete) return on_delete(name);
 		if (on_error) {
 			response
 				.json()

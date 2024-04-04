@@ -17,7 +17,10 @@ export default async function HorsesList({ locale }: Props) {
 	const { t } = await initTranslations(locale, namespaces);
 	const horses = await get_horses();
 	const user_role = (await auth())?.user?.role;
-	const is_with_delete = is_path_authorized("/api/management/horses/delete", user_role);
+	const is_delete_enabled = is_path_authorized(
+		"/api/management/horses/delete",
+		user_role
+	);
 
 	if (horses.length == 0) return <h3>{t("horses-table-empty")}</h3>;
 
@@ -41,7 +44,7 @@ export default async function HorsesList({ locale }: Props) {
 								)}
 							</td>
 							<td>
-								<HorseDeleteButton name={horse.name} hidden={!is_with_delete} />
+								<HorseDeleteButton name={horse.name} hidden={!is_delete_enabled} />
 							</td>
 						</tr>
 					))}
