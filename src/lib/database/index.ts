@@ -133,21 +133,34 @@ export interface DatabaseFactory {
 }
 
 export class DatabaseFactory implements DatabaseFactory {
+	private encryptor: Encryptor;
+	private user_db?: UserDatabase;
+	private horse_db?: HorseDatabase;
+	private race_db?: RaceDatabase;
+
+	constructor(encryptor: Encryptor) {
+		this.encryptor = encryptor;
+		// this.user_db = this.race_db = this.horse_db = new PrismaDatabase(this.encryptor);
+	}
+
 	user_database(): UserDatabase {
-		return new PrismaDatabase(this.get_encryptor());
+		if (this.user_db) return this.user_db;
+		return (this.user_db = new PrismaDatabase(this.encryptor));
 	}
 
 	horse_database(): HorseDatabase {
-		return new PrismaDatabase(this.get_encryptor());
+		if (this.horse_db) return this.horse_db;
+		return (this.horse_db = new PrismaDatabase(this.encryptor));
 	}
 
 	race_database(): RaceDatabase {
-		return new PrismaDatabase(this.get_encryptor());
+		if (this.race_db) return this.race_db;
+		return (this.race_db = new PrismaDatabase(this.encryptor));
 	}
 
 	get_encryptor(): Encryptor {
-		return new CryptoEncryptor();
+		return this.encryptor;
 	}
 }
 
-export const database_factory = new DatabaseFactory();
+export const database_factory = new DatabaseFactory(new CryptoEncryptor());

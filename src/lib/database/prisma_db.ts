@@ -21,6 +21,10 @@ import { default_user_image, get_image_buffer_as_str, image_as_buffer } from "..
 import { auth } from "../auth";
 import { race_result_to_race_data } from "./db_utils";
 
+// export interface PrismaOptions extends Prisma.PrismaClientOptions {
+// 	accelerate?: boolean;
+// }
+
 function create_prisma_client() {
 	return new PrismaClient().$extends(withAccelerate());
 }
