@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { edit_user } from "@/src/lib/database";
 import { check_api_authorized } from "@/src/lib/auth";
 import { UserFormData } from "@/src/lib/types";
+import { database_factory } from "@/src/lib/database";
 
 export async function POST(request: NextRequest) {
 	console.log("got POST /api/management/users/new"); // debug
@@ -32,7 +32,9 @@ export async function POST(request: NextRequest) {
 	}
 
 	console.log("try creating new user"); // debug
-	let is_successful = await edit_user(username, user_data as Partial<UserFormData>);
+	let is_successful = await database_factory
+		.user_database()
+		.edit_user(username, user_data as Partial<UserFormData>);
 
 	if (is_successful) {
 		console.log("got new user, success!"); // debug

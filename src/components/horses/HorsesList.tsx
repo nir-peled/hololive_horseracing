@@ -1,11 +1,11 @@
 import React from "react";
 import initTranslations from "@/src/lib/i18n";
 import { Locale } from "@/src/lib/types";
-import { get_horses } from "@/src/lib/database";
 import IconImage from "../IconImage";
 import HorseDeleteButton from "./HorseDeleteButton";
 import { auth, is_path_authorized } from "@/src/lib/auth";
 import { get_image_buffer_as_str } from "@/src/lib/images";
+import { database_factory } from "@/src/lib/database";
 
 interface Props {
 	locale: Locale;
@@ -15,7 +15,7 @@ const namespaces = ["races"];
 
 export default async function HorsesList({ locale }: Props) {
 	const { t } = await initTranslations(locale, namespaces);
-	const horses = await get_horses();
+	const horses = await database_factory.horse_database().get_horses();
 	const user_role = (await auth())?.user?.role;
 	const is_delete_enabled = is_path_authorized(
 		"/api/management/horses/delete",

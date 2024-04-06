@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { check_api_authorized } from "@/src/lib/auth";
-import { try_edit_race } from "@/src/lib/database";
 import { validate_race_form_data } from "@/src/lib/utils";
+import { database_factory } from "@/src/lib/database";
 
 export async function POST(request: NextRequest) {
 	// return new NextResponse(null, { status: 405 }); // method not allowed
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
 	let race_data = validate_race_form_data(data);
 	if (!race_data) return new NextResponse(null, { status: 400 });
 
-	let success = await try_edit_race(id, race_data);
+	let success = await database_factory.race_database().try_edit_race(id, race_data);
 	if (success) return new NextResponse(null, { status: 200 });
 	return new NextResponse(null, { status: 500 });
 }

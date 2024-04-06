@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { check_api_authorized } from "@/src/lib/auth";
-import { try_delete_race } from "@/src/lib/database";
 
 export async function POST(request: NextRequest) {
 	return new NextResponse(null, { status: 405 }); // method not allowed

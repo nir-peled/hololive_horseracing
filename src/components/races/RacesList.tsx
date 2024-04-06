@@ -1,8 +1,8 @@
 import React from "react";
 import type { Locale } from "@/src/lib/types";
-import { get_active_races } from "@/src/lib/database";
 import RacesListRow from "./RacesListRow";
 import initTranslations from "@/src/lib/i18n";
+import { database_factory } from "@/src/lib/database";
 
 interface Props {
 	locale: Locale;
@@ -13,7 +13,7 @@ const namespaces = ["races"];
 
 export default async function RacesList({ locale, is_management }: Props) {
 	const { t } = await initTranslations(locale, namespaces);
-	const races = await get_active_races();
+	const races = await database_factory.race_database().get_active_races();
 	return (
 		<div className="overflow-x-auto">
 			<table className="table">
@@ -36,10 +36,7 @@ export default async function RacesList({ locale, is_management }: Props) {
 					{races.map(async (race) => (
 						<RacesListRow
 							key={race.id}
-							id={race.id}
-							name={race.name}
-							contestants={race.contestants}
-							deadline={race.deadline}
+							race={race}
 							locale={locale}
 							is_management={is_management}
 						/>

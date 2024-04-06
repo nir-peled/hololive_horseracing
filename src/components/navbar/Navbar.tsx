@@ -2,11 +2,11 @@ import React from "react";
 import Image from "next/image";
 import initTranslations from "@/src/lib/i18n";
 import { auth } from "@/src/lib/auth";
-import { Locale, UserData } from "@/src/lib/types";
-import { get_user_image_as_str } from "@/src/lib/database";
+import { Locale } from "@/src/lib/types";
 import LanguageSelector from "./LanguageSelector";
 import UserIconMenu from "./UserIconMenu";
 import NavbarLinks from "./NavbarLinks";
+import { database_factory } from "@/src/lib/database";
 
 const namespaces = ["common"];
 
@@ -18,7 +18,8 @@ export default async function Navbar({ locale }: Props) {
 	const { t } = await initTranslations(locale, namespaces);
 	// const user = await get_user_data();
 	const user = (await auth())?.user;
-	const user_image = user && (await get_user_image_as_str(user));
+	const user_image =
+		user && (await database_factory.user_database().get_user_image_as_str(user));
 
 	return (
 		<div className="navbar bg-secondary-content">

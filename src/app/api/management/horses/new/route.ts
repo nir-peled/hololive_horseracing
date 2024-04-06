@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { check_api_authorized } from "@/src/lib/auth";
 import { image_as_buffer } from "@/src/lib/images";
-import { create_horse } from "@/src/lib/database";
+import { database_factory } from "@/src/lib/database";
 
 export async function POST(request: NextRequest) {
 	let res = await check_api_authorized(request);
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
 		image: await image_as_buffer(image),
 	};
 
-	let is_successful = await create_horse(horse_data);
+	let is_successful = await database_factory.horse_database().create_horse(horse_data);
 	if (!is_successful) return NextResponse.error();
 
 	console.log("got new horse, success!"); // debug

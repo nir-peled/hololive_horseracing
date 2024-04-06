@@ -1,20 +1,24 @@
 "use client";
 import React from "react";
-import Button from "../Button";
 import { useTranslation } from "react-i18next";
+import Button from "../Button";
+import ProtectedLink from "../ProtectedLink";
 
 const namespaces = ["races"];
 
-const cuts_names = ["house", "win", "place", "show"] as const;
-
 interface Props {
 	id: bigint;
-	isEnded: boolean;
 }
 
 // TO BE FILLED LATER
-export default function RaceEndButton({ id, isEnded }: Props) {
+export default function RaceEndButton({ id }: Props) {
 	const { t } = useTranslation(namespaces);
 
-	return <Button>{t("race-end-button")}</Button>;
+	return (
+		<Button>
+			<ProtectedLink href={`/management/races/${id}/end`}>
+				{t("race-end-button")}
+			</ProtectedLink>
+		</Button>
+	);
 }

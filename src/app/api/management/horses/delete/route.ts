@@ -1,5 +1,5 @@
 import { check_api_authorized } from "@/src/lib/auth";
-import { try_delete_horse } from "@/src/lib/database";
+import { database_factory } from "@/src/lib/database";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
 		return new NextResponse(null, { status: 400 }); // bad request;
 	}
 
-	let is_successful = await try_delete_horse(name);
+	let is_successful = await database_factory.horse_database().try_delete_horse(name);
 	if (!is_successful) return NextResponse.error();
 
 	console.log("got new horse, success!"); // debug
