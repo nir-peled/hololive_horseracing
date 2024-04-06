@@ -248,6 +248,18 @@ export class PrismaDatabase implements UserDatabase, HorseDatabase, RaceDatabase
 		});
 	}
 
+	async set_race_parameters(
+		id: bigint,
+		parameters: Partial<RaceParameters>
+	): Promise<boolean> {
+		let result = await this.prisma.race.update({
+			where: { id },
+			data: parameters,
+		});
+
+		return result && result.id == id;
+	}
+
 	async get_race_data(id: bigint): Promise<RaceData | null> {
 		let result = await this.prisma.race.findUnique({
 			where: { id },

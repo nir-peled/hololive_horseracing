@@ -115,7 +115,9 @@ export interface RaceDatabase {
 
 	get_race_parameters(id: bigint): Promise<RaceParameters | null>;
 
-	get_race_data(id: bigint): Promise<RaceData | null>;
+	set_race_parameters(id: bigint, parameters: Partial<RaceParameters>): Promise<boolean>;
+
+	get_race_data(id: bigint, select?: Select<RaceData>): Promise<RaceData | null>;
 
 	create_race(race_data: RaceFormData): Promise<boolean>;
 

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+import { bad_request, request_success } from "@/src/lib/http";
 import { check_api_authorized } from "@/src/lib/auth";
-import { image_as_buffer } from "@/src/lib/images";
 import { database_factory } from "@/src/lib/database";
+import { image_as_buffer } from "@/src/lib/images";
 
 export async function POST(request: NextRequest) {
 	let res = await check_api_authorized(request);
@@ -10,13 +11,12 @@ export async function POST(request: NextRequest) {
 	let form_data = await request.formData();
 	if (!form_data) {
 		console.log("no form data, bad request"); // debug
-		return new NextResponse(null, { status: 400 }); // bad request;
+		return bad_request();
 	}
 
 	let name = form_data.get("name");
 	let image = form_data.get("image");
-	if (!name || typeof image == "string" || typeof name != "string")
-		return new NextResponse(null, { status: 400 }); // bad request
+	if (!name || typeof image == "string" || typeof name != "string") return bad_request();
 
 	let horse_data = {
 		name,
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
 	if (!is_successful) return NextResponse.error();
 
 	console.log("got new horse, success!"); // debug
-	return new NextResponse(null, { status: 200 });
+	return request_success();
 }
 
 // don't allow GET to this path

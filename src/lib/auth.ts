@@ -3,6 +3,7 @@ import NextAuth from "next-auth";
 import { authConfig } from "@/auth.config";
 import { UserRole } from "./types";
 import { UrlObject } from "url";
+import { request_unauthorized } from "./http";
 
 export const { auth, signIn, signOut } = NextAuth(authConfig);
 
@@ -29,7 +30,7 @@ export async function check_api_authorized(
 ): Promise<NextResponse | undefined> {
 	const user = (await auth())?.user;
 	if (!is_path_authorized(request.nextUrl.pathname, user?.role))
-		return new NextResponse(null, { status: 401 }); // unauthorized
+		return request_unauthorized();
 }
 
 function check_role_authorized(

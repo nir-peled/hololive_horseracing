@@ -26,12 +26,10 @@ export function useRaceData(
 	id: string,
 	select?: Partial<{ [key in keyof RaceData]: true }>
 ) {
-	// params type so it wouldn't shout at me
-	let params: { id: string; select?: string } = { id };
-	if (select) params.select = Object.keys(select).join("-");
+	let param_select = select && Object.keys(select).join("-");
 
 	const { data, error, isLoading, mutate } = useSWR<RaceData>(
-		"api/races/read?" + new URLSearchParams(params),
+		`/api/races/${id}?` + new URLSearchParams(param_select),
 		json_fetcher
 	);
 
