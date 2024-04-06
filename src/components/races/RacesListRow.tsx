@@ -1,5 +1,5 @@
 import React from "react";
-import type { HorseData, Locale, UserData } from "@/src/lib/types";
+import type { HorseData, Locale, RaceData, UserData } from "@/src/lib/types";
 import ProtectedLink from "../ProtectedLink";
 import RaceRowRacer from "./RaceRowRacer";
 import DeadlineCounter from "./DeadlineCounter";
@@ -7,10 +7,7 @@ import RaceListEditControls from "./RaceListEditControls";
 
 interface Props {
 	locale: Locale;
-	id: bigint;
-	name: string;
-	deadline?: Date | null;
-	contestants: { jockey: UserData; horse: HorseData }[];
+	race: RaceData;
 	is_management?: boolean;
 }
 
@@ -18,10 +15,7 @@ const namespaces = ["races"];
 
 export default async function RacesListRow({
 	locale,
-	id,
-	name,
-	contestants,
-	deadline,
+	race: { id, name, contestants, deadline, isEnded, isOpenBets },
 	is_management,
 }: Props) {
 	return (
@@ -34,7 +28,14 @@ export default async function RacesListRow({
 					))}
 				</td>
 				<td>{deadline && <DeadlineCounter deadline={deadline} />}</td>
-				{is_management && <RaceListEditControls id={id} locale={locale} />}
+				{is_management && (
+					<RaceListEditControls
+						id={id}
+						isOpenBets={isOpenBets}
+						isEnded={isEnded}
+						locale={locale}
+					/>
+				)}
 			</tr>
 		</ProtectedLink>
 	);

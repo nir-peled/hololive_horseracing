@@ -234,7 +234,7 @@ export class PrismaDatabase implements UserDatabase, HorseDatabase, RaceDatabase
 
 	async get_active_races(): Promise<RaceData[]> {
 		let results = await this.prisma.race.findMany({
-			where: { isOpenBets: true },
+			where: { isEnded: false },
 			select: race_data_select,
 		});
 

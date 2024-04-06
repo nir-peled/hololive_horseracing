@@ -36,10 +36,7 @@ export default async function RacesList({ locale, is_management }: Props) {
 					{races.map(async (race) => (
 						<RacesListRow
 							key={race.id}
-							id={race.id}
-							name={race.name}
-							contestants={race.contestants}
-							deadline={race.deadline}
+							race={race}
 							locale={locale}
 							is_management={is_management}
 						/>
