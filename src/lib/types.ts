@@ -5,6 +5,7 @@ export type Locale = (typeof locales)[number];
 
 export const userRoles = ["user", "banker", "manager"] as const;
 export type UserRole = (typeof userRoles)[number];
+export type FullRole = UserRole | "api";
 
 export type Concat<T extends string[]> = T extends [
 	infer F extends string,

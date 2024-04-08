@@ -1,6 +1,6 @@
 import { check_api_authorized } from "@/src/lib/auth";
 import { database_factory } from "@/src/lib/database";
-import { bad_request, method_forbidden } from "@/src/lib/http";
+import { HTTPResponseCodes } from "@/src/lib/http";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
 
 	const username = request.nextUrl.searchParams.get("username");
 
-	if (!username) return bad_request();
+	if (!username) return HTTPResponseCodes.bad_request();
 
 	const user_data = await database_factory
 		.user_database()
@@ -20,5 +20,5 @@ export async function GET(request: NextRequest) {
 
 // don't allow POST to this path
 export async function POST() {
-	return method_forbidden();
+	return HTTPResponseCodes.method_forbidden();
 }

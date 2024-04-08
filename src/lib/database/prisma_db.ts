@@ -362,6 +362,21 @@ export class PrismaDatabase implements UserDatabase, HorseDatabase, RaceDatabase
 		}
 	}
 
+	async close_races_bets_at_deadline(): Promise<number> {
+		let result = await this.prisma.race.updateMany({
+			where: {
+				isEnded: false,
+				isOpenBets: true,
+				deadline: {
+					lte: new Date(),
+				},
+			},
+			data: { isOpenBets: false },
+		});
+
+		return result.count;
+	}
+
 	async #get_image_as_str(
 		table: "user" | "horse",
 		user: string | UserData | HorseData

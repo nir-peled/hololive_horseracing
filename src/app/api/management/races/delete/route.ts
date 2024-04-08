@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { check_api_authorized } from "@/src/lib/auth";
-import { method_forbidden } from "@/src/lib/http";
+import { HTTPResponseCodes } from "@/src/lib/http";
 
 export async function POST(request: NextRequest) {
-	return method_forbidden();
+	return HTTPResponseCodes.method_forbidden();
 	// let res = await check_api_authorized(request);
 	// if (res) return res;
 
@@ -17,5 +17,5 @@ export async function POST(request: NextRequest) {
 
 // don't allow GET to this path
 export async function GET() {
-	return method_forbidden();
+	return HTTPResponseCodes.method_forbidden();
 }

@@ -124,6 +124,8 @@ export interface RaceDatabase {
 	try_delete_race(id: bigint): Promise<boolean>;
 
 	try_edit_race(id: bigint, race_data: Partial<RaceFormData>): Promise<boolean>;
+
+	close_races_bets_at_deadline(): Promise<number>;
 }
 
 export interface DatabaseFactory {
