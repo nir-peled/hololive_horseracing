@@ -5,7 +5,6 @@ export type Locale = (typeof locales)[number];
 
 export const userRoles = ["user", "banker", "manager"] as const;
 export type UserRole = (typeof userRoles)[number];
-export type FullRole = UserRole | "api";
 
 export type Concat<T extends string[]> = T extends [
 	infer F extends string,
@@ -82,7 +81,9 @@ export interface RaceData {
 	contestants: { jockey: UserData; horse: HorseData }[];
 }
 
-export type ContestantFromType = { jockey: string; horse: string };
+export type RaceContestantsData = RaceData["contestants"];
+
+export type ContestantFormType = { jockey: string; horse: string };
 
 export interface RaceFormData {
 	name: string;
@@ -91,15 +92,7 @@ export interface RaceFormData {
 	win_cut?: number;
 	place_cut?: number;
 	show_cut?: number;
-	contestants: ContestantFromType[];
-}
-
-export interface RaceContestantData {
-	jockey: string;
-	horse: string;
-	race: bigint;
-	odds_denominator?: number;
-	odds_numerator?: number;
+	contestants: ContestantFormType[];
 }
 
 // currently unused

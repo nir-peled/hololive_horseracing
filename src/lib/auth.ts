@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import NextAuth from "next-auth";
 import { authConfig } from "@/auth.config";
-import { FullRole, UserRole } from "./types";
+import { UserRole } from "./types";
 import { UrlObject } from "url";
 import { HTTPResponseCodes } from "./http";
 
@@ -9,7 +9,7 @@ export const { auth, signIn, signOut } = NextAuth(authConfig);
 
 export function is_path_authorized(
 	url: string | UrlObject,
-	role: FullRole | undefined,
+	role: UserRole | undefined,
 	apikey?: string | null
 ): boolean {
 	let path: string;
@@ -37,8 +37,8 @@ export async function check_api_authorized(
 }
 
 function check_role_authorized(
-	required_role: FullRole | undefined,
-	user_role: FullRole | undefined
+	required_role: UserRole | undefined,
+	user_role: UserRole | undefined
 ): boolean {
 	if (!required_role) return true;
 	if (!user_role) return !required_role;
@@ -59,6 +59,6 @@ export async function check_server_action_authorized(
 	required_role?: UserRole | undefined
 ): Promise<void> {
 	let user_role = (await auth())?.user?.role;
-	let is_allowed = await check_role_authorized(required_role, user_role);
+	let is_allowed = check_role_authorized(required_role, user_role);
 	if (!is_allowed) throw new Error("unauthorized");
 }

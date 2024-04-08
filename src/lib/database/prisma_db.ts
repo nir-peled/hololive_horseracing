@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient, Race } from "@prisma/client";
 import {
 	UserDatabase,
 	HorseDatabase,
@@ -13,7 +13,7 @@ import {
 	race_parameters_select,
 } from ".";
 import { withAccelerate } from "@prisma/extension-accelerate";
-import { UserFormData, UserData, UserDefaultValues } from "../types";
+import { UserFormData, UserData, UserDefaultValues, RaceContestantsData } from "../types";
 import { HorseData } from "../types";
 import { RaceData, RaceFormData } from "../types";
 import { Encryptor } from "../encryptor";
@@ -268,6 +268,18 @@ export class PrismaDatabase implements UserDatabase, HorseDatabase, RaceDatabase
 
 		if (!result) return null;
 		return race_result_to_race_data(result);
+	}
+
+	async get_race_contestants(id: bigint): Promise<RaceContestantsData | null> {
+		let result = await this.prisma.race.findUnique({
+			where: { id },
+			select: {
+				competitors: race_data_select.competitors,
+			},
+		});
+
+		if (!result) return null;
+		return result.competitors as RaceContestantsData;
 	}
 
 	async create_race(race_data: RaceFormData): Promise<boolean> {

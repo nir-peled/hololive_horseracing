@@ -1,6 +1,7 @@
 import { Session } from "next-auth";
 import {
 	HorseData,
+	RaceContestantsData,
 	RaceData,
 	RaceFormData,
 	UserData,
@@ -118,6 +119,8 @@ export interface RaceDatabase {
 	set_race_parameters(id: bigint, parameters: Partial<RaceParameters>): Promise<boolean>;
 
 	get_race_data(id: bigint, select?: Select<RaceData>): Promise<RaceData | null>;
+
+	get_race_contestants(id: bigint): Promise<RaceContestantsData | null>;
 
 	create_race(race_data: RaceFormData): Promise<boolean>;
 
