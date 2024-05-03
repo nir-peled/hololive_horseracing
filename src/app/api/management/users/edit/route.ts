@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
 
 	if (is_successful) {
 		console.log("got new user, success!"); // debug
-		return HTTPResponseCodes.request_success();
+		return HTTPResponseCodes.success();
 	}
 	console.log("could not create new user, failure"); // debug
 	return NextResponse.error();

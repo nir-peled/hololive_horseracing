@@ -22,7 +22,7 @@ export async function POST(request: NextRequest, { params: { id } }: PostParams)
 		.race_database()
 		.set_race_parameters(BigInt(id), { isOpenBets });
 
-	if (!status) return HTTPResponseCodes.request_success();
+	if (!status) return HTTPResponseCodes.success();
 	return HTTPResponseCodes.server_error();
 }
 

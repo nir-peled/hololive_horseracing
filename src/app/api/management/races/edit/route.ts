@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
 	if (!race_data) return HTTPResponseCodes.bad_request();
 
 	let success = await database_factory.race_database().try_edit_race(id, race_data);
-	if (success) return HTTPResponseCodes.request_success();
+	if (success) return HTTPResponseCodes.success();
 	return HTTPResponseCodes.server_error();
 }
 

@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
 	let success = await database_factory
 		.race_database()
 		.create_race(race_data as RaceFormData);
-	if (success) return HTTPResponseCodes.request_success();
+	if (success) return HTTPResponseCodes.success();
 	return HTTPResponseCodes.server_error();
 }
 

@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
 	if (!is_successful) return NextResponse.error();
 
 	console.log("got new horse, success!"); // debug
-	return HTTPResponseCodes.request_success();
+	return HTTPResponseCodes.success();
 }
 
 // don't allow GET to this path
