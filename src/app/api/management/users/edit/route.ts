@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { check_api_authorized } from "@/src/lib/auth";
 import { UserFormData } from "@/src/lib/types";
 import { database_factory } from "@/src/lib/database";
+import { HTTPResponseCodes } from "@/src/lib/http";
 
 export async function POST(request: NextRequest) {
 	console.log("got POST /api/management/users/new"); // debug
@@ -11,12 +12,12 @@ export async function POST(request: NextRequest) {
 	let data = await request.formData();
 	if (!data) {
 		console.log("no form data, bad request"); // debug
-		return new NextResponse(null, { status: 400 }); // bad request;
+		return HTTPResponseCodes.bad_request();
 	}
 
 	let username = data.get("username");
 	if (!username || typeof username != "string" || username == "")
-		return new NextResponse(null, { status: 400 }); // bad request;
+		return HTTPResponseCodes.bad_request();
 
 	let user_data = {
 		password: data.get("password"),
@@ -25,10 +26,9 @@ export async function POST(request: NextRequest) {
 		image: data.get("image"),
 	};
 	for (let [key, value] of Object.entries(user_data)) {
-		if (key != "image" && value instanceof File)
-			return new NextResponse(null, { status: 400 }); // bad request;
+		if (key != "image" && value instanceof File) return HTTPResponseCodes.bad_request();
 		if (key == "image" && !(value instanceof File))
-			return new NextResponse(null, { status: 400 }); // bad request;
+			return HTTPResponseCodes.bad_request();
 	}
 
 	console.log("try creating new user"); // debug
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
 
 	if (is_successful) {
 		console.log("got new user, success!"); // debug
-		return new NextResponse(null, { status: 200 });
+		return HTTPResponseCodes.success();
 	}
 	console.log("could not create new user, failure"); // debug
 	return NextResponse.error();
@@ -46,5 +46,5 @@ export async function POST(request: NextRequest) {
 
 // don't allow GET to this path
 export async function GET() {
-	return new NextResponse(null, { status: 405 }); // method not allowed
+	return HTTPResponseCodes.method_forbidden();
 }

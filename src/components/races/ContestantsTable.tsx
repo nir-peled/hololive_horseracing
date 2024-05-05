@@ -1,14 +1,14 @@
 "use client";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { ContestantFromType } from "@/src/lib/types";
+import { ContestantFormType } from "@/src/lib/types";
 import { fetch_user_data, fetch_horse_image } from "@/src/lib/actions";
 import { get_image_buffer_as_str } from "@/src/lib/images";
 import IconImage from "../IconImage";
 import Button from "../Button";
 
 interface Props {
-	contestants: (ContestantFromType & { id: string })[];
+	contestants: (ContestantFormType & { id: string })[];
 	remove_contestant: (index: number) => void;
 }
 

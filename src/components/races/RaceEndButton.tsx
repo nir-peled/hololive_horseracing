@@ -10,15 +10,12 @@ interface Props {
 	id: bigint;
 }
 
-// TO BE FILLED LATER
 export default function RaceEndButton({ id }: Props) {
 	const { t } = useTranslation(namespaces);
 
 	return (
-		<Button>
-			<ProtectedLink href={`/management/races/${id}/end`}>
-				{t("race-end-button")}
-			</ProtectedLink>
-		</Button>
+		<ProtectedLink href={`/management/races/${id}/results`} className="btn">
+			{t("race-end-button")}
+		</ProtectedLink>
 	);
 }

@@ -1,15 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 import { check_api_authorized } from "@/src/lib/auth";
 import { database_factory } from "@/src/lib/database";
+import { HTTPResponseCodes } from "@/src/lib/http";
+// import { RaceData } from "@/src/lib/types";
 
-export async function GET(request: NextRequest) {
+interface PostParams {
+	params: {
+		id: string;
+	};
+}
+
+export async function GET(request: NextRequest, { params: { id } }: PostParams) {
 	let res = await check_api_authorized(request);
 	if (res) return res;
 
-	const id = request.nextUrl.searchParams.get("id");
+	if (!id) return HTTPResponseCodes.bad_request();
+	// ignore select for now
 	// const select_str = request.nextUrl.searchParams.get("select");
 	// let select: { [key in keyof RaceData]?: true } | undefined = undefined;
-	if (!id) return new NextResponse(null, { status: 400 }); // bad request;
 	// if (select_str) {
 	// 	select = {};
 	// 	let select_keys = select_str.split("-");
@@ -23,5 +31,5 @@ export async function GET(request: NextRequest) {
 
 // don't allow POST to this path
 export async function POST() {
-	return new NextResponse(null, { status: 405 }); // method not allowed
+	return HTTPResponseCodes.method_forbidden();
 }

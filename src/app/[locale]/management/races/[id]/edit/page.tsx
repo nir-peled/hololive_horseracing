@@ -4,6 +4,7 @@ import { generate_locale_params } from "@/src/lib/utils";
 import { Locale } from "@/src/lib/types";
 import TranslationsProvider from "@/src/components/TranslationProvider";
 import EditRaceForm from "@/src/components/races/EditRaceForm";
+import LoadingMarker from "@/src/components/LoadingMarker";
 
 // race id is dynamic
 export const dynamicParams = true;
@@ -24,22 +25,16 @@ interface Props {
 export default async function RaceEditPage({ params: { locale, id } }: Props) {
 	const { t, resources } = await initTranslations(locale, namespaces);
 
-	// return (
-	// 	<main className="flex min-h-screen flex-col items-center p-24">
-	// 		<h3>{t("page-not-allowed", { ns: "management" })}</h3>
-	// 	</main>
-	// );
-
 	return (
-		<TranslationsProvider namespaces={namespaces} locale={locale} resources={resources}>
-			<main className="flex min-h-screen flex-col items-center p-24">
-				<h1 className="text-2xl font-bold underline p-10">
-					{t("edit-race-title", { ns: "management" })}
-				</h1>
-				<Suspense>
+		<main className="flex min-h-screen flex-col items-center p-24">
+			<h1 className="text-2xl font-bold underline p-10">
+				{t("edit-race-title", { ns: "management" })}
+			</h1>
+			<TranslationsProvider namespaces={namespaces} locale={locale} resources={resources}>
+				<Suspense fallback={<LoadingMarker />}>
 					<EditRaceForm id={Number(id)} />
 				</Suspense>
-			</main>
-		</TranslationsProvider>
+			</TranslationsProvider>
+		</main>
 	);
 }

@@ -1,7 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { check_api_authorized } from "@/src/lib/auth";
 import { validate_race_form_data } from "@/src/lib/utils";
 import { database_factory } from "@/src/lib/database";
+import { HTTPResponseCodes } from "@/src/lib/http";
 
 export async function POST(request: NextRequest) {
 	// return new NextResponse(null, { status: 405 }); // method not allowed
@@ -9,29 +10,29 @@ export async function POST(request: NextRequest) {
 	if (res) return res;
 
 	const id_raw = request.nextUrl.searchParams.get("id");
-	if (!id_raw) return new NextResponse(null, { status: 400 }); // bad request;
+	if (!id_raw) return HTTPResponseCodes.bad_request();
 	let id: bigint;
 	try {
 		id = BigInt(id_raw);
 	} catch (e) {
-		return new NextResponse(null, { status: 400 }); // bad request;
+		return HTTPResponseCodes.bad_request();
 	}
 
 	let data = await request.formData();
 	if (!data) {
 		console.log("no form data, bad request"); // debug
-		return new NextResponse(null, { status: 400 }); // bad request;
+		return HTTPResponseCodes.bad_request();
 	}
 
 	let race_data = validate_race_form_data(data);
-	if (!race_data) return new NextResponse(null, { status: 400 });
+	if (!race_data) return HTTPResponseCodes.bad_request();
 
 	let success = await database_factory.race_database().try_edit_race(id, race_data);
-	if (success) return new NextResponse(null, { status: 200 });
-	return new NextResponse(null, { status: 500 });
+	if (success) return HTTPResponseCodes.success();
+	return HTTPResponseCodes.server_error();
 }
 
 // don't allow GET to this path
 export async function GET() {
-	return new NextResponse(null, { status: 405 }); // method not allowed
+	return HTTPResponseCodes.method_forbidden();
 }

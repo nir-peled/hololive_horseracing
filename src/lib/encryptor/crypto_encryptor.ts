@@ -10,15 +10,19 @@ export class CryptoEncryptor implements Encryptor {
 	}
 
 	async hash_password(password: string, salt?: string | undefined): Promise<string> {
-		if (!salt) salt = randomBytes(Number(process.env.SALT_BYTES)).toString("hex");
+		if (!salt) salt = await this.create_salt();
 		let hash = pbkdf2Sync(
 			password,
 			salt,
 			Number(process.env.HASH_ROUNDS),
 			Number(process.env.HASH_KEYLEN),
 			process.env.HASH_METHOD as string
-		).toString(`hex`);
+		).toString("hex");
 
 		return `${salt}#${hash}`;
+	}
+
+	async create_salt(): Promise<string> {
+		return randomBytes(Number(process.env.SALT_BYTES)).toString("hex");
 	}
 }

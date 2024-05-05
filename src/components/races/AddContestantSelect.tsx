@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ContestantFromType } from "@/src/lib/types";
+import { ContestantFormType } from "@/src/lib/types";
 import Button from "../Button";
 import HorseSelector from "../horses/HorseSelector";
 import FormInput from "../forms/FormInput";
@@ -10,8 +10,8 @@ import UserSelector from "../users/UserSelector";
 const namespaces = ["management"];
 
 interface Props {
-	contestants: ContestantFromType[];
-	add_contestant: (data: ContestantFromType) => void;
+	contestants: ContestantFormType[];
+	add_contestant: (data: ContestantFormType) => void;
 }
 
 /** select jockey with UserSelector and horse with HorseSelector,

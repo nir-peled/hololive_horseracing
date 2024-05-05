@@ -1,6 +1,7 @@
 import { Session } from "next-auth";
 import {
 	HorseData,
+	RaceContestantsData,
 	RaceData,
 	RaceFormData,
 	UserData,
@@ -115,13 +116,19 @@ export interface RaceDatabase {
 
 	get_race_parameters(id: bigint): Promise<RaceParameters | null>;
 
-	get_race_data(id: bigint): Promise<RaceData | null>;
+	set_race_parameters(id: bigint, parameters: Partial<RaceParameters>): Promise<boolean>;
+
+	get_race_data(id: bigint, select?: Select<RaceData>): Promise<RaceData | null>;
+
+	get_race_contestants(id: bigint): Promise<RaceContestantsData | null>;
 
 	create_race(race_data: RaceFormData): Promise<boolean>;
 
 	try_delete_race(id: bigint): Promise<boolean>;
 
 	try_edit_race(id: bigint, race_data: Partial<RaceFormData>): Promise<boolean>;
+
+	close_races_bets_at_deadline(): Promise<number>;
 }
 
 export interface DatabaseFactory {
