@@ -15,7 +15,6 @@ interface Props {
 
 export default function LoginForm({ locale }: Props) {
 	async function login(prevState: string | undefined, form_data: FormData) {
-		// form_data.append("redirectTo", `/${locale}`);
 		return await authenticate(prevState, form_data);
 	}
 	const [error_message, dispatch] = useFormState(login, undefined);

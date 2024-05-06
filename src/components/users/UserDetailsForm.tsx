@@ -8,7 +8,7 @@ import { TFunction } from "i18next";
 import { z } from "zod";
 import useSWR from "swr";
 import { UserDefaultValues, UserRole, userRoles } from "@/src/lib/types";
-import { json_fetcher } from "@/src/lib/hooks";
+import { json_fetcher, useSubmitter } from "@/src/lib/hooks";
 import FormLoginInputs from "../forms/FormLoginInputs";
 import Button from "../Button";
 import Alert from "../Alert";
@@ -65,35 +65,42 @@ export default function UserDetailsForm({ edit_user }: Props) {
 	});
 
 	const [isFailed, setIsFailed] = useState<boolean>(false);
+	const endpoint = `/api/management/users/${edit_user ? "edit" : "new"}`;
+	const submit_form = useSubmitter<UserFormData>(
+		endpoint,
+		isFailed,
+		setIsFailed,
+		default_values as Partial<UserFormData> | undefined,
+		reset
+	);
 
-	async function submit_form(data: UserFormData, event?: BaseSyntheticEvent) {
-		if (event) event.preventDefault();
-		const endpoint = `/api/management/users/${edit_user ? "edit" : "new"}`;
+	// async function submit_form(data: UserFormData, event?: BaseSyntheticEvent) {
+	// 	if (event) event.preventDefault();
 
-		let form_data = new FormData();
-		for (let [key, value] of Object.entries(data)) {
-			if (key != "image" && value)
-				if (default_values && value != default_values[key as keyof UserDefaultValues])
-					form_data.append(key, value);
-		}
+	// 	let form_data = new FormData();
+	// 	for (let [key, value] of Object.entries(data)) {
+	// 		if (key != "image" && value)
+	// 			if (default_values && value != default_values[key as keyof UserDefaultValues])
+	// 				form_data.append(key, value);
+	// 	}
 
-		if (data?.image && data.image.length > 0)
-			form_data.append("image", data.image.item(0) as File);
+	// 	if (data?.image && data.image.length > 0)
+	// 		form_data.append("image", data.image.item(0) as File);
 
-		let result = await fetch(endpoint, {
-			method: "POST",
-			body: form_data,
-		});
+	// 	let result = await fetch(endpoint, {
+	// 		method: "POST",
+	// 		body: form_data,
+	// 	});
 
-		if (result.ok) {
-			// if form is used for new user, reset the form to empty
-			if (!edit_user) reset();
-			if (isFailed) setIsFailed(false);
-		} else {
-			reset(data);
-			setIsFailed(true);
-		}
-	}
+	// 	if (result.ok) {
+	// 		// if form is used for new user, reset the form to empty
+	// 		if (!edit_user) reset();
+	// 		if (isFailed) setIsFailed(false);
+	// 	} else {
+	// 		reset(data);
+	// 		setIsFailed(true);
+	// 	}
+	// }
 
 	if (isLoading) return <LoadingMarker />;
 

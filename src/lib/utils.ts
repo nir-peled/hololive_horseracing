@@ -1,4 +1,3 @@
-// import { fileTypeFromBuffer } from "file-type";
 import { locales } from "@/i18nConfig";
 import { ConcatSeperator, Locale, RaceFormData } from "./types";
 
@@ -73,15 +72,12 @@ export function validate_race_form_data(
 	let cuts = check_cuts(cuts_raw);
 	if (cuts === undefined) return undefined;
 
-	// gather data in one object
-	let race_data = {
+	return {
 		name,
 		deadline: data.get("deadline"),
 		contestants,
 		...cuts,
 	} as Partial<RaceFormData>;
-
-	return race_data;
 }
 
 export function arr_diff<T>(arr1: T[], arr2: T[]): T[] {

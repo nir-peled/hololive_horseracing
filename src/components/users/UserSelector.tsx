@@ -1,10 +1,8 @@
 "use client";
 
-import React /*, { useState }*/ from "react";
-// import FilterSearchBar from "../FilterSearchBar";
+import React from "react";
 import SelectOption from "../SelectOption";
 import { useUsersList } from "@/src/lib/hooks";
-// import { users_filtered_by_display_name } from "@/src/lib/utils";
 import { useTranslation } from "react-i18next";
 
 interface Props {
@@ -27,16 +25,10 @@ export default function UserSelector({
 	disabled_options,
 }: Props) {
 	const { t } = useTranslation(namespaces);
-	// const [filter, set_filter] = useState<string>("");
 	const { data, loading } = useUsersList();
-
-	// const filtered_users = users_filtered_by_display_name(users, filter);
 
 	return (
 		<div>
-			{/* maybe try moving the filter inside the select? might look better */}
-			{/* <FilterSearchBar name="username-filter" update_filter={set_filter} /> */}
-			{/* <br /> */}
 			<SelectOption
 				name={field_name}
 				loading={loading}

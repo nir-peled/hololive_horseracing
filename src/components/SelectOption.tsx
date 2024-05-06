@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
 import Select from "react-select";
-import LoadingMarker from "./LoadingMarker";
 import { RefCallBack } from "react-hook-form";
+import LoadingMarker from "./LoadingMarker";
 
 interface Props {
 	name?: string;

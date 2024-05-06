@@ -6,6 +6,7 @@ interface Props {
 	contestants: RaceContestantsData;
 }
 
+// TODO: to be fileld later
 export function RaceResultsForm({ id, contestants }: Props) {
 	return <div></div>;
 }

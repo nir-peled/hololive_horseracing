@@ -7,7 +7,7 @@ interface Props {
 	size?: "regular" | "small" | "large";
 }
 
-// ADD SOME WAY TO DISPLAY TINY IMAGES
+// ADD SOME WAY TO DISPLAY DIFFERENT IMAGE SIZES
 export default function IconImage({ icon, size }: Props) {
 	const [image_uri, set_image_uri] = useState<string>("");
 

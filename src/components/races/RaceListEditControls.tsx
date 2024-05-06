@@ -1,7 +1,6 @@
 import React from "react";
 import { Locale } from "@/src/lib/types";
 import initTranslations from "@/src/lib/i18n";
-// import { get_race_flags } from "@/src/lib/actions";
 import Button from "../Button";
 import RaceOpenBetsButton from "./RaceOpenBetsButton";
 import RaceEndButton from "./RaceEndButton";
@@ -24,10 +23,6 @@ export default async function RaceListEditControls({
 	locale,
 }: Props) {
 	const { t } = await initTranslations(locale, namespaces);
-	// const flags = await get_race_flags(id);
-	// if (!flags) return undefined;
-	// const { isOpenBets, isEnded } = flags;
-
 	const is_editable = !isOpenBets && !isEnded;
 
 	return (

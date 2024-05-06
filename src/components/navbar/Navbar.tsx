@@ -1,12 +1,12 @@
 import React from "react";
 import Image from "next/image";
+import { database_factory } from "@/src/lib/database";
 import initTranslations from "@/src/lib/i18n";
-import { auth } from "@/src/lib/auth";
 import { Locale } from "@/src/lib/types";
+import { auth } from "@/src/lib/auth";
 import LanguageSelector from "./LanguageSelector";
 import UserIconMenu from "./UserIconMenu";
 import NavbarLinks from "./NavbarLinks";
-import { database_factory } from "@/src/lib/database";
 
 const namespaces = ["common"];
 
@@ -16,7 +16,6 @@ interface Props {
 
 export default async function Navbar({ locale }: Props) {
 	const { t } = await initTranslations(locale, namespaces);
-	// const user = await get_user_data();
 	const user = (await auth())?.user;
 	const user_image =
 		user && (await database_factory.user_database().get_user_image_as_str(user));

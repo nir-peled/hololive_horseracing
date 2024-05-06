@@ -14,8 +14,8 @@ export default async function UpwardLink({ locale }: Props) {
 	const { t } = await initTranslations(locale, namespaces);
 
 	return (
-		<Button>
-			<Link href="..">{t("up-link")}</Link>
-		</Button>
+		<Link href=".." className="btn">
+			{t("up-link")}
+		</Link>
 	);
 }

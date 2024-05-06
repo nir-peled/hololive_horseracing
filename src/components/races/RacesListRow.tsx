@@ -1,7 +1,7 @@
 import React from "react";
-import type { HorseData, Locale, RaceData, UserData } from "@/src/lib/types";
-import ProtectedLink from "../ProtectedLink";
+import type { Locale, RaceData } from "@/src/lib/types";
 import RaceRowRacer from "./RaceRowRacer";
+import ProtectedLink from "../ProtectedLink";
 import DeadlineCounter from "./DeadlineCounter";
 import RaceListEditControls from "./RaceListEditControls";
 
@@ -11,7 +11,7 @@ interface Props {
 	is_management?: boolean;
 }
 
-const namespaces = ["races"];
+// const namespaces = ["races"];
 
 export default async function RacesListRow({
 	locale,

@@ -1,15 +1,14 @@
-import { NextAuthConfig, User } from "next-auth";
 import { NextResponse } from "next/server";
+import { NextAuthConfig, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { UserRole } from "@/src/lib/types";
-import { get_locale_from_path } from "@/src/lib/i18n";
 import { locales } from "@/i18nConfig";
+import { UserRole } from "@/src/lib/types";
 import { is_path_authorized } from "@/src/lib/auth";
+import { get_locale_from_path } from "@/src/lib/i18n";
 import { database_factory } from "@/src/lib/database";
 
 export const authConfig: NextAuthConfig = {
 	callbacks: {
-		// to add: restricting path by user role
 		async authorized({ auth, request: { nextUrl } }) {
 			const user = auth?.user;
 			const is_logged_in = !!user;
@@ -60,16 +59,8 @@ export const authConfig: NextAuthConfig = {
 
 		// add user data to session from token, plus user image
 		async session(params: any) {
-			// cannot let me extract token otherwise for some reason
-			// console.log("\n\ncallback session"); // debug
 			let { session, token } = params;
-			// console.log("token:"); // debug
-			// console.log(token); // debug
-			// console.log("session:"); // debug
-			// console.log(session); // debug
 			session.user = { ...token.user_data };
-			// console.log("session after:"); // debug
-			// console.log(session); // debug
 			return session;
 		},
 	},
@@ -86,14 +77,10 @@ export const authConfig: NextAuthConfig = {
 					username: string;
 					password: string;
 				};
-				console.log(`username: ${username}`); // debug
-				console.log(`password: ${password}`); // debug
 
 				let is_password = await database_factory
 					.user_database()
 					.is_user_password(username, password);
-				console.log(`is user password: ${is_password}`); // debug
-
 				if (!is_password) return null;
 
 				return {

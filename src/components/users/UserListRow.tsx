@@ -1,13 +1,12 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import type { Locale } from "@/src/lib/types";
 import Button from "../Button";
 import ProtectedLink from "../ProtectedLink";
 import DeleteUserButton from "./DeleteUserButton";
-import type { Locale } from "@/src/lib/types";
 
 interface Props {
 	user: { name: string; display_name: string };
-	// key: number;
 	on_error?: (error: string) => void;
 	on_delete?: (name: string) => void;
 	hidden?: true | undefined;
@@ -17,7 +16,6 @@ const namespaces = ["management"];
 
 export default function UserListRow({
 	user: { name, display_name },
-	// key,
 	on_error,
 	on_delete,
 	hidden,

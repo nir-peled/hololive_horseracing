@@ -1,21 +1,17 @@
 "use client";
 import React, { BaseSyntheticEvent, useState } from "react";
-import useSWR from "swr";
-import { useTranslation } from "react-i18next";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { TFunction } from "i18next";
+import useSWR from "swr";
 import { z } from "zod";
-import { json_fetcher } from "@/src/lib/hooks";
+import { date_to_datetime_local, datetime_local_to_date } from "@/src/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { json_fetcher, useSubmitter } from "@/src/lib/hooks";
 import { RaceFormData } from "@/src/lib/types";
-import {
-	date_to_datetime_local,
-	datetime_local_to_date,
-	join_with_separator,
-} from "@/src/lib/utils";
 import LoadingMarker from "../LoadingMarker";
-import Alert from "../Alert";
 import Button from "../Button";
+import Alert from "../Alert";
 import TextFormInput from "../forms/TextFormInput";
 import EnabledFormInput from "../forms/EnabledFormInput";
 import AddContestantSelect from "./AddContestantSelect";
@@ -63,34 +59,44 @@ export default function EditRaceForm({ id }: Props) {
 
 	const [is_failed, set_is_failed] = useState<boolean>(false);
 
-	async function submit_form(data: RaceFormData, event?: BaseSyntheticEvent) {
-		if (event) event.preventDefault();
+	let endpoint = `/api/management/races/${id ? "edit" : "new"}`;
+	if (id) endpoint += "?" + encodeURIComponent(id);
+	const submit_form = useSubmitter<RaceFormData>(
+		endpoint,
+		is_failed,
+		set_is_failed,
+		default_values,
+		reset
+	);
 
-		let endpoint = `/api/management/races/${id ? "edit" : "new"}`;
-		if (id) endpoint += "?" + encodeURIComponent(id);
+	// async function submit_form(data: RaceFormData, event?: BaseSyntheticEvent) {
+	// 	if (event) event.preventDefault();
 
-		let form_data = new FormData();
-		for (let [key, value] of Object.entries(data))
-			if (
-				value != undefined &&
-				(!default_values || default_values[key as keyof RaceFormData] != value)
-			)
-				form_data.append(key, JSON.stringify(value));
+	// 	let endpoint = `/api/management/races/${id ? "edit" : "new"}`;
+	// 	if (id) endpoint += "?" + encodeURIComponent(id);
 
-		let result = await fetch(endpoint, {
-			method: "POST",
-			body: form_data,
-		});
+	// 	let form_data = new FormData();
+	// 	for (let [key, value] of Object.entries(data))
+	// 		if (
+	// 			value != undefined &&
+	// 			(!default_values || default_values[key as keyof RaceFormData] != value)
+	// 		)
+	// 			form_data.append(key, JSON.stringify(value));
 
-		if (result.ok) {
-			// if form is used for new user, reset the form to empty
-			if (!id) reset();
-			if (is_failed) set_is_failed(false);
-		} else {
-			reset(data);
-			set_is_failed(true);
-		}
-	}
+	// 	let result = await fetch(endpoint, {
+	// 		method: "POST",
+	// 		body: form_data,
+	// 	});
+
+	// 	if (result.ok) {
+	// 		// if form is used for new user, reset the form to empty
+	// 		if (!id) reset();
+	// 		if (is_failed) set_is_failed(false);
+	// 	} else {
+	// 		reset(data);
+	// 		set_is_failed(true);
+	// 	}
+	// }
 
 	if (isLoading) return <LoadingMarker />;
 

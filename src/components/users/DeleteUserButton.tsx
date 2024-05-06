@@ -1,9 +1,9 @@
 "use client";
 
+import { useFormState, useFormStatus } from "react-dom";
+import { useTranslation } from "react-i18next";
 import React from "react";
 import Button from "../Button";
-import { useTranslation } from "react-i18next";
-import { useFormState, useFormStatus } from "react-dom";
 
 interface Props {
 	name: string;
@@ -16,7 +16,6 @@ const namespaces = ["management"];
 
 export default function DeleteUserButton({ name, on_error, on_delete, hidden }: Props) {
 	const { t } = useTranslation(namespaces);
-	const [_, dispatch] = useFormState(send_delete, undefined);
 	const { pending } = useFormStatus();
 
 	async function send_delete() {
@@ -33,11 +32,10 @@ export default function DeleteUserButton({ name, on_error, on_delete, hidden }: 
 				.json()
 				.then((data) => on_error(data.message))
 				.catch(() => on_error("user-delete-error"));
-		// on_error(t("user-delete-error"));
 	}
 
 	return (
-		<form action={dispatch}>
+		<form action={send_delete}>
 			<Button disabled={pending} className={hidden && "max-h-0"}>
 				{t("user-delete-button")}
 			</Button>

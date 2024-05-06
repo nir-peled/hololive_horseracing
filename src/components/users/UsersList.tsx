@@ -1,11 +1,11 @@
 "use client";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useUsersList } from "@/src/lib/hooks";
 import { users_filtered_by_display_name } from "@/src/lib/utils";
-import FilterSearchBar from "../FilterSearchBar";
+import { useUsersList } from "@/src/lib/hooks";
 import Alert from "../Alert";
 import UserListRow from "./UserListRow";
+import FilterSearchBar from "../FilterSearchBar";
 
 const namespaces = ["management"];
 
@@ -39,7 +39,7 @@ export default function UsersList() {
 						</tr>
 					</thead>
 					<tbody>
-						{/* for spacing */}
+						{/* empty row for spacing */}
 						<UserListRow user={{ name: "", display_name: "" }} hidden />
 						{filtered_users.map((user) => (
 							<UserListRow

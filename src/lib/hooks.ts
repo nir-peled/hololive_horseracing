@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { BaseSyntheticEvent, useEffect, useState } from "react";
 import { RaceData, UserData } from "./types";
 import useSWR from "swr";
 
@@ -48,6 +48,8 @@ export function useCountdown(deadline: Date) {
 		return () => clearInterval(interval);
 	}, [deadline_time]);
 
+	// if (countdown < 0) window.location.reload;
+
 	return get_countdown_parts(countdown);
 }
 
@@ -60,6 +62,53 @@ export function useFetchList<TValue>(url: string): UseListReturnType<TValue> {
 	const { data, error, isLoading, mutate } = useSWR<TValue[]>(url, json_fetcher);
 
 	return { data: data ? data : [], loading: isLoading, error, mutate };
+}
+
+/**
+ * Create a function that submits form data to an endpoint, and
+ * handles default values, form reset and failed flag
+ *
+ * @param endpoint the endpoint to submit to
+ * @param is_failed the current form failed flag
+ * @param set_is_failed form failed flag setter
+ * @param default_values the form's default values - submit only values not in here
+ * @param reset form reset hook
+ * @param method fetch method - default is POST
+ * @returns the submitter function, can use with handleSubmit
+ */
+export function useSubmitter<T extends Record<string, any>>(
+	endpoint: string,
+	is_failed: boolean,
+	set_is_failed: (is_success: boolean) => void,
+	default_values?: { [K in keyof T]?: T[K] | undefined } | undefined,
+	reset?: (data?: T | undefined) => void,
+	method: string = "POST"
+): (data: T, event?: BaseSyntheticEvent) => Promise<void> {
+	return async (data: T, event?: BaseSyntheticEvent) => {
+		if (event) event.preventDefault();
+
+		let form_data = new FormData();
+		for (let [key, value] of Object.entries(data))
+			if (
+				value != undefined &&
+				(!default_values || default_values[key as keyof T] != value)
+			)
+				form_data.append(key, JSON.stringify(value));
+
+		let result = await fetch(endpoint, {
+			method,
+			body: form_data,
+		});
+
+		if (result.ok) {
+			// if form is used for new user, reset the form to empty
+			if (reset) reset();
+			if (is_failed) set_is_failed(false);
+		} else {
+			if (reset) reset(data);
+			set_is_failed(true);
+		}
+	};
 }
 
 function get_countdown_parts(countdown: number) {

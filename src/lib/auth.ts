@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
+import { UrlObject } from "url";
 import NextAuth from "next-auth";
+import { NextRequest, NextResponse } from "next/server";
 import { authConfig } from "@/auth.config";
 import { UserRole } from "./types";
-import { UrlObject } from "url";
 import { HTTPResponseCodes } from "./http";
 
 export const { auth, signIn, signOut } = NextAuth(authConfig);

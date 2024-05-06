@@ -5,9 +5,10 @@ import { useTranslation } from "react-i18next";
 import TextFormInput from "./TextFormInput";
 
 const namespaces = ["auth"];
+type base_t = { username: string; password: string };
 
-interface Props {
-	register?: UseFormRegister<any>;
+interface Props<T extends base_t> {
+	register?: UseFormRegister<T>;
 	errors?: {
 		username?: { message?: string };
 		password?: { message?: string };
@@ -15,7 +16,11 @@ interface Props {
 	username?: string | undefined;
 }
 
-export default function FomLoginInputs({ register, errors, username }: Props) {
+export default function FomLoginInputs<T extends base_t>({
+	register,
+	errors,
+	username,
+}: Props<T>) {
 	const { t } = useTranslation(namespaces);
 
 	return (

@@ -1,7 +1,7 @@
 import React from "react";
 import { HorseData, UserData } from "@/src/lib/types";
-import IconImage from "../IconImage";
 import { database_factory } from "@/src/lib/database";
+import IconImage from "../IconImage";
 
 interface Props {
 	user: UserData;

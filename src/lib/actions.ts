@@ -9,12 +9,7 @@ export async function authenticate(prevState: string | undefined, form_data: For
 		await signIn("credentials", form_data);
 	} catch (error) {
 		if (error instanceof AuthError) {
-			switch (error.type) {
-				case "CredentialsSignin":
-					return "Invalid credentials.";
-				default:
-					return "Something went wrong.";
-			}
+			return get_auth_error(error);
 		}
 		throw error;
 	}
@@ -25,16 +20,20 @@ export async function logout(locale: Locale) {
 		await signOut({ redirect: true, redirectTo: `/${locale}/login` });
 	} catch (error) {
 		if (error instanceof AuthError) {
-			switch (error.type) {
-				case "CredentialsSignin":
-					return "Invalid credentials.";
-				default:
-					return "Something went wrong.";
-			}
+			return get_auth_error(error);
 		}
 		throw error;
 	}
 	// await signOut();
+}
+
+function get_auth_error(error: AuthError): string {
+	switch (error.type) {
+		case "CredentialsSignin":
+			return "login-credentials-invalid";
+		default:
+			return "login-something-wrong";
+	}
 }
 
 export async function new_user(params: UserFormData): Promise<boolean> {
@@ -44,8 +43,8 @@ export async function new_user(params: UserFormData): Promise<boolean> {
 		await database_factory.user_database().create_user(params);
 		return true;
 	} catch (error) {
-		console.log("error creating user:"); // debug
-		console.log(error); // debug
+		// console.log("error creating user:"); // debug
+		// console.log(error); // debug
 		return false;
 	}
 }

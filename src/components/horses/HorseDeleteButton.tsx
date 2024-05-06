@@ -14,11 +14,10 @@ interface Props {
 const namespaces = ["races"];
 
 export default function HorseDeleteButton({ name, on_delete, on_error, hidden }: Props) {
-	const { t } = useTranslation(namespaces);
-	const [_, dispatch] = useFormState(send_delete, undefined);
-	const { pending } = useFormStatus();
-
 	if (hidden) return;
+
+	const { t } = useTranslation(namespaces);
+	const { pending } = useFormStatus();
 
 	async function send_delete() {
 		if (!confirm(t("horse-delete-confirm"))) return;
@@ -37,7 +36,7 @@ export default function HorseDeleteButton({ name, on_delete, on_error, hidden }:
 	}
 
 	return (
-		<form action={dispatch}>
+		<form action={send_delete}>
 			<Button disabled={pending}>{t("horse-delete-button")}</Button>
 		</form>
 	);

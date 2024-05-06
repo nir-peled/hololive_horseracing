@@ -1,6 +1,6 @@
 import React from "react";
-import { Locale } from "@/src/lib/types";
 import initTranslations from "@/src/lib/i18n";
+import { Locale } from "@/src/lib/types";
 import ProtectedLink from "../ProtectedLink";
 
 interface Props {

@@ -10,7 +10,7 @@ interface Props {
 export default async function RaceResultsEditor({ id }: Props) {
 	const contestants = await database_factory.race_database().get_race_contestants(id);
 
-	if (!contestants) return notFound();
+	if (contestants == null) return notFound();
 
 	return <RaceResultsForm id={id} contestants={contestants} />;
 }

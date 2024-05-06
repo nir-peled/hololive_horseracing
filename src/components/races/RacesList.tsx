@@ -1,8 +1,8 @@
 import React from "react";
-import type { Locale } from "@/src/lib/types";
-import RacesListRow from "./RacesListRow";
-import initTranslations from "@/src/lib/i18n";
 import { database_factory } from "@/src/lib/database";
+import type { Locale } from "@/src/lib/types";
+import initTranslations from "@/src/lib/i18n";
+import RacesListRow from "./RacesListRow";
 
 interface Props {
 	locale: Locale;

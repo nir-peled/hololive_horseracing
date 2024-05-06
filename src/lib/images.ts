@@ -6,10 +6,11 @@ import { HorseData, UserData } from "./types";
 export function default_user_image(user: UserData | HorseData): string {
 	if ("display_name" in user && user.display_name) return user.display_name.slice(0, 2);
 	return user.name.slice(0, 2);
-} // using NEXT_PUBLIC_ so the variables will also be available in
+}
+
+// using NEXT_PUBLIC_ so the variables will also be available in
 // a browser environment - replaced with values at build time
 // for more flexible usage, should use database
-
 export function get_file_limitations() {
 	const max_file_size_str = process.env.NEXT_PUBLIC_MAX_USER_ICON_SIZE;
 	const allowed_files_str = process.env.NEXT_PUBLIC_USER_ICON_TYPES;

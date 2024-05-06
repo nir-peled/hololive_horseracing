@@ -11,7 +11,6 @@ interface Props {
 	disabled?: boolean;
 }
 
-// TO BE FILLED LATER
 export default function RaceOpenBetsButton({ id, isOpenBets, disabled }: Props) {
 	const { t } = useTranslation(namespaces);
 

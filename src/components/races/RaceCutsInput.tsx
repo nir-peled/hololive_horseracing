@@ -1,8 +1,8 @@
 "use client";
-import { join_with_separator } from "@/src/lib/utils";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { UseFormRegister } from "react-hook-form";
+import { join_with_separator } from "@/src/lib/utils";
 import { Concat } from "@/src/lib/types";
 import EnabledFormInput from "../forms/EnabledFormInput";
 import TextFormInput from "../forms/TextFormInput";
@@ -12,20 +12,21 @@ const namespaces = ["races"];
 const cuts_names = ["house", "win", "place", "show"] as const;
 
 type cut_name_t = Concat<[(typeof cuts_names)[number], "_cut"]>;
+type base_t = { [K in cut_name_t]?: number | undefined };
 
-interface Props {
+interface Props<T extends base_t> {
 	default_values?: Partial<Record<cut_name_t, number | undefined>>;
 	reset: (name: cut_name_t, opt: { defaultValue?: number }) => void;
-	register?: UseFormRegister<any>;
+	register?: UseFormRegister<T>;
 	errors: Partial<Record<cut_name_t, { message?: string }>>;
 }
 
-export default function RaceCutsInput({
+export default function RaceCutsInput<T extends base_t>({
 	default_values,
 	reset,
 	register,
 	errors,
-}: Props) {
+}: Props<T>) {
 	const { t } = useTranslation(namespaces);
 	return (
 		<EnabledFormInput

@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import Button from "../Button";
 import ProtectedLink from "../ProtectedLink";
 
 const namespaces = ["races"];
