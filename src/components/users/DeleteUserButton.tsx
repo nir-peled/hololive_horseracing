@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useFormStatus } from "react-dom";
 import { useTranslation } from "react-i18next";
 import React from "react";
 import Button from "../Button";
