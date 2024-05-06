@@ -1,10 +1,10 @@
-import { Prisma, PrismaClient, Race } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import {
 	UserDatabase,
 	HorseDatabase,
 	RaceDatabase,
 	QueryResult,
-	UserDataOps,
+	UserDataOps as GetUserDataOptions,
 	RaceParameters,
 	user_data_select,
 	Select,
@@ -51,11 +51,9 @@ export class PrismaDatabase implements UserDatabase, HorseDatabase, RaceDatabase
 			select: { name: true, password: true },
 		});
 		if (!user) {
-			console.log(`user .${name}. not found`); // debug
 			return false;
 		}
 
-		console.log("found user, comparing passwords"); // debug
 		return await this.encryptor.compare_passwords(password, user.password);
 	}
 
@@ -105,7 +103,7 @@ export class PrismaDatabase implements UserDatabase, HorseDatabase, RaceDatabase
 		user,
 		to_token,
 		select,
-	}: UserDataOps = {}): Promise<UserData | null> {
+	}: GetUserDataOptions = {}): Promise<UserData | null> {
 		if (!user) {
 			if (!session) session = await auth();
 			// console.log("session: "); // debug
@@ -393,7 +391,6 @@ export class PrismaDatabase implements UserDatabase, HorseDatabase, RaceDatabase
 		table: "user" | "horse",
 		user: string | UserData | HorseData
 	): Promise<string> {
-		let name = typeof user == "string" ? user : user.name;
 		let user_data =
 			typeof user == "string" ? await this.#get_entry_data_for_image(table, user) : user;
 		let image = user_data?.image;

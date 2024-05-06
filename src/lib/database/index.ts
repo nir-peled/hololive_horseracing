@@ -147,22 +147,21 @@ export class BasicDatabaseFactory implements DatabaseFactory {
 
 	constructor(encryptor: Encryptor) {
 		this.encryptor = encryptor;
-		// this.user_db = this.race_db = this.horse_db = new PrismaDatabase(this.encryptor);
 	}
 
 	user_database(): UserDatabase {
-		if (!this.user_db) this.user_db = new PrismaDatabase(this.encryptor);
-		return this.user_db;
+		if (!this.user_db) this.#create_db();
+		return this.user_db as UserDatabase;
 	}
 
 	horse_database(): HorseDatabase {
-		if (!this.horse_db) this.horse_db = new PrismaDatabase(this.encryptor);
-		return this.horse_db;
+		if (!this.horse_db) this.#create_db();
+		return this.horse_db as HorseDatabase;
 	}
 
 	race_database(): RaceDatabase {
-		if (!this.race_db) this.race_db = new PrismaDatabase(this.encryptor);
-		return this.race_db;
+		if (!this.race_db) this.#create_db();
+		return this.race_db as RaceDatabase;
 	}
 
 	get_encryptor(): Encryptor {
@@ -171,6 +170,10 @@ export class BasicDatabaseFactory implements DatabaseFactory {
 
 	set_encryptor(encryptor: Encryptor) {
 		this.encryptor = encryptor;
+	}
+
+	#create_db() {
+		this.user_db = this.race_db = this.horse_db = new PrismaDatabase(this.encryptor);
 	}
 }
 
