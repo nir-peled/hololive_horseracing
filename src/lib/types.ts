@@ -60,7 +60,7 @@ export interface HorseData {
 export interface ContestantData {
 	jockey: string;
 	horse: string;
-	race_id: number;
+	race_id: bigint;
 	place?: number;
 	odds_denominator: number;
 	odds_numerator: number;
@@ -93,6 +93,25 @@ export interface RaceFormData {
 	place_cut?: number;
 	show_cut?: number;
 	contestants: ContestantFormType[];
+}
+
+export interface RaceParameters {
+	name: string;
+	isOpenBets: boolean;
+	isEnded: boolean;
+	deadline?: Date | null;
+}
+
+export interface ContestantDisplayData {
+	place?: number;
+	jockey: {
+		name: string;
+		image: string;
+	};
+	horse: {
+		name: string;
+		image: string;
+	};
 }
 
 // currently unused

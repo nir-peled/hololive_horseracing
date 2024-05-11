@@ -1,5 +1,7 @@
 import { Session } from "next-auth";
 import {
+	ContestantData,
+	ContestantDisplayData,
 	HorseData,
 	RaceContestantsData,
 	RaceData,
@@ -12,19 +14,13 @@ import {
 import { Encryptor } from "../encryptor";
 import { CryptoEncryptor } from "../encryptor/crypto_encryptor";
 import { PrismaDatabase } from "./prisma_db";
+import { RaceParameters } from "../types";
 
-export interface UserDataOps {
+export interface GetUserDataOptions {
 	session?: Session | null;
 	user?: string;
 	to_token?: boolean;
 	select?: UserDataSelect;
-}
-
-export interface RaceParameters {
-	name: string;
-	isOpenBets: boolean;
-	isEnded: boolean;
-	deadline?: Date | null;
 }
 
 export const user_data_select = {
@@ -67,6 +63,23 @@ export const race_parameters_select = {
 	deadline: true,
 };
 
+export const competitors_display_data_select = {
+	place: true,
+	jockey: {
+		select: {
+			name: true,
+			display_name: true,
+			image: true,
+		},
+	},
+	horse: {
+		select: {
+			name: true,
+			image: true,
+		},
+	},
+};
+
 export type Select<T> = Partial<Record<keyof T, boolean> & { id: boolean }>;
 export type QueryResult<TBase, TSelect> = {
 	[key in keyof (TBase | TSelect)]: TBase[key];
@@ -83,7 +96,7 @@ export interface UserDatabase {
 
 	edit_user(name: string, data: Partial<UserFormData>): Promise<boolean>;
 
-	get_user_data(options?: UserDataOps): Promise<UserData | null>;
+	get_user_data(options?: GetUserDataOptions): Promise<UserData | null>;
 
 	get_user_image(name: string): Promise<Buffer | null>;
 
@@ -120,7 +133,9 @@ export interface RaceDatabase {
 
 	get_race_data(id: bigint, select?: Select<RaceData>): Promise<RaceData | null>;
 
-	get_race_contestants(id: bigint): Promise<RaceContestantsData | null>;
+	get_race_contestants_data(id: bigint): Promise<RaceContestantsData | null>;
+
+	get_race_contestants(id: bigint): Promise<ContestantData[] | null>;
 
 	create_race(race_data: RaceFormData): Promise<boolean>;
 
@@ -129,6 +144,8 @@ export interface RaceDatabase {
 	try_edit_race(id: bigint, race_data: Partial<RaceFormData>): Promise<boolean>;
 
 	close_races_bets_at_deadline(): Promise<number>;
+
+	get_contestants_display_data(id: bigint): Promise<ContestantDisplayData[]>;
 }
 
 export interface DatabaseFactory {

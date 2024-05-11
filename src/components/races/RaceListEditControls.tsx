@@ -6,6 +6,8 @@ import RaceOpenBetsButton from "./RaceOpenBetsButton";
 import RaceEndButton from "./RaceEndButton";
 import ProtectedLink from "../ProtectedLink";
 import RaceDeleteButton from "./RaceDeleteButton";
+import { auth } from "@/src/lib/auth";
+import { SessionProvider } from "next-auth/react";
 
 interface Props {
 	id: bigint;
@@ -23,10 +25,11 @@ export default async function RaceListEditControls({
 	locale,
 }: Props) {
 	const { t } = await initTranslations(locale, namespaces);
+	const session = await auth();
 	const is_editable = !isOpenBets && !isEnded;
 
 	return (
-		<>
+		<SessionProvider session={session}>
 			<td>
 				<RaceOpenBetsButton id={id} isOpenBets={isOpenBets} disabled={isEnded} />
 			</td>
@@ -46,6 +49,6 @@ export default async function RaceListEditControls({
 			<td>
 				<RaceDeleteButton id={id} disabled={!is_editable} />
 			</td>
-		</>
+		</SessionProvider>
 	);
 }

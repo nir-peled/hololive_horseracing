@@ -1,16 +1,18 @@
 import { notFound } from "next/navigation";
 import React from "react";
 import { database_factory } from "@/src/lib/database";
-import { RaceResultsForm } from "./RaceResultsForm";
+import { RaceResultsEditForm } from "./RaceResultsEditForm";
 
 interface Props {
 	id: bigint;
 }
 
 export default async function RaceResultsEditor({ id }: Props) {
-	const contestants = await database_factory.race_database().get_race_contestants(id);
+	const contestants = await database_factory
+		.race_database()
+		.get_race_contestants_data(id);
 
 	if (contestants == null) return notFound();
 
-	return <RaceResultsForm id={id} contestants={contestants} />;
+	return <RaceResultsEditForm id={id} contestants={contestants} />;
 }

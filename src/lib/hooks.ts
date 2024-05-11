@@ -1,6 +1,8 @@
 import { BaseSyntheticEvent, useEffect, useState } from "react";
-import { RaceData, UserData } from "./types";
+import { useSession } from "next-auth/react";
 import useSWR from "swr";
+import { RaceData, UserData } from "./types";
+import { is_path_authorized } from "./auth";
 
 // type UsersList = Awaited<ReturnType<typeof fetch_usernames>>;
 type UseUsersData = { name: string; display_name: string };
@@ -62,6 +64,11 @@ export function useFetchList<TValue>(url: string): UseListReturnType<TValue> {
 	const { data, error, isLoading, mutate } = useSWR<TValue[]>(url, json_fetcher);
 
 	return { data: data ? data : [], loading: isLoading, error, mutate };
+}
+
+export function useIsAuthorized(endpoint: string): boolean {
+	const user = useSession().data?.user;
+	return is_path_authorized(endpoint, user?.role);
 }
 
 /**

@@ -2,6 +2,9 @@
 import React from "react";
 import Button from "../Button";
 import { useTranslation } from "react-i18next";
+import { is_path_authorized } from "@/src/lib/auth";
+import { useSession } from "next-auth/react";
+import { useIsAuthorized } from "@/src/lib/hooks";
 
 const namespaces = ["races"];
 
@@ -13,10 +16,14 @@ interface Props {
 
 export default function RaceOpenBetsButton({ id, isOpenBets, disabled }: Props) {
 	const { t } = useTranslation(namespaces);
+	const endpoint = `/api/races/${id}/set_open_bets`;
+	const is_authorized = useIsAuthorized(endpoint);
+
+	if (!is_authorized) return;
 
 	async function toggle_bets() {
 		const new_state = !isOpenBets;
-		let response = await fetch(`/api/races/${id}/set_open_bets`, {
+		let response = await fetch(endpoint, {
 			method: "POST",
 			body: JSON.stringify({
 				isOpenBets: new_state,

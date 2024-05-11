@@ -32,10 +32,7 @@ export default async function ProtectedLink({
 	className,
 	use_role,
 }: Props) {
-	if (!use_role) {
-		const user = (await auth())?.user;
-		use_role = user?.role;
-	}
+	if (!use_role) use_role = (await auth())?.user?.role;
 
 	if (!is_path_authorized(href, use_role) && !force) return;
 
