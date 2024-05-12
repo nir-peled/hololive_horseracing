@@ -21,14 +21,12 @@ const namespaces = ["races"];
 const positions = ["first", "second", "third"] as const;
 // type position_t = (typeof positions)[number];
 
-// TODO: to be fileld later
 export function RaceResultsEditForm({ id, contestants }: Props) {
 	const { t } = useTranslation(namespaces);
 	const schema = create_schema(t);
 	const [is_failed, set_is_failed] = useState<boolean>(false);
 
 	const {
-		register,
 		control,
 		handleSubmit,
 		formState: { errors, isSubmitted, isSubmitSuccessful },

@@ -36,14 +36,9 @@ export default function SelectFormInput<T>({
 			<Controller
 				name={name}
 				control={control}
-				render={({ field: { onChange, onBlur, value, name, ref, disabled } }) => (
+				render={({ field }) => (
 					<Select
-						name={name}
-						ref={ref}
-						onBlur={onBlur}
-						isDisabled={disabled}
-						onChange={onChange}
-						value={value}
+						{...field}
 						components={render_option && { Option: option_factory<T>(render_option) }}
 						options={options}
 						isOptionDisabled={(option) => disabled_options.includes(option)}
