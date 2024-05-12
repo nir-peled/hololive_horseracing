@@ -64,6 +64,7 @@ export const race_parameters_select = {
 };
 
 export const competitors_display_data_select = {
+	id: true,
 	place: true,
 	jockey: {
 		select: {

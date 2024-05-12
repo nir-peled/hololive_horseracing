@@ -71,6 +71,15 @@ export function useIsAuthorized(endpoint: string): boolean {
 	return is_path_authorized(endpoint, user?.role);
 }
 
+interface UseSubmitterParams<T extends Record<string, any>> {
+	is_failed?: boolean;
+	set_is_failed?: (is_failure: boolean) => void;
+	default_values?: { [K in keyof T]?: T[K] | undefined } | undefined;
+	reset?: (data?: Partial<T> | undefined) => void;
+	method?: string;
+	on_success?: (data: Partial<T>, response: Response) => void;
+}
+
 /**
  * Create a function that submits form data to an endpoint, and
  * handles default values, form reset and failed flag
@@ -80,18 +89,21 @@ export function useIsAuthorized(endpoint: string): boolean {
  * @param set_is_failed form failed flag setter
  * @param default_values the form's default values - submit only values not in here
  * @param reset form reset hook
- * @param method fetch method - default is POST
+ * @param method fetch HTTP method - default is POST
  * @returns the submitter function, can use with handleSubmit
  */
 export function useSubmitter<T extends Record<string, any>>(
 	endpoint: string,
-	is_failed: boolean,
-	set_is_failed: (is_success: boolean) => void,
-	default_values?: { [K in keyof T]?: T[K] | undefined } | undefined,
-	reset?: (data?: T | undefined) => void,
-	method: string = "POST"
-): (data: T, event?: BaseSyntheticEvent) => Promise<void> {
-	return async (data: T, event?: BaseSyntheticEvent) => {
+	{
+		is_failed,
+		set_is_failed,
+		default_values,
+		reset,
+		method = "POST",
+		on_success,
+	}: UseSubmitterParams<T>
+): (data: Partial<T>, event?: BaseSyntheticEvent) => Promise<void> {
+	return async (data: Partial<T>, event?: BaseSyntheticEvent) => {
 		if (event) event.preventDefault();
 
 		let form_data = new FormData();
@@ -99,8 +111,10 @@ export function useSubmitter<T extends Record<string, any>>(
 			if (
 				value != undefined &&
 				(!default_values || default_values[key as keyof T] != value)
-			)
-				form_data.append(key, JSON.stringify(value));
+			) {
+				const form_value = typeof value == "string" ? value : JSON.stringify(value);
+				form_data.append(key, form_value);
+			}
 
 		let result = await fetch(endpoint, {
 			method,
@@ -110,10 +124,11 @@ export function useSubmitter<T extends Record<string, any>>(
 		if (result.ok) {
 			// if form is used for new user, reset the form to empty
 			if (reset) reset();
-			if (is_failed) set_is_failed(false);
+			if (is_failed && set_is_failed) set_is_failed(false);
+			if (on_success) on_success(data, result);
 		} else {
 			if (reset) reset(data);
-			set_is_failed(true);
+			if (set_is_failed) set_is_failed(true);
 		}
 	};
 }

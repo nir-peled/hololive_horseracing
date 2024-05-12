@@ -103,6 +103,7 @@ export interface RaceParameters {
 }
 
 export interface ContestantDisplayData {
+	id: bigint;
 	place?: number;
 	jockey: {
 		name: string;
@@ -113,6 +114,12 @@ export interface ContestantDisplayData {
 		image: string;
 	};
 }
+
+export type ContestantPlacementData = {
+	first: bigint;
+	second: bigint;
+	third: bigint;
+};
 
 // currently unused
 // export type MiddlewareFactory = (middleware: NextMiddleware) => NextMiddleware;

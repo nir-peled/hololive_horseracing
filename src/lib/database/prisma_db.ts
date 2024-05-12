@@ -441,7 +441,8 @@ export class PrismaDatabase implements UserDatabase, HorseDatabase, RaceDatabase
 
 		// Promise.all bc async functions return promises
 		return Promise.all(
-			result.competitors.map(async ({ horse, jockey, place }) => ({
+			result.competitors.map(async ({ id, horse, jockey, place }) => ({
+				id,
 				place: place != null ? place : undefined,
 				jockey: {
 					name: jockey.display_name || jockey.name,
