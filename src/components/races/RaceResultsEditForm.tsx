@@ -42,7 +42,7 @@ export function RaceResultsEditForm({ id, contestants }: Props) {
 	// useMemo in order to call it unnecessarily
 	const disabled_options = useMemo(
 		() => contestants.filter((con) => chosen_ids.includes(con.id)),
-		[chosen_ids]
+		[contestants, chosen_ids]
 	);
 
 	const submit_results = useSubmitter<ContestantPlacementData>(
@@ -56,8 +56,9 @@ export function RaceResultsEditForm({ id, contestants }: Props) {
 
 	return (
 		<form onSubmit={handleSubmit(submit_results)}>
-			{positions.map((position) => (
+			{positions.map((position, i) => (
 				<SelectFormInput
+					key={i}
 					name={position}
 					label={t(`race-contestant-${position}`)}
 					error={errors[position]?.message}
