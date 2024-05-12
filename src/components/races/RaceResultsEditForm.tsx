@@ -63,13 +63,14 @@ export function RaceResultsEditForm({ id, contestants }: Props) {
 					options={contestants}
 					disabled_options={disabled_options}
 					control={control}
-					render_option={({ jockey, horse }, { isDisabled, isFocused }) => {
-						const colour = isDisabled ? "neutral-300" : isFocused ? "white" : "black";
-						const bg_colour = isFocused ? "blue-600" : "white";
+					render_option={({ jockey, horse }, { isDisabled }) => {
+						const colour_style = isDisabled
+							? "text-neutral-300 border-neutral-300"
+							: "text-black border-black hover:text-white hover:border-white";
 
 						return (
 							<div
-								className={`inline-grid grid-rows-1 justify-between text-${colour} border-${colour} bg-${bg_colour}`}>
+								className={`inline-grid grid-rows-1 justify-between ${colour_style} bg-white hover:bg-blue-600`}>
 								<b>{jockey.name}</b>
 								<IconImage icon={jockey.image} />
 								<b>{horse.name}</b>
