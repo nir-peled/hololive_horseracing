@@ -1,5 +1,2 @@
 fill RacesSideBar (and decide if you even want it)
 Add way to display different image sizes
-
-Nice to have:
-Refactor RaceDetailsRacer & DB to make less DB calls
