@@ -1,4 +1,5 @@
 import LoginForm from "@/src/components/LoginForm";
+import PageTitle from "@/src/components/PageTitle";
 import TranslationsProvider from "@/src/components/TranslationProvider";
 import initTranslations from "@/src/lib/i18n";
 import { Locale } from "@/src/lib/types";
@@ -18,9 +19,7 @@ export default async function LoginPage({ params: { locale } }: Props) {
 	const { t, resources } = await initTranslations(locale, namespaces);
 	return (
 		<TranslationsProvider namespaces={namespaces} locale={locale} resources={resources}>
-			<h1 className="text-3xl font-bold underline p-10">
-				{t("login-title", { ns: "auth" })}
-			</h1>
+			<PageTitle size="large">{t("login-title", { ns: "auth" })}</PageTitle>
 			<LoginForm locale={locale} />
 		</TranslationsProvider>
 	);

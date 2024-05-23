@@ -6,6 +6,7 @@ import TranslationsProvider from "@/src/components/TranslationProvider";
 import NewHorseForm from "@/src/components/horses/NewHorseForm";
 import Button from "@/src/components/Button";
 import ProtectedLink from "@/src/components/ProtectedLink";
+import PageTitle from "@/src/components/PageTitle";
 
 export async function generateStaticParams() {
 	return generate_locale_params();
@@ -23,7 +24,7 @@ export default async function NewHorsePage({ params: { locale } }: Props) {
 	const { t, resources } = await initTranslations(locale, namespaces);
 	return (
 		<TranslationsProvider namespaces={namespaces} locale={locale} resources={resources}>
-			<h1 className="text-2xl font-bold underline p-10">{t("new-horse-title")}</h1>
+			<PageTitle>{t("new-horse-title")}</PageTitle>
 			<NewHorseForm />
 		</TranslationsProvider>
 	);

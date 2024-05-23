@@ -6,6 +6,7 @@ import initTranslations from "@/src/lib/i18n";
 import HorsesList from "@/src/components/horses/HorsesList";
 import Button from "@/src/components/Button";
 import ProtectedLink from "@/src/components/ProtectedLink";
+import PageTitle from "@/src/components/PageTitle";
 
 export async function generateStaticParams() {
 	return generate_locale_params();
@@ -24,7 +25,7 @@ export default async function HorsesPage({ params: { locale } }: Props) {
 	return (
 		// <TranslationsProvider namespaces={namespaces} locale={locale} resources={resources}>
 		<>
-			<h1 className="text-2xl font-bold underline p-10">{t("new-horse-title")}</h1>
+			<PageTitle>{t("new-horse-title")}</PageTitle>
 			<Button>
 				<ProtectedLink href="/management/horses/new" locale={locale}>
 					{t("new-horse-page-button")}

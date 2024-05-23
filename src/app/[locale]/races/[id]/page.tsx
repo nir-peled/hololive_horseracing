@@ -5,6 +5,7 @@ import { database_factory } from "@/src/lib/database";
 import initTranslations from "@/src/lib/i18n";
 import type { Locale } from "@/src/lib/types";
 import RaceDetails from "@/src/components/races/RaceDetails";
+import PageTitle from "@/src/components/PageTitle";
 
 const namespaces = ["races"];
 
@@ -34,9 +35,7 @@ export default async function RacePage({ params: { locale, id } }: Props) {
 	return (
 		// <TranslationsProvider namespaces={namespaces} locale={locale} resources={resources}>
 		<>
-			<h1 className="text-3xl font-bold underline p-2">
-				{t("race-page-title", { name: race_data.name })}
-			</h1>
+			<PageTitle size="large">{t("race-page-title", { name: race_data.name })}</PageTitle>
 			<RaceDetails id={id_num} race_data={race_data} locale={locale} />
 		</>
 		// </TranslationsProvider>

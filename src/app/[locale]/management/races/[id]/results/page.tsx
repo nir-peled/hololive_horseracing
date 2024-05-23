@@ -5,6 +5,7 @@ import TranslationsProvider from "@/src/components/TranslationProvider";
 import { generate_locale_params } from "@/src/lib/utils";
 import initTranslations from "@/src/lib/i18n";
 import { Locale } from "@/src/lib/types";
+import PageTitle from "@/src/components/PageTitle";
 
 // race id is dynamic
 export const dynamicParams = true;
@@ -29,9 +30,7 @@ export default async function RaceSubmitResultsPage({ params: { locale, id } }: 
 
 		return (
 			<>
-				<h1 className="text-2xl font-bold underline p-10">
-					{t("race-submit-results-title", { ns: "management" })}
-				</h1>
+				<PageTitle>{t("race-submit-results-title", { ns: "management" })}</PageTitle>
 				<TranslationsProvider
 					namespaces={namespaces}
 					locale={locale}

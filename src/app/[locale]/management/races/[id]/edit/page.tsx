@@ -5,6 +5,7 @@ import { Locale } from "@/src/lib/types";
 import TranslationsProvider from "@/src/components/TranslationProvider";
 import EditRaceForm from "@/src/components/races/EditRaceForm";
 import LoadingMarker from "@/src/components/LoadingMarker";
+import PageTitle from "@/src/components/PageTitle";
 
 // race id is dynamic
 export const dynamicParams = true;
@@ -27,9 +28,7 @@ export default async function RaceEditPage({ params: { locale, id } }: Props) {
 
 	return (
 		<>
-			<h1 className="text-2xl font-bold underline p-10">
-				{t("edit-race-title", { ns: "management" })}
-			</h1>
+			<PageTitle>{t("edit-race-title", { ns: "management" })}</PageTitle>
 			<TranslationsProvider namespaces={namespaces} locale={locale} resources={resources}>
 				<Suspense fallback={<LoadingMarker />}>
 					<EditRaceForm id={Number(id)} />

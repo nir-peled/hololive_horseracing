@@ -1,7 +1,8 @@
 import TranslationsProvider from "@/src/components/TranslationProvider";
+import { generate_locale_params } from "@/src/lib/utils";
 import { database_factory } from "@/src/lib/database";
 import initTranslations from "@/src/lib/i18n";
-import { generate_locale_params } from "@/src/lib/utils";
+import PageTitle from "@/src/components/PageTitle";
 
 const namespaces = ["home"];
 
@@ -23,7 +24,7 @@ export default async function Home({ params: { locale } }: Props) {
 
 	return (
 		<TranslationsProvider namespaces={namespaces} locale={locale} resources={resources}>
-			<h1 className="text-3xl font-bold underline p-2">{t("home-welcome")}</h1>
+			<PageTitle size="large">{t("home-welcome")}</PageTitle>
 			{user && (
 				<h2 className="text-xl p-2">{t("home-greeting", { name: user.display_name })}</h2>
 			)}
