@@ -28,7 +28,7 @@ export default async function RaceSubmitResultsPage({ params: { locale, id } }: 
 		const id_number = BigInt(id);
 
 		return (
-			<main className="flex min-h-screen flex-col items-center p-24">
+			<>
 				<h1 className="text-2xl font-bold underline p-10">
 					{t("race-submit-results-title", { ns: "management" })}
 				</h1>
@@ -40,7 +40,7 @@ export default async function RaceSubmitResultsPage({ params: { locale, id } }: 
 						<RaceResultsEditor id={id_number} />
 					</Suspense>
 				</TranslationsProvider>
-			</main>
+			</>
 		);
 	} catch (error) {
 		if (error instanceof TypeError) return notFound();

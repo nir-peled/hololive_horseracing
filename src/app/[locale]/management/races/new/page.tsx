@@ -25,12 +25,10 @@ export default async function NewRacePage({ params: { locale } }: Props) {
 
 	return (
 		<TranslationsProvider namespaces={namespaces} locale={locale} resources={resources}>
-			<main className="flex min-h-screen flex-col items-center p-24">
-				<h1 className="text-2xl font-bold underline p-10">
-					{t("new-race-title", { ns: "management" })}
-				</h1>
-				<EditRaceForm />
-			</main>
+			<h1 className="text-2xl font-bold underline p-10">
+				{t("new-race-title", { ns: "management" })}
+			</h1>
+			<EditRaceForm />
 		</TranslationsProvider>
 	);
 }

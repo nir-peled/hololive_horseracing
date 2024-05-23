@@ -17,12 +17,10 @@ export default async function NewUserPage({ params: { locale } }: Props) {
 	const { t, resources } = await initTranslations(locale, namespaces);
 	return (
 		<TranslationsProvider namespaces={namespaces} locale={locale} resources={resources}>
-			<main className="flex min-h-screen flex-col items-center p-24">
-				<h1 className="text-2xl font-bold underline p-10">
-					{t("new-user-title", { ns: "management" })}
-				</h1>
-				<UserDetailsForm />
-			</main>
+			<h1 className="text-2xl font-bold underline p-10">
+				{t("new-user-title", { ns: "management" })}
+			</h1>
+			<UserDetailsForm />
 		</TranslationsProvider>
 	);
 }

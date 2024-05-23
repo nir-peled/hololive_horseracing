@@ -33,12 +33,12 @@ export default async function RacePage({ params: { locale, id } }: Props) {
 
 	return (
 		// <TranslationsProvider namespaces={namespaces} locale={locale} resources={resources}>
-		<main className="flex min-h-screen flex-col items-center p-24">
+		<>
 			<h1 className="text-3xl font-bold underline p-2">
 				{t("race-page-title", { name: race_data.name })}
 			</h1>
 			<RaceDetails id={id_num} race_data={race_data} locale={locale} />
-		</main>
+		</>
 		// </TranslationsProvider>
 	);
 }

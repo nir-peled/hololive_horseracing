@@ -1,2 +1,4 @@
-fill RacesSideBar (and decide if you even want it)
 Add way to display different image sizes
+Add /bets
+Add /bets/[id]
+Add /management/races/[id]/bets

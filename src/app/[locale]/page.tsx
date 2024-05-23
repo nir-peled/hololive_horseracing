@@ -23,14 +23,10 @@ export default async function Home({ params: { locale } }: Props) {
 
 	return (
 		<TranslationsProvider namespaces={namespaces} locale={locale} resources={resources}>
-			<main className="flex min-h-screen flex-col items-center p-24">
-				<h1 className="text-3xl font-bold underline p-2">{t("home-welcome")}</h1>
-				{user && (
-					<h2 className="text-xl p-2">
-						{t("home-greeting", { name: user.display_name })}
-					</h2>
-				)}
-			</main>
+			<h1 className="text-3xl font-bold underline p-2">{t("home-welcome")}</h1>
+			{user && (
+				<h2 className="text-xl p-2">{t("home-greeting", { name: user.display_name })}</h2>
+			)}
 		</TranslationsProvider>
 	);
 }

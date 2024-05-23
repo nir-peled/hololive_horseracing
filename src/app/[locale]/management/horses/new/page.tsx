@@ -23,10 +23,8 @@ export default async function NewHorsePage({ params: { locale } }: Props) {
 	const { t, resources } = await initTranslations(locale, namespaces);
 	return (
 		<TranslationsProvider namespaces={namespaces} locale={locale} resources={resources}>
-			<main className="flex min-h-screen flex-col items-center p-24">
-				<h1 className="text-2xl font-bold underline p-10">{t("new-horse-title")}</h1>
-				<NewHorseForm />
-			</main>
+			<h1 className="text-2xl font-bold underline p-10">{t("new-horse-title")}</h1>
+			<NewHorseForm />
 		</TranslationsProvider>
 	);
 }

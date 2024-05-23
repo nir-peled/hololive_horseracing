@@ -18,7 +18,7 @@ const namespaces = ["auth", "management"];
 export default async function EditUserPage({ params: { locale } }: Props) {
 	const { t, resources } = await initTranslations(locale, namespaces);
 	return (
-		<main className="flex min-h-screen flex-col items-center p-24">
+		<>
 			<h1 className="text-2xl font-bold underline p-10">
 				{t("edit-user-title", { ns: "management" })}
 			</h1>
@@ -27,6 +27,6 @@ export default async function EditUserPage({ params: { locale } }: Props) {
 					<EditUserForm />
 				</Suspense>
 			</TranslationsProvider>
-		</main>
+		</>
 	);
 }

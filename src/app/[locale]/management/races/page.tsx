@@ -22,16 +22,15 @@ interface Props {
 export default async function RacesPage({ params: { locale } }: Props) {
 	const { t, resources } = await initTranslations(locale, namespaces);
 	return (
-		<TranslationsProvider namespaces={namespaces} locale={locale} resources={resources}>
-			<main className="flex min-h-screen flex-col items-center p-24">
-				<h1 className="text-2xl font-bold underline p-10">{t("new-horse-title")}</h1>
-				<Button>
-					<ProtectedLink href="/management/races/new" locale={locale}>
-						{t("new-race-page-button")}
-					</ProtectedLink>
-				</Button>
-				<RacesList locale={locale} is_management={true} />
-			</main>
-		</TranslationsProvider>
+		// <TranslationsProvider namespaces={namespaces} locale={locale} resources={resources}>
+		<>
+			<h1 className="text-2xl font-bold underline p-10">{t("new-horse-title")}</h1>
+			<Button>
+				<ProtectedLink href="/management/races/new" locale={locale}>
+					{t("new-race-page-button")}
+				</ProtectedLink>
+			</Button>
+			<RacesList locale={locale} is_management={true} />
+		</>
 	);
 }

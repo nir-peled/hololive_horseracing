@@ -26,7 +26,7 @@ export default async function RaceEditPage({ params: { locale, id } }: Props) {
 	const { t, resources } = await initTranslations(locale, namespaces);
 
 	return (
-		<main className="flex min-h-screen flex-col items-center p-24">
+		<>
 			<h1 className="text-2xl font-bold underline p-10">
 				{t("edit-race-title", { ns: "management" })}
 			</h1>
@@ -35,6 +35,6 @@ export default async function RaceEditPage({ params: { locale, id } }: Props) {
 					<EditRaceForm id={Number(id)} />
 				</Suspense>
 			</TranslationsProvider>
-		</main>
+		</>
 	);
 }
