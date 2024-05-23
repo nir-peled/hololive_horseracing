@@ -1,13 +1,14 @@
 import { Suspense } from "react";
+import { Locale } from "@/src/lib/types";
+import initTranslations from "@/src/lib/i18n";
 import EditUserForm from "@/src/components/users/EditUserForm";
 import TranslationsProvider from "@/src/components/TranslationProvider";
-import initTranslations from "@/src/lib/i18n";
 import { generate_locale_params } from "@/src/lib/utils";
 import LoadingMarker from "@/src/components/LoadingMarker";
 import PageTitle from "@/src/components/PageTitle";
 
 interface Props {
-	params: { locale: string };
+	params: { locale: Locale };
 }
 
 export async function generateStaticParams() {

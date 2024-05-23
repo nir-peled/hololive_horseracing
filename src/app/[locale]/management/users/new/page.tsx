@@ -1,11 +1,12 @@
-import UserDetailsForm from "@/src/components/users/UserDetailsForm";
-import TranslationsProvider from "@/src/components/TranslationProvider";
+import { Locale } from "@/src/lib/types";
 import initTranslations from "@/src/lib/i18n";
 import { generate_locale_params } from "@/src/lib/utils";
+import TranslationsProvider from "@/src/components/TranslationProvider";
+import UserDetailsForm from "@/src/components/users/UserDetailsForm";
 import PageTitle from "@/src/components/PageTitle";
 
 interface Props {
-	params: { locale: string };
+	params: { locale: Locale };
 }
 
 export async function generateStaticParams() {

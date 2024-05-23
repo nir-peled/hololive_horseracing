@@ -5,7 +5,7 @@ import i18nConfig, { locales } from "@/i18nConfig";
 import { Locale } from "./types";
 
 export default async function initTranslations(
-	locale: string,
+	locale: Locale,
 	namespaces: string[],
 	i18nInstance?: i18n,
 	resources?: Resource

@@ -3,10 +3,11 @@ import { I18nextProvider } from "react-i18next";
 import initTranslations from "@/src/lib/i18n";
 import { Resource, createInstance } from "i18next";
 import { ReactNode } from "react";
+import { Locale } from "@/src/lib/types";
 
 interface Props {
 	children: ReactNode;
-	locale: string;
+	locale: Locale;
 	namespaces: string[];
 	resources: Resource;
 }

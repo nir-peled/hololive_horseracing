@@ -20,7 +20,7 @@ export default async function LoginPage({ params: { locale } }: Props) {
 	return (
 		<TranslationsProvider namespaces={namespaces} locale={locale} resources={resources}>
 			<PageTitle size="large">{t("login-title", { ns: "auth" })}</PageTitle>
-			<LoginForm locale={locale} />
+			<LoginForm />
 		</TranslationsProvider>
 	);
 }

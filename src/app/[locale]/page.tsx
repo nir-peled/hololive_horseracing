@@ -1,3 +1,4 @@
+import { Locale } from "@/src/lib/types";
 import TranslationsProvider from "@/src/components/TranslationProvider";
 import { generate_locale_params } from "@/src/lib/utils";
 import { database_factory } from "@/src/lib/database";
@@ -8,7 +9,7 @@ const namespaces = ["home"];
 
 interface Props {
 	params: {
-		locale: string;
+		locale: Locale;
 	};
 }
 
