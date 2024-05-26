@@ -31,9 +31,7 @@ export default async function BetDisplayLine({
 				<AmountDisplay amount={amount} />
 			</td>
 			<td>
-				<Link href={`/${locale}/bets/${race}?existing=${id}`}>
-					{t("edit-bet-button")}
-				</Link>
+				<Link href={`/${locale}/bets/${race}`}>{t("edit-bet-button")}</Link>
 			</td>
 		</tr>
 	);

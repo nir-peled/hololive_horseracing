@@ -1,6 +1,5 @@
 import React from "react";
 import { notFound } from "next/navigation";
-import { generate_locale_params } from "@/src/lib/utils";
 import { database_factory } from "@/src/lib/database";
 import initTranslations from "@/src/lib/i18n";
 import type { Locale } from "@/src/lib/types";
@@ -14,10 +13,6 @@ interface Props {
 		locale: Locale;
 		id: string;
 	};
-}
-
-export async function generateStaticParams() {
-	return generate_locale_params();
 }
 
 export default async function RacePage({ params: { locale, id } }: Props) {

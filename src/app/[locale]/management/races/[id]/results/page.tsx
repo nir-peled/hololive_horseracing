@@ -1,18 +1,13 @@
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
+import React, { Suspense } from "react";
 import RaceResultsEditor from "@/src/components/races/RaceResultsEditor";
 import TranslationsProvider from "@/src/components/TranslationProvider";
-import { generate_locale_params } from "@/src/lib/utils";
 import initTranslations from "@/src/lib/i18n";
 import { Locale } from "@/src/lib/types";
 import PageTitle from "@/src/components/PageTitle";
 
 // race id is dynamic
 export const dynamicParams = true;
-
-export async function generateStaticParams() {
-	return generate_locale_params();
-}
 
 const namespaces = ["races", "management"];
 
