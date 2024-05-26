@@ -23,7 +23,7 @@ export default async function UserBetsList({ locale }: Props) {
 		<table className="table">
 			<tbody>
 				{bets.map((bet) => (
-					<BetDisplayLine bet={bet} locale={locale} />
+					<BetDisplayLine key={bet.race} bet={bet} locale={locale} />
 				))}
 			</tbody>
 		</table>
