@@ -1,15 +1,19 @@
 import React from "react";
-import { Locale } from "@/src/lib/types";
-import IconImage from "../IconImage";
+import { Locale, UserData } from "@/src/lib/types";
+import { database_factory } from "@/src/lib/database";
+import AmountDisplay from "../AmountDisplay";
 import LogoutButton from "./LogoutButton";
+import IconImage from "../IconImage";
 
 interface Props {
 	label: string;
 	locale: Locale;
-	image: string | undefined;
+	user: UserData;
 }
 
-export default function UserIconMenu({ label, locale, image }: Props) {
+export default async function UserIconMenu({ label, locale, user }: Props) {
+	const image = await database_factory.user_database().get_user_image_as_str(user);
+
 	return (
 		<div className="dropdown dropdown-end">
 			<div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
@@ -26,6 +30,9 @@ export default function UserIconMenu({ label, locale, image }: Props) {
 				)}
 			</div>
 			<ul tabIndex={0} className="dropdown-content p-2 bg-base-100 mt-3 z-[1] ">
+				<li>
+					<AmountDisplay amount={user.balance} />
+				</li>
 				<li role="button" className="btn btn-ghost avatar h-12 w-20">
 					<LogoutButton locale={locale} label={label} />
 				</li>

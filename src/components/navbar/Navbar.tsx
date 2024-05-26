@@ -17,8 +17,6 @@ interface Props {
 export default async function Navbar({ locale }: Props) {
 	const { t } = await initTranslations(locale, namespaces);
 	const user = (await auth())?.user;
-	const user_image =
-		user && (await database_factory.user_database().get_user_image_as_str(user));
 
 	return (
 		<div className="navbar bg-secondary-content">
@@ -66,13 +64,7 @@ export default async function Navbar({ locale }: Props) {
 				</ul>
 			</div>
 			<div className="navbar-end space-x-1">
-				{user && (
-					<UserIconMenu
-						label={t("signout-button")}
-						locale={locale}
-						image={user_image || undefined}
-					/>
-				)}
+				{user && <UserIconMenu label={t("signout-button")} locale={locale} user={user} />}
 				<LanguageSelector locale={locale} />
 			</div>
 		</div>

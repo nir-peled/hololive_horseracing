@@ -38,8 +38,8 @@ export interface UserData {
 	role: UserRole;
 	display_name: string;
 	image?: Buffer;
-	balance: Number;
-	dept: Number;
+	balance: number;
+	dept: number;
 }
 
 export type UserDataSelect = Partial<Record<keyof UserData, true>>;
@@ -104,7 +104,7 @@ export interface RaceParameters {
 
 export interface ContestantDisplayData {
 	id: bigint;
-	place?: number;
+	place?: number | null;
 	jockey: {
 		name: string;
 		image: string;
@@ -113,13 +113,28 @@ export interface ContestantDisplayData {
 		name: string;
 		image: string;
 	};
+	odds_denominator: number;
+	odds_numerator: number;
 }
 
-export type ContestantPlacementData = {
+export interface ContestantPlacementData {
 	first: bigint;
 	second: bigint;
 	third: bigint;
-};
+}
+
+export const BETS_TYPES = ["win", "place", "show"] as const;
+export type bet_type = (typeof BETS_TYPES)[number];
+
+export interface BetData {
+	id: bigint;
+	race: bigint;
+	race_name: string;
+	user: string;
+	contestant: ContestantDisplayData;
+	active: boolean;
+	amount: number;
+}
 
 // currently unused
 // export type MiddlewareFactory = (middleware: NextMiddleware) => NextMiddleware;

@@ -1,5 +1,6 @@
 import { Session } from "next-auth";
 import {
+	BetData,
 	ContestantData,
 	ContestantDisplayData,
 	HorseData,
@@ -10,11 +11,11 @@ import {
 	UserDataSelect,
 	UserDefaultValues,
 	UserFormData,
+	RaceParameters,
 } from "../types";
 import { Encryptor } from "../encryptor";
 import { CryptoEncryptor } from "../encryptor/crypto_encryptor";
 import { PrismaDatabase } from "./prisma_db";
-import { RaceParameters } from "../types";
 
 export interface GetUserDataOptions {
 	session?: Session | null;
@@ -30,13 +31,13 @@ export const user_data_select = {
 	balance: true,
 	dept: true,
 	image: true,
-};
+} as const;
 
 export const horse_data_select = {
 	id: true,
 	name: true,
 	image: true,
-};
+} as const;
 
 export const race_data_select = {
 	id: true,
@@ -54,18 +55,20 @@ export const race_data_select = {
 			horse: { select: horse_data_select },
 		},
 	},
-};
+} as const;
 
 export const race_parameters_select = {
 	name: true,
 	isOpenBets: true,
 	isEnded: true,
 	deadline: true,
-};
+} as const;
 
 export const competitors_display_data_select = {
 	id: true,
 	place: true,
+	odds_denominator: true,
+	odds_numerator: true,
 	jockey: {
 		select: {
 			name: true,
@@ -79,7 +82,19 @@ export const competitors_display_data_select = {
 			image: true,
 		},
 	},
-};
+} as const;
+
+export const bet_data_select = {
+	id: true,
+	amount: true,
+	type: true,
+	contestant: {
+		select: {
+			...competitors_display_data_select,
+			race: { select: { id: true, name: true, isEnded: true } },
+		},
+	},
+} as const;
 
 export type Select<T> = Partial<Record<keyof T, boolean> & { id: boolean }>;
 export type QueryResult<TBase, TSelect> = {
@@ -149,6 +164,10 @@ export interface RaceDatabase {
 	get_contestants_display_data(id: bigint): Promise<ContestantDisplayData[]>;
 }
 
+export interface BetsDatabase {
+	get_user_bets(user: string, op?: { active?: boolean }): Promise<BetData[]>;
+}
+
 export interface DatabaseFactory {
 	user_database(): UserDatabase;
 	horse_database(): HorseDatabase;
@@ -162,6 +181,7 @@ export class BasicDatabaseFactory implements DatabaseFactory {
 	private user_db?: UserDatabase;
 	private horse_db?: HorseDatabase;
 	private race_db?: RaceDatabase;
+	private bets_db?: BetsDatabase;
 
 	constructor(encryptor: Encryptor) {
 		this.encryptor = encryptor;
@@ -182,6 +202,11 @@ export class BasicDatabaseFactory implements DatabaseFactory {
 		return this.race_db as RaceDatabase;
 	}
 
+	bets_database(): BetsDatabase {
+		if (!this.bets_db) this.#create_db();
+		return this.bets_db as BetsDatabase;
+	}
+
 	get_encryptor(): Encryptor {
 		return this.encryptor;
 	}
@@ -191,7 +216,11 @@ export class BasicDatabaseFactory implements DatabaseFactory {
 	}
 
 	#create_db() {
-		this.user_db = this.race_db = this.horse_db = new PrismaDatabase(this.encryptor);
+		this.user_db =
+			this.race_db =
+			this.horse_db =
+			this.bets_db =
+				new PrismaDatabase(this.encryptor);
 	}
 }
 
