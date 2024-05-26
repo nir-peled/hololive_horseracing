@@ -6,6 +6,7 @@ import HorseDeleteButton from "./HorseDeleteButton";
 import { auth, is_path_authorized } from "@/src/lib/auth";
 import { get_image_buffer_as_str } from "@/src/lib/images";
 import { database_factory } from "@/src/lib/database";
+import TranslationsProvider from "../TranslationProvider";
 
 interface Props {
 	locale: Locale;
@@ -14,7 +15,7 @@ interface Props {
 const namespaces = ["races"];
 
 export default async function HorsesList({ locale }: Props) {
-	const { t } = await initTranslations(locale, namespaces);
+	const { t, resources } = await initTranslations(locale, namespaces);
 	const horses = await database_factory.horse_database().get_horses();
 	const user_role = (await auth())?.user?.role;
 	const is_delete_enabled = is_path_authorized(
@@ -35,19 +36,24 @@ export default async function HorsesList({ locale }: Props) {
 					</tr>
 				</thead>
 				<tbody>
-					{horses.map((horse) => (
-						<tr key={horse.id}>
-							<td>{horse.name}</td>
-							<td>
-								{horse.image && (
-									<IconImage icon={get_image_buffer_as_str(horse.image) || ""} />
-								)}
-							</td>
-							<td>
-								<HorseDeleteButton name={horse.name} hidden={!is_delete_enabled} />
-							</td>
-						</tr>
-					))}
+					<TranslationsProvider
+						namespaces={namespaces}
+						locale={locale}
+						resources={resources}>
+						{horses.map((horse) => (
+							<tr key={horse.id}>
+								<td>{horse.name}</td>
+								<td>
+									{horse.image && (
+										<IconImage icon={get_image_buffer_as_str(horse.image) || ""} />
+									)}
+								</td>
+								<td>
+									<HorseDeleteButton name={horse.name} hidden={!is_delete_enabled} />
+								</td>
+							</tr>
+						))}
+					</TranslationsProvider>
 				</tbody>
 			</table>
 		</div>

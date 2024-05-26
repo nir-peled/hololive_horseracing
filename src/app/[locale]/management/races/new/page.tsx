@@ -4,6 +4,7 @@ import { generate_locale_params } from "@/src/lib/utils";
 import { Locale } from "@/src/lib/types";
 import TranslationsProvider from "@/src/components/TranslationProvider";
 import EditRaceForm from "@/src/components/races/EditRaceForm";
+import PageTitle from "@/src/components/PageTitle";
 
 // race id is dynamic
 export const dynamicParams = true;
@@ -25,12 +26,8 @@ export default async function NewRacePage({ params: { locale } }: Props) {
 
 	return (
 		<TranslationsProvider namespaces={namespaces} locale={locale} resources={resources}>
-			<main className="flex min-h-screen flex-col items-center p-24">
-				<h1 className="text-2xl font-bold underline p-10">
-					{t("new-race-title", { ns: "management" })}
-				</h1>
-				<EditRaceForm />
-			</main>
+			<PageTitle>{t("new-race-title", { ns: "management" })}</PageTitle>
+			<EditRaceForm />
 		</TranslationsProvider>
 	);
 }

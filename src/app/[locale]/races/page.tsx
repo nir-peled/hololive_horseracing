@@ -5,6 +5,7 @@ import TranslationsProvider from "@/src/components/TranslationProvider";
 import RacesList from "@/src/components/races/RacesList";
 import type { Locale } from "@/src/lib/types";
 import ProtectedLink from "@/src/components/ProtectedLink";
+import PageTitle from "@/src/components/PageTitle";
 
 const namespaces = ["races"];
 
@@ -22,13 +23,11 @@ export default async function RacesPage({ params: { locale } }: Props) {
 	const { t, resources } = await initTranslations(locale, namespaces);
 	return (
 		<TranslationsProvider namespaces={namespaces} locale={locale} resources={resources}>
-			<main className="flex min-h-screen flex-col items-center p-24">
-				<h1 className="text-3xl font-bold underline p-2">{t("races-list")}</h1>
-				<ProtectedLink href="/races/history" locale={locale}>
-					{t("races-history-label")}
-				</ProtectedLink>
-				<RacesList locale={locale} />
-			</main>
+			<PageTitle size="large">{t("races-list")}</PageTitle>
+			<ProtectedLink href="/races/history" locale={locale}>
+				{t("races-history-label")}
+			</ProtectedLink>
+			<RacesList locale={locale} />
 		</TranslationsProvider>
 	);
 }

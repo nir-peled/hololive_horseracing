@@ -1,21 +1,33 @@
 import { Prisma, PrismaClient } from "@prisma/client";
+import { withAccelerate } from "@prisma/extension-accelerate";
 import {
 	UserDatabase,
 	HorseDatabase,
 	RaceDatabase,
 	QueryResult,
-	UserDataOps as GetUserDataOptions,
-	RaceParameters,
+	GetUserDataOptions,
 	user_data_select,
 	Select,
 	horse_data_select,
 	race_data_select,
 	race_parameters_select,
+	competitors_display_data_select,
+	BetsDatabase,
+	bet_data_select,
 } from ".";
-import { withAccelerate } from "@prisma/extension-accelerate";
-import { UserFormData, UserData, UserDefaultValues, RaceContestantsData } from "../types";
-import { HorseData } from "../types";
-import { RaceData, RaceFormData } from "../types";
+import {
+	UserFormData,
+	UserData,
+	UserDefaultValues,
+	RaceContestantsData,
+	HorseData,
+	RaceData,
+	RaceFormData,
+	RaceParameters,
+	ContestantData,
+	ContestantDisplayData,
+	BetData,
+} from "../types";
 import { Encryptor } from "../encryptor";
 import { default_user_image, get_image_buffer_as_str, image_as_buffer } from "../images";
 import { auth } from "../auth";
@@ -32,7 +44,9 @@ function create_prisma_client() {
 type prisma_t = ReturnType<typeof create_prisma_client>;
 type contestant_t = { jockey: string; horse: string };
 
-export class PrismaDatabase implements UserDatabase, HorseDatabase, RaceDatabase {
+export class PrismaDatabase
+	implements UserDatabase, HorseDatabase, RaceDatabase, BetsDatabase
+{
 	private readonly prisma: prisma_t;
 	private encryptor: Encryptor;
 
@@ -268,7 +282,7 @@ export class PrismaDatabase implements UserDatabase, HorseDatabase, RaceDatabase
 		return race_result_to_race_data(result);
 	}
 
-	async get_race_contestants(id: bigint): Promise<RaceContestantsData | null> {
+	async get_race_contestants_data(id: bigint): Promise<RaceContestantsData | null> {
 		let result = await this.prisma.race.findUnique({
 			where: { id },
 			select: {
@@ -278,6 +292,37 @@ export class PrismaDatabase implements UserDatabase, HorseDatabase, RaceDatabase
 
 		if (!result) return null;
 		return result.competitors as RaceContestantsData;
+	}
+
+	async get_race_contestants(id: bigint): Promise<ContestantData[] | null> {
+		let result = await this.prisma.race.findUnique({
+			where: { id },
+			select: {
+				competitors: {
+					select: {
+						jockey: {
+							select: { name: true },
+						},
+						horse: {
+							select: { name: true },
+						},
+						place: true,
+						odds_denominator: true,
+						odds_numerator: true,
+					},
+				},
+			},
+		});
+
+		if (!result) return null;
+		return result.competitors.map((contestant) => ({
+			race_id: id,
+			jockey: contestant.jockey.name,
+			horse: contestant.horse.name,
+			place: contestant.place != null ? contestant.place : undefined,
+			odds_denominator: contestant.odds_denominator,
+			odds_numerator: contestant.odds_numerator,
+		}));
 	}
 
 	async create_race(race_data: RaceFormData): Promise<boolean> {
@@ -387,6 +432,53 @@ export class PrismaDatabase implements UserDatabase, HorseDatabase, RaceDatabase
 		return result.count;
 	}
 
+	async get_contestants_display_data(id: bigint): Promise<ContestantDisplayData[]> {
+		let result = await this.prisma.race.findUnique({
+			where: { id },
+			select: {
+				competitors: {
+					select: competitors_display_data_select,
+				},
+			},
+		});
+
+		if (!result) return [];
+
+		// Promise.all bc async functions return promises
+		return Promise.all(
+			result.competitors.map((data) => this.#contestant_display_data_from_query(data))
+		);
+	}
+
+	async get_user_bets(user: string, op?: { active?: boolean }): Promise<BetData[]> {
+		const active_select =
+			op?.active == undefined
+				? undefined
+				: {
+						race: { isEnded: !op.active },
+				  };
+
+		const result = await this.prisma.bet.findMany({
+			where: {
+				user: { name: user },
+				contestant: active_select,
+			},
+			select: bet_data_select,
+		});
+
+		return Promise.all(
+			result.map(async (bet) => ({
+				id: bet.id,
+				race: bet.contestant.race.id,
+				race_name: bet.contestant.race.name,
+				active: !bet.contestant.race.isEnded,
+				user,
+				contestant: await this.#contestant_display_data_from_query(bet.contestant),
+				amount: bet.amount,
+			}))
+		);
+	}
+
 	async #get_image_as_str(
 		table: "user" | "horse",
 		user: string | UserData | HorseData
@@ -470,6 +562,27 @@ export class PrismaDatabase implements UserDatabase, HorseDatabase, RaceDatabase
 		return {
 			new_contestants: new_contestants_ids,
 			remove_contestants: remove_competitors.map((comp) => comp.id),
+		};
+	}
+
+	async #contestant_display_data_from_query(
+		data: Prisma.RaceContestantGetPayload<{
+			select: typeof competitors_display_data_select;
+		}>
+	): Promise<ContestantDisplayData> {
+		return {
+			id: data.id,
+			place: data.place != null ? data.place : undefined,
+			odds_denominator: data.odds_denominator,
+			odds_numerator: data.odds_numerator,
+			jockey: {
+				name: data.jockey.display_name || data.jockey.name,
+				image: await this.#get_image_as_str("user", data.jockey as UserData),
+			},
+			horse: {
+				name: data.horse.name,
+				image: await this.#get_image_as_str("horse", data.horse as HorseData),
+			},
 		};
 	}
 }

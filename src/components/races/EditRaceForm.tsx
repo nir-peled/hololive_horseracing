@@ -61,42 +61,12 @@ export default function EditRaceForm({ id }: Props) {
 
 	let endpoint = `/api/management/races/${id ? "edit" : "new"}`;
 	if (id) endpoint += "?" + encodeURIComponent(id);
-	const submit_form = useSubmitter<RaceFormData>(
-		endpoint,
+	const submit_form = useSubmitter<RaceFormData>(endpoint, {
 		is_failed,
 		set_is_failed,
 		default_values,
-		reset
-	);
-
-	// async function submit_form(data: RaceFormData, event?: BaseSyntheticEvent) {
-	// 	if (event) event.preventDefault();
-
-	// 	let endpoint = `/api/management/races/${id ? "edit" : "new"}`;
-	// 	if (id) endpoint += "?" + encodeURIComponent(id);
-
-	// 	let form_data = new FormData();
-	// 	for (let [key, value] of Object.entries(data))
-	// 		if (
-	// 			value != undefined &&
-	// 			(!default_values || default_values[key as keyof RaceFormData] != value)
-	// 		)
-	// 			form_data.append(key, JSON.stringify(value));
-
-	// 	let result = await fetch(endpoint, {
-	// 		method: "POST",
-	// 		body: form_data,
-	// 	});
-
-	// 	if (result.ok) {
-	// 		// if form is used for new user, reset the form to empty
-	// 		if (!id) reset();
-	// 		if (is_failed) set_is_failed(false);
-	// 	} else {
-	// 		reset(data);
-	// 		set_is_failed(true);
-	// 	}
-	// }
+		reset,
+	});
 
 	if (isLoading) return <LoadingMarker />;
 

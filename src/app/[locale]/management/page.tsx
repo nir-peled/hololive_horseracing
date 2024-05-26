@@ -21,23 +21,21 @@ export default async function ManagementPage({ params: { locale } }: Props) {
 	const { t, resources } = await initTranslations(locale, namespaces);
 	return (
 		<>
-			<main className="flex min-h-screen flex-col items-center p-24 w-fit self-center">
-				<Button>
-					<ProtectedLink href="/management/users" locale={locale}>
-						{t("managemen-users-link")}
-					</ProtectedLink>
-				</Button>
-				<Button>
-					<ProtectedLink href="/management/races" locale={locale}>
-						{t("managemen-races-link")}
-					</ProtectedLink>
-				</Button>
-				<Button>
-					<ProtectedLink href="/management/horses" locale={locale}>
-						{t("managemen-horses-link")}
-					</ProtectedLink>
-				</Button>
-			</main>
+			<Button>
+				<ProtectedLink href="/management/users" locale={locale}>
+					{t("managemen-users-link")}
+				</ProtectedLink>
+			</Button>
+			<Button>
+				<ProtectedLink href="/management/races" locale={locale}>
+					{t("managemen-races-link")}
+				</ProtectedLink>
+			</Button>
+			<Button>
+				<ProtectedLink href="/management/horses" locale={locale}>
+					{t("managemen-horses-link")}
+				</ProtectedLink>
+			</Button>
 		</>
 	);
 }

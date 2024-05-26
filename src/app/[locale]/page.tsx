@@ -1,13 +1,15 @@
+import { Locale } from "@/src/lib/types";
 import TranslationsProvider from "@/src/components/TranslationProvider";
+import { generate_locale_params } from "@/src/lib/utils";
 import { database_factory } from "@/src/lib/database";
 import initTranslations from "@/src/lib/i18n";
-import { generate_locale_params } from "@/src/lib/utils";
+import PageTitle from "@/src/components/PageTitle";
 
 const namespaces = ["home"];
 
 interface Props {
 	params: {
-		locale: string;
+		locale: Locale;
 	};
 }
 
@@ -23,14 +25,10 @@ export default async function Home({ params: { locale } }: Props) {
 
 	return (
 		<TranslationsProvider namespaces={namespaces} locale={locale} resources={resources}>
-			<main className="flex min-h-screen flex-col items-center p-24">
-				<h1 className="text-3xl font-bold underline p-2">{t("home-welcome")}</h1>
-				{user && (
-					<h2 className="text-xl p-2">
-						{t("home-greeting", { name: user.display_name })}
-					</h2>
-				)}
-			</main>
+			<PageTitle size="large">{t("home-welcome")}</PageTitle>
+			{user && (
+				<h2 className="text-xl p-2">{t("home-greeting", { name: user.display_name })}</h2>
+			)}
 		</TranslationsProvider>
 	);
 }

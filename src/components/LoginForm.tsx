@@ -9,11 +9,7 @@ import FormLoginInputs from "./forms/FormLoginInputs";
 
 const namespaces = ["auth"];
 
-interface Props {
-	locale: string;
-}
-
-export default function LoginForm({ locale }: Props) {
+export default function LoginForm() {
 	async function login(prevState: string | undefined, form_data: FormData) {
 		return await authenticate(prevState, form_data);
 	}

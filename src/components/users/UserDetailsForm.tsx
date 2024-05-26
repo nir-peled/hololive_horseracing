@@ -66,13 +66,12 @@ export default function UserDetailsForm({ edit_user }: Props) {
 
 	const [isFailed, setIsFailed] = useState<boolean>(false);
 	const endpoint = `/api/management/users/${edit_user ? "edit" : "new"}`;
-	const submit_form = useSubmitter<UserFormData>(
-		endpoint,
-		isFailed,
-		setIsFailed,
-		default_values as Partial<UserFormData> | undefined,
-		reset
-	);
+	const submit_form = useSubmitter<UserFormData>(endpoint, {
+		is_failed: isFailed,
+		set_is_failed: setIsFailed,
+		default_values: default_values as Partial<UserFormData> | undefined,
+		reset,
+	});
 
 	// async function submit_form(data: UserFormData, event?: BaseSyntheticEvent) {
 	// 	if (event) event.preventDefault();

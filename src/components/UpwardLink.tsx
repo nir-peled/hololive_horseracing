@@ -2,7 +2,6 @@ import React from "react";
 import Link from "next/link";
 import { Locale } from "@/src/lib/types";
 import initTranslations from "@/src/lib/i18n";
-import Button from "./Button";
 
 const namespaces = ["common"];
 
