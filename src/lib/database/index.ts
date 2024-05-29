@@ -12,6 +12,7 @@ import {
 	UserDefaultValues,
 	UserFormData,
 	RaceParameters,
+	FullBetData,
 } from "../types";
 import { Encryptor } from "../encryptor";
 import { CryptoEncryptor } from "../encryptor/crypto_encryptor";
@@ -94,6 +95,9 @@ export const bet_data_select = {
 			race: { select: { id: true, name: true, isEnded: true } },
 		},
 	},
+	user: {
+		select: { name: true },
+	},
 } as const;
 
 export type Select<T> = Partial<Record<keyof T, boolean> & { id: boolean }>;
@@ -166,6 +170,7 @@ export interface RaceDatabase {
 
 export interface BetsDatabase {
 	get_user_bets(user: string, op?: { active?: boolean }): Promise<BetData[]>;
+	get_user_bets_on_race(user: string, race_id: bigint): Promise<FullBetData | undefined>;
 }
 
 export interface DatabaseFactory {

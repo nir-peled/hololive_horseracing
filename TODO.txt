@@ -1,4 +1,4 @@
 Add way to display different image sizes
-Add /bets
-Add /bets/[id]
 Add /management/races/[id]/bets
+Finish BetEditForm
+Change BetEditForm to use server action instead of useSubmitter?

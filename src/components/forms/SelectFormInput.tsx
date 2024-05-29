@@ -3,12 +3,7 @@ import React, { ReactNode } from "react";
 import { Control, Controller } from "react-hook-form";
 import Select, { components, OptionProps } from "react-select";
 import FormInput from "./FormInput";
-
-interface OptionState {
-	isDisabled: boolean;
-	isFocused: boolean;
-	isSelected: boolean;
-}
+import { OptionState } from "@/src/lib/types";
 
 type renderer<T> = (data: T, state: OptionState) => ReactNode;
 
@@ -31,20 +26,25 @@ export default function SelectFormInput<T>({
 	disabled_options,
 	render_option,
 }: Props<T>) {
+	const component = (
+		<Controller
+			name={name}
+			control={control}
+			render={({ field }) => (
+				<Select
+					{...field}
+					components={render_option && { Option: option_factory<T>(render_option) }}
+					options={options}
+					isOptionDisabled={(option) => disabled_options.includes(option)}
+				/>
+			)}
+		/>
+	);
+
+	if (label === undefined && error === undefined) return component;
 	return (
 		<FormInput label={label} error={error}>
-			<Controller
-				name={name}
-				control={control}
-				render={({ field }) => (
-					<Select
-						{...field}
-						components={render_option && { Option: option_factory<T>(render_option) }}
-						options={options}
-						isOptionDisabled={(option) => disabled_options.includes(option)}
-					/>
-				)}
-			/>
+			{component}
 		</FormInput>
 	);
 }

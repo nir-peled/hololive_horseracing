@@ -1,14 +1,15 @@
 import React, { ReactNode } from "react";
 
 interface Props {
+	className?: string;
 	label?: string;
 	error?: string;
 	children: ReactNode;
 }
 
-export default function FormInput({ label, error, children }: Props) {
+export default function FormInput({ className, label, error, children }: Props) {
 	return (
-		<div>
+		<div className={className}>
 			{label && (
 				<div className="label">
 					<span className="label-text">{label}</span>

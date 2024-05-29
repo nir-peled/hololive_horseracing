@@ -136,5 +136,30 @@ export interface BetData {
 	amount: number;
 }
 
+export interface FormBetDetails {
+	contestant: bigint;
+	amount: number;
+}
+
+export interface FullBetFormData extends Partial<Record<bet_type, FormBetDetails>> {
+	race: bigint;
+	user: string;
+}
+
+export interface BetDetails extends FormBetDetails {
+	active: boolean;
+}
+
+export interface FullBetData extends Partial<Record<bet_type, BetDetails>> {
+	race: bigint;
+	user: string;
+}
+
+export interface OptionState {
+	isDisabled: boolean;
+	isFocused: boolean;
+	isSelected: boolean;
+}
+
 // currently unused
 // export type MiddlewareFactory = (middleware: NextMiddleware) => NextMiddleware;

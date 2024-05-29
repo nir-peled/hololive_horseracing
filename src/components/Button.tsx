@@ -12,7 +12,7 @@ interface Props {
 function Button({ type, className, children, disabled, onClick }: Props) {
 	return (
 		<button
-			className={`btn ${className ? className : ""}`}
+			className={`btn ${className}`}
 			type={type}
 			disabled={disabled}
 			onClick={onClick}>

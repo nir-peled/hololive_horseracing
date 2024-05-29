@@ -1,14 +1,14 @@
 "use client";
 import { z } from "zod";
 import { TFunction } from "i18next";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ContestantDisplayData, ContestantPlacementData } from "@/src/lib/types";
 import { useSubmitter } from "@/src/lib/hooks";
 import SelectFormInput from "../forms/SelectFormInput";
-import IconImage from "../IconImage";
+import ContestantSelectOption from "../forms/ContestantSelectOption";
 import Button from "../Button";
 
 interface Props {
@@ -37,13 +37,10 @@ export function RaceResultsEditForm({ id, contestants }: Props) {
 	});
 
 	const chosen_ids = [watch("first"), watch("second"), watch("third")];
-	// useMemo in order to call it unnecessarily
-	const disabled_options = useMemo(
-		() => contestants.filter((con) => chosen_ids.includes(con.id)),
-		[contestants, chosen_ids]
-	);
+	// useMemo in order to call it unnecessarily?
+	const disabled_options = contestants.filter((con) => chosen_ids.includes(con.id));
 
-	const submit_results = useSubmitter<ContestantPlacementData>(
+	const submit_results = useSubmitter<Partial<ContestantPlacementData>>(
 		`/api/management/races/${id}/set_results`,
 		{
 			is_failed,
@@ -63,21 +60,9 @@ export function RaceResultsEditForm({ id, contestants }: Props) {
 					options={contestants}
 					disabled_options={disabled_options}
 					control={control}
-					render_option={({ jockey, horse }, { isDisabled }) => {
-						const colour_style = isDisabled
-							? "text-neutral-300 border-neutral-300"
-							: "text-black border-black hover:text-white hover:border-white";
-
-						return (
-							<div
-								className={`inline-grid grid-rows-1 justify-between ${colour_style} bg-white hover:bg-blue-600`}>
-								<b>{jockey.name}</b>
-								<IconImage icon={jockey.image} />
-								<b>{horse.name}</b>
-								<IconImage icon={horse.image} />
-							</div>
-						);
-					}}
+					render_option={(data, option_state) => (
+						<ContestantSelectOption data={data} state={option_state} />
+					)}
 				/>
 			))}
 			<Button type="submit" disabled={isSubmitted && !isSubmitSuccessful}>

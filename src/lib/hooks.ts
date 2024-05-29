@@ -71,13 +71,17 @@ export function useIsAuthorized(endpoint: string): boolean {
 	return is_path_authorized(endpoint, user?.role);
 }
 
-interface UseSubmitterParams<T extends Record<string, any>> {
+interface UseSubmitterParams<
+	T extends Record<string, any>,
+	D extends Record<string, any> = T
+> {
 	is_failed?: boolean;
 	set_is_failed?: (is_failure: boolean) => void;
-	default_values?: { [K in keyof T]?: T[K] | undefined } | undefined;
+	default_values?: { [K in keyof D]?: D[K] | undefined } | undefined;
 	reset?: (data?: Partial<T> | undefined) => void;
 	method?: string;
 	on_success?: (data: Partial<T>, response: Response) => void;
+	transform?: (data: T) => D;
 }
 
 /**
@@ -92,7 +96,10 @@ interface UseSubmitterParams<T extends Record<string, any>> {
  * @param method fetch HTTP method - default is POST
  * @returns the submitter function, can use with handleSubmit
  */
-export function useSubmitter<T extends Record<string, any>>(
+export function useSubmitter<
+	T extends Record<string, any>,
+	D extends Record<string, any> = T
+>(
 	endpoint: string,
 	{
 		is_failed,
@@ -101,16 +108,18 @@ export function useSubmitter<T extends Record<string, any>>(
 		reset,
 		method = "POST",
 		on_success,
-	}: UseSubmitterParams<T>
-): (data: Partial<T>, event?: BaseSyntheticEvent) => Promise<void> {
-	return async (data: Partial<T>, event?: BaseSyntheticEvent) => {
+		transform,
+	}: UseSubmitterParams<T, D>
+): (data: T, event?: BaseSyntheticEvent) => Promise<void> {
+	return async (data: T, event?: BaseSyntheticEvent) => {
 		if (event) event.preventDefault();
+		let transed_data = transform ? transform(data) : data;
 
 		let form_data = new FormData();
-		for (let [key, value] of Object.entries(data))
+		for (let [key, value] of Object.entries(transed_data))
 			if (
 				value != undefined &&
-				(!default_values || default_values[key as keyof T] != value)
+				(!default_values || default_values[key as keyof D] != value)
 			) {
 				const form_value = typeof value == "string" ? value : JSON.stringify(value);
 				form_data.append(key, form_value);
@@ -135,10 +144,15 @@ export function useSubmitter<T extends Record<string, any>>(
 
 function get_countdown_parts(countdown: number) {
 	// seperate countdown (milliseconds) to parts down to seconds
-	const days = Math.floor(countdown / (1000 * 60 * 60 * 24));
-	const hours = Math.floor((countdown % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-	const minutes = Math.floor((countdown % (1000 * 60 * 60)) / (1000 * 60));
-	const seconds = Math.floor((countdown % (1000 * 60)) / 1000);
+	const MILLI_IN_SEC = 1000;
+	const MILLIES_IN_MINUTE = MILLI_IN_SEC * 60;
+	const MILLIES_IN_HOUR = MILLIES_IN_MINUTE * 60;
+	const MILLIES_IN_DAY = MILLIES_IN_HOUR * 24;
+
+	const days = Math.floor(countdown / MILLIES_IN_DAY);
+	const hours = Math.floor((countdown % MILLIES_IN_DAY) / MILLIES_IN_HOUR);
+	const minutes = Math.floor((countdown % MILLIES_IN_HOUR) / MILLIES_IN_MINUTE);
+	const seconds = Math.floor((countdown % MILLIES_IN_MINUTE) / MILLI_IN_SEC);
 
 	return { days, hours, minutes, seconds };
 }

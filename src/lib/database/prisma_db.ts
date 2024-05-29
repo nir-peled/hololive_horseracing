@@ -27,6 +27,8 @@ import {
 	ContestantData,
 	ContestantDisplayData,
 	BetData,
+	FullBetData,
+	BetDetails,
 } from "../types";
 import { Encryptor } from "../encryptor";
 import { default_user_image, get_image_buffer_as_str, image_as_buffer } from "../images";
@@ -466,17 +468,45 @@ export class PrismaDatabase
 			select: bet_data_select,
 		});
 
-		return Promise.all(
-			result.map(async (bet) => ({
-				id: bet.id,
-				race: bet.contestant.race.id,
-				race_name: bet.contestant.race.name,
-				active: !bet.contestant.race.isEnded,
-				user,
-				contestant: await this.#contestant_display_data_from_query(bet.contestant),
-				amount: bet.amount,
-			}))
-		);
+		return Promise.all(result.map(async (bet) => this.#bet_data_from_query(bet)));
+	}
+
+	async get_user_bets_on_race(
+		user: string,
+		race_id: bigint
+	): Promise<FullBetData | undefined> {
+		let result = await this.prisma.bet.findMany({
+			where: {
+				user: {
+					name: user,
+				},
+				contestant: {
+					race_id,
+				},
+			},
+			select: bet_data_select,
+		});
+
+		if (!result) return;
+
+		let data: FullBetData = { user, race: race_id };
+
+		for (let bet of result) {
+			let bet_details = this.#bet_details_from_result(bet);
+			switch (bet.type) {
+				case "WIN":
+					data.win = bet_details;
+					break;
+				case "PLACE":
+					data.place = bet_details;
+					break;
+				case "SHOW":
+					data.show = bet_details;
+					break;
+			}
+		}
+
+		return data;
 	}
 
 	async #get_image_as_str(
@@ -583,6 +613,30 @@ export class PrismaDatabase
 				name: data.horse.name,
 				image: await this.#get_image_as_str("horse", data.horse as HorseData),
 			},
+		};
+	}
+
+	async #bet_data_from_query(
+		bet: Prisma.BetGetPayload<{ select: typeof bet_data_select }>
+	): Promise<BetData> {
+		return {
+			id: bet.id,
+			race: bet.contestant.race.id,
+			race_name: bet.contestant.race.name,
+			active: !bet.contestant.race.isEnded,
+			user: bet.user.name,
+			contestant: await this.#contestant_display_data_from_query(bet.contestant),
+			amount: bet.amount,
+		};
+	}
+
+	#bet_details_from_result(
+		bet: Prisma.BetGetPayload<{ select: typeof bet_data_select }>
+	): BetDetails {
+		return {
+			contestant: bet.contestant.id,
+			active: !bet.contestant.race.isEnded,
+			amount: bet.amount,
 		};
 	}
 }
