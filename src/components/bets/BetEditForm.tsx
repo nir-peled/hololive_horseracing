@@ -77,7 +77,9 @@ export default function BetEditForm({
 			{BETS_TYPES.map((bet_type, idx) => (
 				<FormInput
 					key={idx}
-					className="flex flex-row"
+					className={`flex flex-row ${
+						!watch(bet_type) && "border-gray-500 text-gray-500"
+					}`}
 					label={t(`bet-choose-${bet_type}`)}
 					error={
 						errors[bet_type]?.message ||
@@ -121,7 +123,7 @@ export default function BetEditForm({
 				</FormInput>
 			))}
 			<Button type="submit" disabled={isValid && isSubmitted} className="m-2">
-				{t("make-bet-submit")}
+				{t("edit-bet-submit")}
 			</Button>
 		</form>
 	);
@@ -146,7 +148,7 @@ function create_bet_schema(
 	const create_bet_details_shcema = () =>
 		z.object({
 			contestant: z.bigint(),
-			amount: z.number().int({ message: t("bet-must-be-integer") }),
+			amount: z.number().int(t("bet-must-be-integer")),
 		});
 
 	let base_schema = z.object({
@@ -171,15 +173,15 @@ function create_bet_schema(
 			}
 		);
 
-	let med_shcema = BETS_TYPES.reduce(
+	let med_shcema = BETS_TYPES.reduce<schema_t>(
 		(schema, type) => refine_unique_contestant(schema, type),
-		base_schema as schema_t
+		base_schema
 	);
 
 	const existing_bet_amount = all_bets_amount(existing_bet);
 	const max_bet_amount = balance + existing_bet_amount;
 
-	return med_shcema.refine((data) => all_bets_amount(data) < max_bet_amount, {
+	return med_shcema.refine((data) => all_bets_amount(data) <= max_bet_amount, {
 		message: t("bet-amount-exceeds-max"),
 		path: ["win"],
 	});
