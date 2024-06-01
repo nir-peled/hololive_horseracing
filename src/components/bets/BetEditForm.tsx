@@ -148,7 +148,7 @@ function create_bet_schema(
 	const create_bet_details_shcema = () =>
 		z.object({
 			contestant: z.bigint(),
-			amount: z.number().int(t("bet-must-be-integer")),
+			amount: z.number().int(t("bet-must-be-integer")).min(1, t("bet-must-be-positive")),
 		});
 
 	let base_schema = z.object({

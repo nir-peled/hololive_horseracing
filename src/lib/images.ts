@@ -33,7 +33,7 @@ export function refine_schema_for_image<
 	return schema
 		.refine(
 			(data) => {
-				if (!max_file_size || !data[field_name]) return true;
+				if (!max_file_size) return true;
 				let file = filelist_get_file(data[field_name]);
 				return !file || file.size <= max_file_size;
 			},

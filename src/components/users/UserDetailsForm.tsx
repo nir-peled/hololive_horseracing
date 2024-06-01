@@ -38,8 +38,6 @@ export default function UserDetailsForm({ edit_user }: Props) {
 	const { t } = useTranslation(namespaces);
 	const UserSchema = create_user_schema(t);
 
-	// console.log(`edit user = ${edit_user}`); // debug
-
 	// if edit_user is given, those are the user's details.
 	// otherwise, they are empty
 	const { data: default_values, isLoading } = useSWR<Partial<UserDefaultValues>>(
@@ -50,9 +48,6 @@ export default function UserDetailsForm({ edit_user }: Props) {
 			else return {};
 		}
 	);
-
-	console.log("default values = "); // debug
-	console.log(default_values); // debug
 
 	const {
 		control,
@@ -72,34 +67,6 @@ export default function UserDetailsForm({ edit_user }: Props) {
 		default_values: default_values as Partial<UserFormData> | undefined,
 		reset,
 	});
-
-	// async function submit_form(data: UserFormData, event?: BaseSyntheticEvent) {
-	// 	if (event) event.preventDefault();
-
-	// 	let form_data = new FormData();
-	// 	for (let [key, value] of Object.entries(data)) {
-	// 		if (key != "image" && value)
-	// 			if (default_values && value != default_values[key as keyof UserDefaultValues])
-	// 				form_data.append(key, value);
-	// 	}
-
-	// 	if (data?.image && data.image.length > 0)
-	// 		form_data.append("image", data.image.item(0) as File);
-
-	// 	let result = await fetch(endpoint, {
-	// 		method: "POST",
-	// 		body: form_data,
-	// 	});
-
-	// 	if (result.ok) {
-	// 		// if form is used for new user, reset the form to empty
-	// 		if (!edit_user) reset();
-	// 		if (isFailed) setIsFailed(false);
-	// 	} else {
-	// 		reset(data);
-	// 		setIsFailed(true);
-	// 	}
-	// }
 
 	if (isLoading) return <LoadingMarker />;
 
@@ -181,7 +148,10 @@ function create_user_schema(t: TFunction) {
 	let schema = z
 		.object({
 			display_name: z.string().min(3, { message: t("display-name-too-short") }),
-			username: z.string().min(3, { message: t("username-too-short") }),
+			username: z
+				.string()
+				.min(3, { message: t("username-too-short") })
+				.regex(new RegExp("[wd_]+"), t("username-illegal-characters")),
 			password: z
 				.string()
 				.min(8, { message: t("password-too-short") })
