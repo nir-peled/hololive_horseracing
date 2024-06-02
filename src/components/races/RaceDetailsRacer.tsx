@@ -1,5 +1,6 @@
 import React from "react";
 import { ContestantDisplayData } from "@/src/lib/types";
+import OddsDisplay from "../OddsDisplay";
 import IconImage from "../IconImage";
 
 interface Props {
@@ -7,7 +8,7 @@ interface Props {
 }
 
 export default async function RaceDetailsRacer({
-	contestant: { jockey, horse, place },
+	contestant: { jockey, horse, place, odds },
 }: Props) {
 	let border_style = "border-2";
 	switch (place) {
@@ -25,7 +26,7 @@ export default async function RaceDetailsRacer({
 	}
 
 	return (
-		<div className={`${border_style} table-column`}>
+		<div className={`${border_style} table-row`}>
 			<div className="table-cell">
 				<div className="flex flex-col">
 					<h3>{jockey.name}</h3>
@@ -37,6 +38,9 @@ export default async function RaceDetailsRacer({
 					<h3>{horse.name}</h3>
 					<IconImage icon={horse.image} />
 				</div>
+			</div>
+			<div className="table-cell">
+				<OddsDisplay odds={odds} />
 			</div>
 		</div>
 	);

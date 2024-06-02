@@ -2,8 +2,6 @@
 import React from "react";
 import Button from "../Button";
 import { useTranslation } from "react-i18next";
-import { is_path_authorized } from "@/src/lib/auth";
-import { useSession } from "next-auth/react";
 import { useIsAuthorized } from "@/src/lib/hooks";
 
 const namespaces = ["races"];

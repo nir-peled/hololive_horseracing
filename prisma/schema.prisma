@@ -51,17 +51,21 @@ model Race {
 }
 
 model RaceContestant {
-  id               BigInt @id @default(autoincrement())
-  jockey_id        BigInt
-  horse_id         BigInt
-  race_id          BigInt
-  jockey           User   @relation(fields: [jockey_id], references: [id])
-  horse            Horse  @relation(fields: [horse_id], references: [id])
-  race             Race   @relation(fields: [race_id], references: [id])
-  bets             Bet[]
-  place            Int?
-  odds_denominator Int    @default(0)
-  odds_numerator   Int    @default(0)
+  id                BigInt @id @default(autoincrement())
+  jockey_id         BigInt
+  horse_id          BigInt
+  race_id           BigInt
+  jockey            User   @relation(fields: [jockey_id], references: [id])
+  horse             Horse  @relation(fields: [horse_id], references: [id])
+  race              Race   @relation(fields: [race_id], references: [id])
+  bets              Bet[]
+  place             Int?
+  win_numerator     Int    @default(0)
+  win_denominator   Int    @default(0)
+  place_numerator   Int    @default(0)
+  place_denominator Int    @default(0)
+  show_numerator    Int    @default(0)
+  show_denominator  Int    @default(0)
 
   @@unique([race_id, jockey_id])
   @@unique([race_id, horse_id])

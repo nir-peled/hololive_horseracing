@@ -17,7 +17,10 @@ const namespaces = ["races", "management"];
 /** TODO: change images to large once I manage to implement it
  *
  */
-export default function ContestantsTable({ contestants, remove_contestant }: Props) {
+export default function EditRaceContestantsTable({
+	contestants,
+	remove_contestant,
+}: Props) {
 	const { t } = useTranslation(namespaces);
 
 	return (

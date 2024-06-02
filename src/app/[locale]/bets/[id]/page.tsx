@@ -6,6 +6,7 @@ import { Locale } from "@/src/lib/types";
 import { auth } from "@/src/lib/auth";
 import TranslationsProvider from "@/src/components/TranslationProvider";
 import BetEditForm from "@/src/components/bets/BetEditForm";
+import RaceDetails from "@/src/components/races/RaceDetails";
 
 const namespaces = ["bets"];
 
@@ -41,6 +42,7 @@ export default async function BetEditPage({ params: { locale, id: id_raw } }: Pr
 					existing_bet={existing_bet}
 					balance={user.balance}
 				/>
+				<RaceDetails id={race_id} locale={locale} />
 			</TranslationsProvider>
 		);
 	} catch (e) {

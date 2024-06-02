@@ -29,11 +29,13 @@ import {
 	BetData,
 	FullBetData,
 	BetDetails,
+	FullBetOdds,
 } from "../types";
 import { Encryptor } from "../encryptor";
 import { default_user_image, get_image_buffer_as_str, image_as_buffer } from "../images";
 import { auth } from "../auth";
 import { race_result_to_race_data } from "./db_utils";
+import { lowercase } from "../utils";
 
 // export interface PrismaOptions extends Prisma.PrismaClientOptions {
 // 	accelerate?: boolean;
@@ -301,29 +303,19 @@ export class PrismaDatabase
 			where: { id },
 			select: {
 				competitors: {
-					select: {
-						jockey: {
-							select: { name: true },
-						},
-						horse: {
-							select: { name: true },
-						},
-						place: true,
-						odds_denominator: true,
-						odds_numerator: true,
-					},
+					select: competitors_display_data_select,
 				},
 			},
 		});
 
 		if (!result) return null;
 		return result.competitors.map((contestant) => ({
+			id: contestant.id,
 			race_id: id,
 			jockey: contestant.jockey.name,
 			horse: contestant.horse.name,
 			place: contestant.place != null ? contestant.place : undefined,
-			odds_denominator: contestant.odds_denominator,
-			odds_numerator: contestant.odds_numerator,
+			odds: this.#odds_from_contestant_query(contestant),
 		}));
 	}
 
@@ -602,9 +594,9 @@ export class PrismaDatabase
 	): Promise<ContestantDisplayData> {
 		return {
 			id: data.id,
+			race_id: data.race_id,
 			place: data.place != null ? data.place : undefined,
-			odds_denominator: data.odds_denominator,
-			odds_numerator: data.odds_numerator,
+			odds: this.#odds_from_contestant_query(data),
 			jockey: {
 				name: data.jockey.display_name || data.jockey.name,
 				image: await this.#get_image_as_str("user", data.jockey as UserData),
@@ -627,6 +619,7 @@ export class PrismaDatabase
 			user: bet.user.name,
 			contestant: await this.#contestant_display_data_from_query(bet.contestant),
 			amount: bet.amount,
+			type: lowercase(bet.type),
 		};
 	}
 
@@ -637,6 +630,27 @@ export class PrismaDatabase
 			contestant: bet.contestant.id,
 			active: !bet.contestant.race.isEnded,
 			amount: bet.amount,
+		};
+	}
+
+	#odds_from_contestant_query(
+		contestant: Prisma.RaceContestantGetPayload<{
+			select: typeof competitors_display_data_select;
+		}>
+	): FullBetOdds {
+		return {
+			win: {
+				numerator: contestant.win_numerator,
+				denominator: contestant.win_denominator,
+			},
+			place: {
+				numerator: contestant.place_numerator,
+				denominator: contestant.place_denominator,
+			},
+			show: {
+				numerator: contestant.show_numerator,
+				denominator: contestant.show_denominator,
+			},
 		};
 	}
 }

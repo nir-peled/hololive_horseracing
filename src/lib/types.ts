@@ -57,13 +57,20 @@ export interface HorseData {
 	image?: Buffer | null;
 }
 
+export interface Odds {
+	numerator: number;
+	denominator: number;
+}
+
+export type FullBetOdds = Record<bet_type, Odds>;
+
 export interface ContestantData {
+	id: bigint;
 	jockey: string;
 	horse: string;
 	race_id: bigint;
+	odds: FullBetOdds;
 	place?: number;
-	odds_denominator: number;
-	odds_numerator: number;
 }
 
 export interface RaceData {
@@ -102,9 +109,8 @@ export interface RaceParameters {
 	deadline?: Date | null;
 }
 
-export interface ContestantDisplayData {
-	id: bigint;
-	place?: number | null;
+export interface ContestantDisplayData
+	extends Omit<Omit<ContestantData, "jockey">, "horse"> {
 	jockey: {
 		name: string;
 		image: string;
@@ -113,8 +119,6 @@ export interface ContestantDisplayData {
 		name: string;
 		image: string;
 	};
-	odds_denominator: number;
-	odds_numerator: number;
 }
 
 export interface ContestantPlacementData {
@@ -134,6 +138,7 @@ export interface BetData {
 	contestant: ContestantDisplayData;
 	active: boolean;
 	amount: number;
+	type: bet_type;
 }
 
 export interface FormBetDetails {

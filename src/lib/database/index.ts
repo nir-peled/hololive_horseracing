@@ -67,9 +67,14 @@ export const race_parameters_select = {
 
 export const competitors_display_data_select = {
 	id: true,
+	race_id: true,
 	place: true,
-	odds_denominator: true,
-	odds_numerator: true,
+	win_denominator: true,
+	win_numerator: true,
+	place_denominator: true,
+	place_numerator: true,
+	show_denominator: true,
+	show_numerator: true,
 	jockey: {
 		select: {
 			name: true,

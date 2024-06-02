@@ -15,7 +15,7 @@ import Alert from "../Alert";
 import TextFormInput from "../forms/TextFormInput";
 import EnabledFormInput from "../forms/EnabledFormInput";
 import AddContestantSelect from "./AddContestantSelect";
-import ContestantsTable from "./ContestantsTable";
+import EditRaceContestantsTable from "./EditRaceContestantsTable";
 import RaceCutsInput from "./RaceCutsInput";
 
 interface Props {
@@ -129,7 +129,7 @@ export default function EditRaceForm({ id }: Props) {
 				{/* input contestants list */}
 				<AddContestantSelect contestants={contestants} add_contestant={new_contestant} />
 				<br />
-				<ContestantsTable
+				<EditRaceContestantsTable
 					contestants={contestants}
 					remove_contestant={remove_contestant}
 				/>
