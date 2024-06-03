@@ -3,7 +3,6 @@ import Link from "next/link";
 import { BetData, Locale } from "@/src/lib/types";
 import initTranslations from "@/src/lib/i18n";
 import AmountDisplay from "../AmountDisplay";
-import OddsDisplay from "../OddsDisplay";
 import IconImage from "../IconImage";
 
 interface Props {

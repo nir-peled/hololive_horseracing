@@ -6,9 +6,6 @@ import TranslationsProvider from "@/src/components/TranslationProvider";
 import EditRaceForm from "@/src/components/races/EditRaceForm";
 import PageTitle from "@/src/components/PageTitle";
 
-// race id is dynamic
-export const dynamicParams = true;
-
 export async function generateStaticParams() {
 	return generate_locale_params();
 }

@@ -17,6 +17,7 @@ import ContestantSelectOption from "../forms/ContestantSelectOption";
 import SelectFormInput from "../forms/SelectFormInput";
 import FormInput from "../forms/FormInput";
 import Button from "../Button";
+import { make_full_bet } from "@/src/lib/actions";
 
 const namespaces = ["bets"];
 
@@ -55,18 +56,16 @@ export default function BetEditForm({
 	const [is_failed, set_is_failed] = useState<boolean>(false);
 	const endpoint = `/api/bets/edit`;
 
-	const submit_form = useSubmitter<bet_form_data>(endpoint, {
-		is_failed,
-		set_is_failed,
-		default_values: existing_bet,
-		reset,
-		transform: (bet) => ({
-			...bet,
-			user,
-			race,
-		}),
-		on_success: () => location.assign("/races"),
-	});
+	const submit_form = useSubmitter<bet_form_data>(
+		(data: bet_form_data) => make_full_bet(user, race, data),
+		{
+			is_failed,
+			set_is_failed,
+			default_values: existing_bet,
+			reset,
+			on_success: () => location.assign("/races"),
+		}
+	);
 
 	const options = contestants.map((c) => c.id);
 	const chosen_options = BETS_TYPES.map((type) => watch(type)?.contestant);

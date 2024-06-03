@@ -168,14 +168,17 @@ export interface RaceDatabase {
 
 	try_edit_race(id: bigint, race_data: Partial<RaceFormData>): Promise<boolean>;
 
-	close_races_bets_at_deadline(): Promise<number>;
+	close_races_bets_at_deadline(): Promise<bigint[]>;
 
 	get_contestants_display_data(id: bigint): Promise<ContestantDisplayData[]>;
 }
 
 export interface BetsDatabase {
 	get_user_bets(user: string, op?: { active?: boolean }): Promise<BetData[]>;
+
 	get_user_bets_on_race(user: string, race_id: bigint): Promise<FullBetData | undefined>;
+
+	get_race_bets(race: bigint): Promise<BetData[]>;
 }
 
 export interface DatabaseFactory {

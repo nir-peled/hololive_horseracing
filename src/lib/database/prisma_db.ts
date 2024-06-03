@@ -411,8 +411,8 @@ export class PrismaDatabase
 		}
 	}
 
-	async close_races_bets_at_deadline(): Promise<number> {
-		let result = await this.prisma.race.updateMany({
+	async close_races_bets_at_deadline(): Promise<bigint[]> {
+		let races_result = await this.prisma.race.findMany({
 			where: {
 				isEnded: false,
 				isOpenBets: true,
@@ -420,10 +420,21 @@ export class PrismaDatabase
 					lte: new Date(),
 				},
 			},
+			select: { id: true },
+		});
+
+		let races = races_result.map((data) => data.id);
+
+		let result = await this.prisma.race.updateMany({
+			where: {
+				id: {
+					in: races,
+				},
+			},
 			data: { isOpenBets: false },
 		});
 
-		return result.count;
+		return races;
 	}
 
 	async get_contestants_display_data(id: bigint): Promise<ContestantDisplayData[]> {
@@ -499,6 +510,19 @@ export class PrismaDatabase
 		}
 
 		return data;
+	}
+
+	async get_race_bets(race: bigint): Promise<BetData[]> {
+		let result = await this.prisma.bet.findMany({
+			where: {
+				contestant: {
+					race_id: race,
+				},
+			},
+			select: bet_data_select,
+		});
+
+		return Promise.all(result.map(async (bet) => this.#bet_data_from_query(bet)));
 	}
 
 	async #get_image_as_str(

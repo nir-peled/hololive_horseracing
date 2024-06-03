@@ -146,10 +146,7 @@ export interface FormBetDetails {
 	amount: number;
 }
 
-export interface FullBetFormData extends Partial<Record<bet_type, FormBetDetails>> {
-	race: bigint;
-	user: string;
-}
+export interface FullBetFormData extends Partial<Record<bet_type, FormBetDetails>> {}
 
 export interface BetDetails extends FormBetDetails {
 	active: boolean;

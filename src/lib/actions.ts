@@ -1,8 +1,9 @@
 "use server";
 import { AuthError } from "next-auth";
-import { check_server_action_authorized, signIn, signOut } from "./auth";
-import { Locale, UserData, UserDataSelect, UserFormData } from "./types";
+import { auth, check_server_action_authorized, signIn, signOut } from "./auth";
+import { FullBetFormData, Locale, UserData, UserDataSelect, UserFormData } from "./types";
 import { database_factory } from "./database";
+import { bet_manager } from "./bet_manager";
 
 export async function authenticate(prevState: string | undefined, form_data: FormData) {
 	try {
@@ -76,6 +77,7 @@ export async function fetch_horse_image(horse: string): Promise<Buffer | null> {
 	return await database_factory.horse_database().get_horse_image(horse);
 }
 
+/*
 export async function get_is_race_editable(id: bigint): Promise<boolean> {
 	let race_params = await database_factory.race_database().get_race_parameters(id);
 	return !!race_params && !race_params.isOpenBets && !race_params.isEnded;
@@ -88,4 +90,22 @@ export async function get_race_flags(id: bigint) {
 		isOpenBets: params.isOpenBets,
 		isEnded: params.isEnded,
 	};
+}
+*/
+
+export async function make_full_bet(
+	user: string,
+	race: bigint,
+	bet: FullBetFormData
+): Promise<boolean> {
+	const logged_user = (await auth())?.user?.name;
+	if (logged_user != user) throw Error("unauthorized");
+
+	try {
+		await bet_manager.make_full_bet(user, race, bet);
+		return true;
+	} catch (e) {
+		console.log(e); // debug
+		return false;
+	}
 }

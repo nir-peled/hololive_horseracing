@@ -80,9 +80,12 @@ interface UseSubmitterParams<
 	default_values?: { [K in keyof D]?: D[K] | undefined } | undefined;
 	reset?: (data?: Partial<T> | undefined) => void;
 	method?: string;
-	on_success?: (data: Partial<T>, response: Response) => void;
+	on_success?: (data: Partial<T>, response?: Response) => void;
 	transform?: (data: T) => D;
+	fetch_options?: RequestInit;
 }
+
+type submitter_function<T> = (data: T) => boolean | Promise<boolean>;
 
 /**
  * Create a function that submits form data to an endpoint, and
@@ -100,7 +103,7 @@ export function useSubmitter<
 	T extends Record<string, any>,
 	D extends Record<string, any> = T
 >(
-	endpoint: string,
+	destination: string | submitter_function<D>,
 	{
 		is_failed,
 		set_is_failed,
@@ -109,35 +112,38 @@ export function useSubmitter<
 		method = "POST",
 		on_success,
 		transform,
+		fetch_options,
 	}: UseSubmitterParams<T, D>
 ): (data: T, event?: BaseSyntheticEvent) => Promise<void> {
 	return async (data: T, event?: BaseSyntheticEvent) => {
 		if (event) event.preventDefault();
 		let transed_data = transform ? transform(data) : data;
 
-		let form_data = new FormData();
-		for (let [key, value] of Object.entries(transed_data))
-			if (
-				value != undefined &&
-				(!default_values || default_values[key as keyof D] != value)
-			) {
-				const form_value = typeof value == "string" ? value : JSON.stringify(value);
-				form_data.append(key, form_value);
+		let submit_ok = false;
+		let response: Response | undefined;
+		try {
+			if (typeof destination == "string") {
+				let form_data = to_form_data_without_default(transed_data as D, default_values);
+
+				response = await fetch(destination, {
+					method,
+					body: form_data,
+					...fetch_options,
+				});
+				submit_ok = response && response.ok;
+			} else {
+				submit_ok = await destination(transed_data as D);
 			}
-
-		let result = await fetch(endpoint, {
-			method,
-			body: form_data,
-		});
-
-		if (result.ok) {
-			// if form is used for new user, reset the form to empty
-			if (reset) reset();
-			if (is_failed && set_is_failed) set_is_failed(false);
-			if (on_success) on_success(data, result);
-		} else {
-			if (reset) reset(data);
-			if (set_is_failed) set_is_failed(true);
+		} finally {
+			if (submit_ok) {
+				// if form is used for new user, reset the form to empty
+				if (reset) reset();
+				if (is_failed && set_is_failed) set_is_failed(false);
+				if (on_success) on_success(data, response);
+			} else {
+				if (reset) reset(data);
+				if (set_is_failed) set_is_failed(true);
+			}
 		}
 	};
 }
@@ -155,4 +161,19 @@ function get_countdown_parts(countdown: number) {
 	const seconds = Math.floor((countdown % MILLIES_IN_MINUTE) / MILLI_IN_SEC);
 
 	return { days, hours, minutes, seconds };
+}
+
+function to_form_data_without_default<T extends Record<string, any>>(
+	data: T,
+	default_data?: T
+): FormData {
+	let form_data = new FormData();
+	for (let [key, value] of Object.entries(data)) {
+		if (value != undefined && (!default_data || default_data[key as keyof T] != value)) {
+			const form_value = typeof value == "string" ? value : JSON.stringify(value);
+			form_data.append(key, form_value);
+		}
+	}
+
+	return form_data;
 }

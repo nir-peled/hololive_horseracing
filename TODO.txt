@@ -1,3 +1,5 @@
 Add way to display different image sizes
-Add /management/races/[id]/bets
-Change BetEditForm to use server action instead of useSubmitter?
+Finish management page
+Update RaceSubmitResultsPage to include race name in title, maybe remove intermediate component?
+Complete bet_manager
+Add bet history page?
