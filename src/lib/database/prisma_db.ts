@@ -30,12 +30,15 @@ import {
 	FullBetData,
 	BetDetails,
 	FullBetOdds,
+	FullBetFormData,
+	bet_type,
+	FormBetDetails,
 } from "../types";
 import { Encryptor } from "../encryptor";
 import { default_user_image, get_image_buffer_as_str, image_as_buffer } from "../images";
 import { auth } from "../auth";
 import { race_result_to_race_data } from "./db_utils";
-import { lowercase } from "../utils";
+import { to_lowercase, to_uppercase } from "../utils";
 
 // export interface PrismaOptions extends Prisma.PrismaClientOptions {
 // 	accelerate?: boolean;
@@ -525,6 +528,61 @@ export class PrismaDatabase
 		return Promise.all(result.map(async (bet) => this.#bet_data_from_query(bet)));
 	}
 
+	async update_user_race_bets(
+		user: string,
+		race: bigint,
+		bets: FullBetFormData
+	): Promise<number> {
+		let user_id = (
+			await this.prisma.user.findUnique({
+				where: { name: user },
+				select: { id: true },
+			})
+		)?.id;
+		if (!user_id) throw Error("user-not-found");
+
+		let previous_bets = await this.prisma.bet.findMany({
+			where: {
+				user_id,
+				contestant: {
+					race_id: race,
+				},
+			},
+			select: { amount: true },
+		});
+
+		let updates = Object.entries<FormBetDetails>(bets).map(([type, bet]) =>
+			this.prisma.bet.upsert({
+				where: {
+					user_id_contestant_id: {
+						user_id,
+						contestant_id: bet.contestant,
+					},
+					type: to_uppercase(type as bet_type),
+				},
+				update: {
+					amount: bet.amount,
+				},
+				create: {
+					user_id,
+					contestant_id: bet.contestant,
+					amount: bet.amount,
+					type: to_uppercase(type as bet_type),
+				},
+			})
+		);
+
+		let results = await this.prisma.$transaction(updates);
+
+		let amount_delta = this.#bet_sum(previous_bets) - this.#bet_sum(results);
+		await this.prisma.user.update({
+			where: { id: user_id },
+			data: { balance: { decrement: amount_delta } },
+		});
+
+		return amount_delta;
+	}
+
 	async #get_image_as_str(
 		table: "user" | "horse",
 		user: string | UserData | HorseData
@@ -643,7 +701,7 @@ export class PrismaDatabase
 			user: bet.user.name,
 			contestant: await this.#contestant_display_data_from_query(bet.contestant),
 			amount: bet.amount,
-			type: lowercase(bet.type),
+			type: to_lowercase(bet.type),
 		};
 	}
 
@@ -676,5 +734,9 @@ export class PrismaDatabase
 				denominator: contestant.show_denominator,
 			},
 		};
+	}
+
+	#bet_sum(bets: Prisma.BetGetPayload<{ select: { amount: true } }>[]): number {
+		return bets.reduce((sum, bet) => sum + bet.amount, 0);
 	}
 }

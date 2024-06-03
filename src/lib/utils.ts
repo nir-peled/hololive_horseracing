@@ -86,8 +86,12 @@ export function arr_diff<T>(arr1: T[], arr2: T[]): T[] {
 	);
 }
 
-export function lowercase<T extends string>(str: T): Lowercase<T> {
+export function to_lowercase<T extends string>(str: T): Lowercase<T> {
 	return str.toLowerCase() as Lowercase<T>;
+}
+
+export function to_uppercase<T extends string>(str: T): Uppercase<T> {
+	return str.toUpperCase() as Uppercase<T>;
 }
 
 interface form_cuts_t {

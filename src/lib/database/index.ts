@@ -13,6 +13,7 @@ import {
 	UserFormData,
 	RaceParameters,
 	FullBetData,
+	FullBetFormData,
 } from "../types";
 import { Encryptor } from "../encryptor";
 import { CryptoEncryptor } from "../encryptor/crypto_encryptor";
@@ -179,6 +180,12 @@ export interface BetsDatabase {
 	get_user_bets_on_race(user: string, race_id: bigint): Promise<FullBetData | undefined>;
 
 	get_race_bets(race: bigint): Promise<BetData[]>;
+
+	update_user_race_bets(
+		user: string,
+		race: bigint,
+		bets: FullBetFormData
+	): Promise<number>;
 }
 
 export interface DatabaseFactory {
