@@ -22,7 +22,7 @@ class DatabaseBetManager implements BetManager {
 	async #update_race_odds(race: bigint) {
 		let bets_pools = await database_factory.bets_database().get_race_bets_by_pools(race);
 		let cuts = await database_factory.cache_database().get_cuts();
-		let total_cuts = cuts.management + sum(cuts.jockeys);
+		let total_cuts = cuts.house + sum(cuts.jockeys);
 		let updates: ContestantOddsUpdate[] = [];
 
 		for (let [type, pool] of Object.entries(bets_pools)) {
