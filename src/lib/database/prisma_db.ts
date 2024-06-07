@@ -535,57 +535,60 @@ export class PrismaDatabase
 	}
 
 	async update_user_race_bets(
-		user: string,
+		username: string,
 		race: bigint,
 		bets: FullBetFormData
 	): Promise<number> {
-		let user_id = (
-			await this.prisma.user.findUnique({
-				where: { name: user },
-				select: { id: true },
-			})
-		)?.id;
-		if (!user_id) throw Error("user-not-found");
+		let user = await this.prisma.user.findUnique({
+			where: { name: username },
+			select: { id: true, balance: true },
+		});
+		if (!user) throw Error("user-not-found");
 
 		let previous_bets = await this.prisma.bet.findMany({
 			where: {
-				user_id,
+				user_id: user.id,
 				contestant: {
 					race_id: race,
 				},
 			},
-			select: { amount: true },
+			select: { amount: true, id: true },
 		});
 
-		let updates = Object.entries<FormBetDetails>(bets).map(([type, bet]) =>
-			this.prisma.bet.upsert({
-				where: {
-					user_id_contestant_id: {
-						user_id,
-						contestant_id: bet.contestant,
-					},
-					type: to_uppercase(type as bet_type),
-				},
-				update: {
-					amount: bet.amount,
-				},
-				create: {
-					user_id,
-					contestant_id: bet.contestant,
-					amount: bet.amount,
-					type: to_uppercase(type as bet_type),
-				},
-			})
-		);
+		let bets_entries = Object.entries<FormBetDetails>(bets).filter(
+			([_, bet]) => bet !== null
+		) as [bet_type, FormBetDetails][];
 
-		let results = await this.prisma.$transaction(updates);
+		let amount_delta =
+			sum(previous_bets, ({ amount }) => amount) -
+			sum(bets_entries, ([_, bet]) => bet.amount);
 
-		let amount_delta = this.#bet_sum(previous_bets) - this.#bet_sum(results);
-		await this.prisma.user.update({
-			where: { id: user_id },
+		if (user.balance + amount_delta < 0) throw Error("user-balance-not-sufficient");
+
+		let inserts = this.prisma.bet.createMany({
+			data: bets_entries.map(([type, bet]) => ({
+				user_id: user.id,
+				contestant_id: bet.contestant,
+				amount: bet.amount,
+				type: to_uppercase(type),
+			})),
+		});
+
+		let removal = this.prisma.bet.deleteMany({
+			where: {
+				id: {
+					in: previous_bets.map(({ id }) => id),
+				},
+			},
+		});
+
+		let balance_update = this.prisma.user.update({
+			where: { id: user.id },
 			data: { balance: { decrement: amount_delta } },
+			select: { balance: true },
 		});
 
+		await this.prisma.$transaction([removal, inserts, balance_update]);
 		return amount_delta;
 	}
 
@@ -827,10 +830,6 @@ export class PrismaDatabase
 				denominator: contestant.show_denominator,
 			},
 		};
-	}
-
-	#bet_sum(bets: Prisma.BetGetPayload<{ select: { amount: true } }>[]): number {
-		return sum(bets, ({ amount }) => amount);
 	}
 
 	async #cache(key: string): Promise<string | undefined> {

@@ -37,6 +37,8 @@ class DatabaseBetManager implements BetManager {
 					type as bet_type
 				)
 			));
+
+			updates = updates.concat(pool_updates);
 		}
 
 		await database_factory.race_database().update_race_odds(updates);

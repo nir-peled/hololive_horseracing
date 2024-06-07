@@ -55,7 +55,6 @@ export default function BetEditForm({
 	});
 
 	const [is_failed, set_is_failed] = useState<boolean>(false);
-	const endpoint = `/api/bets/edit`;
 
 	const submit_form = useSubmitter<bet_form_data>(
 		(data: bet_form_data) => make_full_bet(user, race, data),
