@@ -3,13 +3,11 @@ import React, { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { TFunction } from "i18next";
-import useSWR from "swr";
 import { z } from "zod";
 import { date_to_datetime_local, datetime_local_to_date } from "@/src/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { json_fetcher, useSubmitter } from "@/src/lib/hooks";
+import { useSubmitter } from "@/src/lib/hooks";
 import { RaceFormData } from "@/src/lib/types";
-import LoadingMarker from "../LoadingMarker";
 import Button from "../Button";
 import Alert from "../Alert";
 import TextFormInput from "../forms/TextFormInput";
@@ -20,21 +18,14 @@ import RaceCutsInput from "./RaceCutsInput";
 
 interface Props {
 	id?: number;
+	default_values?: RaceFormData;
 }
 
 const namespaces = ["races", "management"];
 
-export default function EditRaceForm({ id }: Props) {
+export default function EditRaceForm({ id, default_values }: Props) {
 	const { t } = useTranslation(namespaces);
 	const race_schema = create_race_schema(t);
-
-	const { data: default_values, isLoading } = useSWR<Partial<RaceFormData>>(
-		"/api/management/races/form_data",
-		(url: string) => {
-			if (id) return json_fetcher(url + "?" + new URLSearchParams({ id: String(id) }));
-			else return {};
-		}
-	);
 
 	const {
 		control,
@@ -67,8 +58,6 @@ export default function EditRaceForm({ id }: Props) {
 		default_values,
 		reset,
 	});
-
-	if (isLoading) return <LoadingMarker />;
 
 	return (
 		<form onSubmit={handleSubmit(submit_form)} id="edit_race_form">

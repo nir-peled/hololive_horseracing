@@ -12,7 +12,7 @@ import { sum } from "../utils";
 
 interface CutsDetails {
 	cuts: Cuts;
-	management?: string;
+	house?: string;
 }
 
 export class BetsCloser {
@@ -23,7 +23,7 @@ export class BetsCloser {
 	contestants?: ContestantData[] | null;
 	jockeys?: string[];
 	rewards: Reward[];
-	management_reward: number;
+	house_reward: number;
 	total_bet_amount: number;
 	constructor(race: bigint, placements: ContestantPlacementData) {
 		this.race = race;
@@ -33,9 +33,9 @@ export class BetsCloser {
 			{} as Record<bet_type, BetData[]>
 		);
 
-		this.cuts_details = { cuts: { management: 0, jockeys: [] } };
+		this.cuts_details = { cuts: { house: 0, jockeys: [] } };
 		this.rewards = [];
-		this.management_reward = 0;
+		this.house_reward = 0;
 		this.total_bet_amount = 0;
 	}
 
@@ -58,7 +58,7 @@ export class BetsCloser {
 
 		let total_rewards_amount = sum(this.rewards, ({ amount }) => amount);
 		if (total_rewards_amount < this.total_bet_amount)
-			this.management_reward += this.total_bet_amount - total_rewards_amount;
+			this.house_reward += this.total_bet_amount - total_rewards_amount;
 
 		await this.#pay_rewards();
 	}
@@ -67,7 +67,7 @@ export class BetsCloser {
 		let total_pool_amount = sum(bets, ({ amount }) => amount);
 		this.total_bet_amount += total_pool_amount;
 
-		this.#add_management_reward(total_pool_amount);
+		this.#add_house_reward(total_pool_amount);
 
 		let racers_rewards = this.#get_pool_racers_rewards(
 			total_pool_amount,
@@ -99,11 +99,11 @@ export class BetsCloser {
 		return rewards;
 	}
 
-	#add_management_reward(total_bet_amount: number) {
-		if (this.cuts_details.management)
-			this.management_reward += this.#calc_reward_for_cut(
+	#add_house_reward(total_bet_amount: number) {
+		if (this.cuts_details.house)
+			this.house_reward += this.#calc_reward_for_cut(
 				total_bet_amount,
-				this.cuts_details.cuts.management
+				this.cuts_details.cuts.house
 			);
 	}
 
@@ -116,11 +116,10 @@ export class BetsCloser {
 	}
 
 	async #get_cuts_details(): Promise<CutsDetails> {
-		let cuts = await database_factory.cache_database().get_cuts();
-		let management = await database_factory
-			.cache_database()
-			.get_management_reward_target();
-		return { cuts, management };
+		let cuts = await database_factory.race_database().get_race_cuts(this.race);
+		if (!cuts) cuts = await database_factory.cache_database().get_cuts();
+		let house = await database_factory.cache_database().get_house_reward_target();
+		return { cuts, house };
 	}
 
 	#combine_rewards(racers_rewards: (Reward | undefined)[]) {

@@ -64,6 +64,21 @@ export const race_data_select = {
 	},
 } as const;
 
+export const race_form_data_select = {
+	name: true,
+	deadline: true,
+	house_cut_percent: true,
+	win_cut_percent: true,
+	place_cut_percent: true,
+	show_cut_percent: true,
+	competitors: {
+		select: {
+			jockey: { select: { name: true } },
+			horse: { select: { name: true } },
+		},
+	},
+} as const;
+
 export const race_parameters_select = {
 	name: true,
 	isOpenBets: true,
@@ -166,6 +181,8 @@ export interface RaceDatabase {
 
 	get_race_data(id: bigint, select?: Select<RaceData>): Promise<RaceData | null>;
 
+	get_race_form_data(id: bigint): Promise<RaceFormData | null>;
+
 	get_race_contestants_data(id: bigint): Promise<RaceContestantsData | null>;
 
 	get_race_contestants(id: bigint): Promise<ContestantData[] | null>;
@@ -183,6 +200,8 @@ export interface RaceDatabase {
 	set_race_placements(id: bigint, placements: ContestantPlacementData): Promise<boolean>;
 
 	update_race_odds(updates: ContestantOddsUpdate[]): Promise<void>;
+
+	get_race_cuts(id: bigint): Promise<Cuts | null>;
 }
 
 export interface BetsDatabase {
@@ -204,7 +223,7 @@ export interface BetsDatabase {
 export interface CacheDatabase {
 	get_cuts(): Promise<Cuts>;
 
-	get_management_reward_target(): Promise<string | undefined>;
+	get_house_reward_target(): Promise<string | undefined>;
 }
 
 export interface DatabaseFactory {

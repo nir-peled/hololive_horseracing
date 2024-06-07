@@ -15,6 +15,7 @@ import {
 	BetsDatabase,
 	bet_data_select,
 	CacheDatabase,
+	race_form_data_select,
 } from ".";
 import {
 	UserFormData,
@@ -43,7 +44,7 @@ import {
 import { Encryptor } from "../encryptor";
 import { default_user_image, get_image_buffer_as_str, image_as_buffer } from "../images";
 import { auth } from "../auth";
-import { race_result_to_race_data } from "./db_utils";
+import { or_undefined, race_result_to_race_data } from "./db_utils";
 import { sum, to_lowercase, to_uppercase } from "../utils";
 
 // export interface PrismaOptions extends Prisma.PrismaClientOptions {
@@ -295,6 +296,28 @@ export class PrismaDatabase
 		return race_result_to_race_data(result);
 	}
 
+	async get_race_form_data(id: bigint): Promise<RaceFormData | null> {
+		let result = await this.prisma.race.findUnique({
+			where: { id },
+			select: race_form_data_select,
+		});
+
+		if (!result) return null;
+
+		return {
+			name: result.name,
+			deadline: result.deadline,
+			contestants: result.competitors.map(({ horse, jockey }) => ({
+				horse: horse.name,
+				jockey: jockey.name,
+			})),
+			house_cut: or_undefined(result.house_cut_percent),
+			win_cut: or_undefined(result.win_cut_percent),
+			place_cut: or_undefined(result.place_cut_percent),
+			show_cut: or_undefined(result.show_cut_percent),
+		};
+	}
+
 	async get_race_contestants_data(id: bigint): Promise<RaceContestantsData | null> {
 		let result = await this.prisma.race.findUnique({
 			where: { id },
@@ -323,9 +346,32 @@ export class PrismaDatabase
 			race_id: id,
 			jockey: contestant.jockey.name,
 			horse: contestant.horse.name,
-			place: contestant.place != null ? contestant.place : undefined,
+			place: or_undefined(contestant.place),
 			odds: this.#odds_from_contestant_query(contestant),
 		}));
+	}
+
+	async get_race_cuts(id: bigint): Promise<Cuts | null> {
+		let result = await this.prisma.race.findUnique({
+			where: { id },
+			select: {
+				house_cut_percent: true,
+				win_cut_percent: true,
+				place_cut_percent: true,
+				show_cut_percent: true,
+			},
+		});
+
+		if (!result || Object.values(result).some((cut) => cut === null)) return null;
+
+		return {
+			house: result.house_cut_percent as number,
+			jockeys: [
+				result.win_cut_percent,
+				result.place_cut_percent,
+				result.show_cut_percent,
+			] as number[],
+		};
 	}
 
 	async create_race(race_data: RaceFormData): Promise<boolean> {
@@ -624,17 +670,17 @@ export class PrismaDatabase
 	}
 
 	async get_cuts(): Promise<Cuts> {
-		let management_cut = await this.#cache("management_cut");
+		let house_cut = await this.#cache("house_cut");
 		let jockeys_cuts_raw = await await this.#cache("jockeys_cut");
 
 		return {
-			management: management_cut ? Number(management_cut) : 0,
+			house: house_cut ? Number(house_cut) : 0,
 			jockeys: jockeys_cuts_raw ? JSON.parse(jockeys_cuts_raw) : [],
 		};
 	}
 
-	async get_management_reward_target(): Promise<string | undefined> {
-		return await this.#cache("management_reward_target");
+	async get_house_reward_target(): Promise<string | undefined> {
+		return await this.#cache("house_reward_target");
 	}
 
 	async reward_users(rewards: Reward[]): Promise<void> {
@@ -773,7 +819,7 @@ export class PrismaDatabase
 		return {
 			id: data.id,
 			race_id: data.race_id,
-			place: data.place != null ? data.place : undefined,
+			place: or_undefined(data.place),
 			odds: this.#odds_from_contestant_query(data),
 			jockey: {
 				name: data.jockey.display_name || data.jockey.name,

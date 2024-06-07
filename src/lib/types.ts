@@ -164,7 +164,7 @@ export interface SelectOptionState {
 }
 
 export interface Cuts {
-	management: number;
+	house: number;
 	jockeys: number[];
 }
 

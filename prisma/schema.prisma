@@ -42,10 +42,10 @@ model Race {
   isOpenBets        Boolean          @default(false)
   isEnded           Boolean          @default(false)
   deadline          DateTime?
-  house_cut_percent Int              @default(0)
-  win_cut_percent   Int              @default(0)
-  place_cut_percent Int              @default(0)
-  show_cut_percent  Int              @default(0)
+  house_cut_percent Int?
+  win_cut_percent   Int?
+  place_cut_percent Int?
+  show_cut_percent  Int?
 
   @@index([name])
 }
