@@ -99,3 +99,8 @@ model Cache {
 
   @@index([key])
 }
+
+// Keys used:
+// house_reward_target: user to send house rewards to. If empty, house rewards are just deleted
+// house_cut: default house cut in percentage
+// jockeys_cut: JSON array of numbers for default placements cuts in percentage
