@@ -75,7 +75,7 @@ export class BetsCloser {
 			this.cuts_details.cuts
 		);
 
-		let bets_rewards = this.#get_pool_bets_rewards(type, bets, total_pool_amount);
+		let bets_rewards = this.#get_pool_bets_rewards(type, bets);
 
 		this.#combine_rewards(racers_rewards);
 		this.#combine_rewards(bets_rewards);
@@ -146,11 +146,7 @@ export class BetsCloser {
 		await database_factory.user_database().reward_users(this.rewards);
 	}
 
-	#get_pool_bets_rewards(
-		type: bet_type,
-		bets: BetData[],
-		total_pool_amount: number
-	): Reward[] {
+	#get_pool_bets_rewards(type: bet_type, bets: BetData[]): Reward[] {
 		let rewards = bets.map((bet) =>
 			this.#is_bet_wins(bet.contestant.id, type)
 				? {
@@ -160,7 +156,7 @@ export class BetsCloser {
 				: undefined
 		);
 
-		return rewards.filter((reward) => reward !== undefined);
+		return rewards.filter((reward) => reward !== undefined) as Reward[];
 	}
 
 	#is_bet_wins(contestant: bigint, type: bet_type): boolean {
