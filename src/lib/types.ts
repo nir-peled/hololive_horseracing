@@ -157,10 +157,27 @@ export interface FullBetData extends Partial<Record<bet_type, BetDetails>> {
 	user: string;
 }
 
-export interface OptionState {
+export interface SelectOptionState {
 	isDisabled: boolean;
 	isFocused: boolean;
 	isSelected: boolean;
+}
+
+export interface Cuts {
+	management: number;
+	jockeys: number[];
+}
+
+export interface Reward {
+	user: string;
+	amount: number;
+}
+
+export interface ContestantOddsUpdate {
+	id: bigint;
+	type: bet_type;
+	numerator: number;
+	denominator: number;
 }
 
 // currently unused

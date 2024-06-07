@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ContestantDisplayData, ContestantPlacementData } from "@/src/lib/types";
+import { set_race_results } from "@/src/lib/actions";
 import { useSubmitter } from "@/src/lib/hooks";
 import SelectFormInput from "../forms/SelectFormInput";
 import ContestantSelectOption from "../forms/ContestantSelectOption";
@@ -31,7 +32,7 @@ export function RaceResultsEditForm({ id, contestants }: Props) {
 		handleSubmit,
 		formState: { errors, isSubmitted, isSubmitSuccessful },
 		watch,
-	} = useForm<Partial<ContestantPlacementData>>({
+	} = useForm<ContestantPlacementData>({
 		resolver: zodResolver(schema),
 		defaultValues: {},
 	});
@@ -40,8 +41,8 @@ export function RaceResultsEditForm({ id, contestants }: Props) {
 	// useMemo in order to call it unnecessarily?
 	const disabled_options = contestants.filter((con) => chosen_ids.includes(con.id));
 
-	const submit_results = useSubmitter<Partial<ContestantPlacementData>>(
-		`/api/management/races/${id}/set_results`,
+	const submit_results = useSubmitter<ContestantPlacementData>(
+		(results) => set_race_results(id, results),
 		{
 			is_failed,
 			set_is_failed,

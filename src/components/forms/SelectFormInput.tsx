@@ -3,9 +3,9 @@ import React, { ReactNode } from "react";
 import { Control, Controller } from "react-hook-form";
 import Select, { components, OptionProps } from "react-select";
 import FormInput from "./FormInput";
-import { OptionState } from "@/src/lib/types";
+import { SelectOptionState } from "@/src/lib/types";
 
-type renderer<T> = (data: T, state: OptionState) => ReactNode;
+type renderer<T> = (data: T, state: SelectOptionState) => ReactNode;
 
 interface Props<T> {
 	label?: string;

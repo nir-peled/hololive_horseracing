@@ -1,5 +1,5 @@
 "use client";
-import React, { BaseSyntheticEvent, useState } from "react";
+import React, { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { TFunction } from "i18next";
@@ -60,7 +60,7 @@ export default function EditRaceForm({ id }: Props) {
 	const [is_failed, set_is_failed] = useState<boolean>(false);
 
 	let endpoint = `/api/management/races/${id ? "edit" : "new"}`;
-	if (id) endpoint += "?" + encodeURIComponent(id);
+	if (id) endpoint += "?" + new URLSearchParams({ id: String(id) });
 	const submit_form = useSubmitter<RaceFormData>(endpoint, {
 		is_failed,
 		set_is_failed,

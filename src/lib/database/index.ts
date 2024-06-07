@@ -14,6 +14,11 @@ import {
 	RaceParameters,
 	FullBetData,
 	FullBetFormData,
+	ContestantPlacementData,
+	Cuts,
+	Reward,
+	bet_type,
+	ContestantOddsUpdate,
 } from "../types";
 import { Encryptor } from "../encryptor";
 import { CryptoEncryptor } from "../encryptor/crypto_encryptor";
@@ -134,6 +139,8 @@ export interface UserDatabase {
 	}): Promise<QueryResult<UserData, Select<UserData>>[]>;
 
 	get_user_image_as_str(user: string | UserData): Promise<string>;
+
+	reward_users(rewards: Reward[]): Promise<void>;
 }
 
 export interface HorseDatabase {
@@ -172,6 +179,10 @@ export interface RaceDatabase {
 	close_races_bets_at_deadline(): Promise<bigint[]>;
 
 	get_contestants_display_data(id: bigint): Promise<ContestantDisplayData[]>;
+
+	set_race_placements(id: bigint, placements: ContestantPlacementData): Promise<boolean>;
+
+	update_race_odds(updates: ContestantOddsUpdate[]): Promise<void>;
 }
 
 export interface BetsDatabase {
@@ -181,11 +192,19 @@ export interface BetsDatabase {
 
 	get_race_bets(race: bigint): Promise<BetData[]>;
 
+	get_race_bets_by_pools(race: bigint): Promise<Record<bet_type, BetData[]>>;
+
 	update_user_race_bets(
 		user: string,
 		race: bigint,
 		bets: FullBetFormData
 	): Promise<number>;
+}
+
+export interface CacheDatabase {
+	get_cuts(): Promise<Cuts>;
+
+	get_management_reward_target(): Promise<string | undefined>;
 }
 
 export interface DatabaseFactory {
@@ -202,6 +221,7 @@ export class BasicDatabaseFactory implements DatabaseFactory {
 	private horse_db?: HorseDatabase;
 	private race_db?: RaceDatabase;
 	private bets_db?: BetsDatabase;
+	private cache_db?: CacheDatabase;
 
 	constructor(encryptor: Encryptor) {
 		this.encryptor = encryptor;
@@ -227,6 +247,11 @@ export class BasicDatabaseFactory implements DatabaseFactory {
 		return this.bets_db as BetsDatabase;
 	}
 
+	cache_database(): CacheDatabase {
+		if (!this.cache_db) this.#create_db();
+		return this.cache_db as CacheDatabase;
+	}
+
 	get_encryptor(): Encryptor {
 		return this.encryptor;
 	}
@@ -240,6 +265,7 @@ export class BasicDatabaseFactory implements DatabaseFactory {
 			this.race_db =
 			this.horse_db =
 			this.bets_db =
+			this.cache_db =
 				new PrismaDatabase(this.encryptor);
 	}
 }

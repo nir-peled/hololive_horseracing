@@ -85,8 +85,6 @@ interface UseSubmitterParams<
 	fetch_options?: RequestInit;
 }
 
-type submitter_function<T> = (data: T) => boolean | Promise<boolean>;
-
 /**
  * Create a function that submits form data to an endpoint, and
  * handles default values, form reset and failed flag
@@ -103,7 +101,7 @@ export function useSubmitter<
 	T extends Record<string, any>,
 	D extends Record<string, any> = T
 >(
-	destination: string | submitter_function<D>,
+	destination: string | ((data: D) => boolean | Promise<boolean>),
 	{
 		is_failed,
 		set_is_failed,

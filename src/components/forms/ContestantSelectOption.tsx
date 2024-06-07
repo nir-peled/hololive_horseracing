@@ -1,10 +1,10 @@
 "use client";
 import React from "react";
-import { ContestantDisplayData, OptionState } from "@/src/lib/types";
+import { ContestantDisplayData, SelectOptionState } from "@/src/lib/types";
 import IconImage from "../IconImage";
 
 interface Props {
-	state: OptionState;
+	state: SelectOptionState;
 	data: ContestantDisplayData;
 }
 

@@ -14,6 +14,7 @@ import {
 	competitors_display_data_select,
 	BetsDatabase,
 	bet_data_select,
+	CacheDatabase,
 } from ".";
 import {
 	UserFormData,
@@ -33,12 +34,17 @@ import {
 	FullBetFormData,
 	bet_type,
 	FormBetDetails,
+	ContestantPlacementData,
+	Cuts,
+	Reward,
+	BETS_TYPES,
+	ContestantOddsUpdate,
 } from "../types";
 import { Encryptor } from "../encryptor";
 import { default_user_image, get_image_buffer_as_str, image_as_buffer } from "../images";
 import { auth } from "../auth";
 import { race_result_to_race_data } from "./db_utils";
-import { to_lowercase, to_uppercase } from "../utils";
+import { sum, to_lowercase, to_uppercase } from "../utils";
 
 // export interface PrismaOptions extends Prisma.PrismaClientOptions {
 // 	accelerate?: boolean;
@@ -52,7 +58,7 @@ type prisma_t = ReturnType<typeof create_prisma_client>;
 type contestant_t = { jockey: string; horse: string };
 
 export class PrismaDatabase
-	implements UserDatabase, HorseDatabase, RaceDatabase, BetsDatabase
+	implements UserDatabase, HorseDatabase, RaceDatabase, BetsDatabase, CacheDatabase
 {
 	private readonly prisma: prisma_t;
 	private encryptor: Encryptor;
@@ -583,6 +589,93 @@ export class PrismaDatabase
 		return amount_delta;
 	}
 
+	async set_race_placements(
+		id: bigint,
+		placements: ContestantPlacementData
+	): Promise<boolean> {
+		try {
+			let result = await this.prisma.$transaction([
+				this.prisma.raceContestant.update({
+					where: { id: placements.first },
+					data: { place: 1 },
+				}),
+				this.prisma.raceContestant.update({
+					where: { id: placements.second },
+					data: { place: 2 },
+				}),
+				this.prisma.raceContestant.update({
+					where: { id: placements.second },
+					data: { place: 3 },
+				}),
+				this.prisma.race.update({
+					where: { id },
+					data: { isEnded: true, isOpenBets: false },
+				}),
+			]);
+
+			return result.length == Object.keys(placements).length;
+		} catch (e) {
+			console.log(e);
+			return false;
+		}
+	}
+
+	async get_cuts(): Promise<Cuts> {
+		let management_cut = await this.#cache("management_cut");
+		let jockeys_cuts_raw = await await this.#cache("jockeys_cut");
+
+		return {
+			management: management_cut ? Number(management_cut) : 0,
+			jockeys: jockeys_cuts_raw ? JSON.parse(jockeys_cuts_raw) : [],
+		};
+	}
+
+	async get_management_reward_target(): Promise<string | undefined> {
+		return await this.#cache("management_reward_target");
+	}
+
+	async reward_users(rewards: Reward[]): Promise<void> {
+		let queries = rewards.map((reward) =>
+			this.prisma.user.update({
+				where: { name: reward.user },
+				data: { balance: { increment: reward.amount } },
+				select: { name: true, balance: true },
+			})
+		);
+
+		await this.prisma.$transaction(queries);
+	}
+
+	async get_race_bets_by_pools(race: bigint): Promise<Record<bet_type, BetData[]>> {
+		let bets = await this.get_race_bets(race);
+		let grouped_bets = Object.groupBy(bets, (bet) => bet.type);
+		for (let type of BETS_TYPES)
+			if (grouped_bets[type] === undefined) grouped_bets[type] = [];
+
+		return grouped_bets as Record<bet_type, BetData[]>;
+	}
+
+	async update_race_odds(updates: ContestantOddsUpdate[]): Promise<void> {
+		let updates_data = new Map<bigint, Prisma.RaceContestantUpdateInput>();
+		for (let update of updates) {
+			let current = updates_data.get(update.id);
+			let new_update: Prisma.RaceContestantUpdateInput = {};
+			new_update[`${update.type}_numerator`] = update.numerator;
+			new_update[`${update.type}_denominator`] = update.denominator;
+
+			updates_data.set(update.id, { ...current, ...new_update });
+		}
+
+		let queries = Array.from(updates_data.entries(), ([id, data]) =>
+			this.prisma.raceContestant.update({
+				where: { id },
+				data,
+			})
+		);
+
+		await this.prisma.$transaction(queries);
+	}
+
 	async #get_image_as_str(
 		table: "user" | "horse",
 		user: string | UserData | HorseData
@@ -737,6 +830,14 @@ export class PrismaDatabase
 	}
 
 	#bet_sum(bets: Prisma.BetGetPayload<{ select: { amount: true } }>[]): number {
-		return bets.reduce((sum, bet) => sum + bet.amount, 0);
+		return sum(bets, ({ amount }) => amount);
+	}
+
+	async #cache(key: string): Promise<string | undefined> {
+		let result = await this.prisma.cache.findUnique({
+			where: { key },
+			select: { value: true },
+		});
+		if (result && result.value) return result.value;
 	}
 }

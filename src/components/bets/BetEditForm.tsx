@@ -18,6 +18,7 @@ import SelectFormInput from "../forms/SelectFormInput";
 import FormInput from "../forms/FormInput";
 import Button from "../Button";
 import { make_full_bet } from "@/src/lib/actions";
+import { sum } from "@/src/lib/utils";
 
 const namespaces = ["bets"];
 
@@ -132,9 +133,9 @@ function all_bets_amount(
 	bet: Partial<Record<bet_type, { amount: number } | undefined>> | undefined
 ) {
 	return bet
-		? [bet?.place?.amount, bet?.show?.amount, bet?.win?.amount].reduce<number>(
-				(sum, val) => (val ? sum + val : sum),
-				0
+		? sum(
+				[bet?.place?.amount, bet?.show?.amount, bet?.win?.amount],
+				(e: number | undefined) => e || 0
 		  )
 		: 0;
 }

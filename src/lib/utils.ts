@@ -94,6 +94,22 @@ export function to_uppercase<T extends string>(str: T): Uppercase<T> {
 	return str.toUpperCase() as Uppercase<T>;
 }
 
+// type transform_func<T, D> = (data: T) => D;
+
+export function sum<T>(
+	arr: T[],
+	...transform: T extends number
+		? [transform?: (data: T) => number]
+		: [transform: (data: T) => number]
+) {
+	let a = transform[0];
+	return arr.reduce(
+		(total, elem) =>
+			transform[0] ? total + transform[0](elem) : total + (elem as number),
+		0
+	);
+}
+
 interface form_cuts_t {
 	house_cut?: FormDataEntryValue | null;
 	win_cut?: FormDataEntryValue | null;

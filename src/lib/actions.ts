@@ -1,7 +1,14 @@
 "use server";
 import { AuthError } from "next-auth";
 import { auth, check_server_action_authorized, signIn, signOut } from "./auth";
-import { FullBetFormData, Locale, UserData, UserDataSelect, UserFormData } from "./types";
+import {
+	ContestantPlacementData,
+	FullBetFormData,
+	Locale,
+	UserData,
+	UserDataSelect,
+	UserFormData,
+} from "./types";
 import { database_factory } from "./database";
 import { bet_manager } from "./bet_manager";
 
@@ -103,6 +110,20 @@ export async function make_full_bet(
 
 	try {
 		await bet_manager.make_full_bet(user, race, bet);
+		return true;
+	} catch (e) {
+		console.log(e); // debug
+		return false;
+	}
+}
+
+export async function set_race_results(
+	id: bigint,
+	results: ContestantPlacementData
+): Promise<boolean> {
+	try {
+		await database_factory.race_database().set_race_placements(id, results);
+		await bet_manager.close_race_bets(id, results);
 		return true;
 	} catch (e) {
 		console.log(e); // debug
