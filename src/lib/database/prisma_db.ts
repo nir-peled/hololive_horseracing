@@ -405,17 +405,39 @@ export class PrismaDatabase
 	async try_delete_race(id: bigint): Promise<boolean> {
 		// add something to do with bets of removed contestants?
 		try {
-			// let race_contestants = await get_contestants_of_race(id, { id: true });
-			// let contestants_ids = race_contestants.map((c) => c.id);
+			let race_bets = await this.prisma.bet.findMany({
+				where: {
+					contestant: {
+						race_id: id,
+					},
+				},
+				select: {
+					id: true,
+					amount: true,
+					user_id: true,
+				},
+			});
+
+			let balance_updates = race_bets.map((bet) =>
+				this.prisma.user.update({
+					where: { id: bet.user_id },
+					data: { balance: { increment: bet.amount } },
+				})
+			);
+
 			let result = await this.prisma.$transaction([
+				...balance_updates,
+				this.prisma.bet.deleteMany({
+					where: { id: { in: race_bets.map(({ id }) => id) } },
+				}),
 				this.prisma.raceContestant.deleteMany({
 					where: { race_id: id },
 				}),
-				this.prisma.race.delete({ where: { id } }),
+				// make sure not to delete ended races
+				this.prisma.race.delete({ where: { id, isEnded: false } }),
 			]);
 
-			// return if second transaction operation was performed
-			return result[1].id == id;
+			return true;
 		} catch (e) {
 			console.log(e); // debug
 			return false;
@@ -456,6 +478,7 @@ export class PrismaDatabase
 			]);
 
 			// check if all operations were performed
+			// probably not necessary
 			return (
 				result[0].id == id &&
 				result[1].count == remove_contestants.length &&
@@ -605,11 +628,11 @@ export class PrismaDatabase
 			([_, bet]) => bet !== null
 		) as [bet_type, FormBetDetails][];
 
-		let amount_delta =
+		let balance_delta =
 			sum(previous_bets, ({ amount }) => amount) -
 			sum(bets_entries, ([_, bet]) => bet.amount);
 
-		if (user.balance + amount_delta < 0) throw Error("user-balance-not-sufficient");
+		if (user.balance + balance_delta < 0) throw Error("user-balance-not-sufficient");
 
 		let inserts = this.prisma.bet.createMany({
 			data: bets_entries.map(([type, bet]) => ({
@@ -630,12 +653,12 @@ export class PrismaDatabase
 
 		let balance_update = this.prisma.user.update({
 			where: { id: user.id },
-			data: { balance: { decrement: amount_delta } },
+			data: { balance: { increment: balance_delta } },
 			select: { balance: true },
 		});
 
 		await this.prisma.$transaction([removal, inserts, balance_update]);
-		return amount_delta;
+		return balance_delta;
 	}
 
 	async set_race_placements(
