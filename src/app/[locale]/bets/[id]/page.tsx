@@ -8,6 +8,8 @@ import TranslationsProvider from "@/src/components/TranslationProvider";
 import BetEditForm from "@/src/components/bets/BetEditForm";
 import RaceDetails from "@/src/components/races/RaceDetails";
 
+export const dynamic = "force-dynamic";
+
 const namespaces = ["bets"];
 
 interface Props {

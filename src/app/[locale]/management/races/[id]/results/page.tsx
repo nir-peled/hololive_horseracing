@@ -5,6 +5,7 @@ import TranslationsProvider from "@/src/components/TranslationProvider";
 import initTranslations from "@/src/lib/i18n";
 import { Locale } from "@/src/lib/types";
 import PageTitle from "@/src/components/PageTitle";
+import { database_factory } from "@/src/lib/database";
 
 // race id is dynamic
 export const dynamicParams = true;
@@ -22,10 +23,19 @@ export default async function RaceSubmitResultsPage({ params: { locale, id } }: 
 	const { t, resources } = await initTranslations(locale, namespaces);
 	try {
 		const id_number = BigInt(id);
+		const race_details = await database_factory
+			.race_database()
+			.get_race_parameters(id_number);
+		if (!race_details) notFound();
 
 		return (
 			<>
-				<PageTitle>{t("race-submit-results-title", { ns: "management" })}</PageTitle>
+				<PageTitle>
+					{t("race-submit-results-title", {
+						ns: "management",
+						race_name: race_details.name,
+					})}
+				</PageTitle>
 				<TranslationsProvider
 					namespaces={namespaces}
 					locale={locale}
@@ -37,7 +47,7 @@ export default async function RaceSubmitResultsPage({ params: { locale, id } }: 
 			</>
 		);
 	} catch (error) {
-		if (error instanceof TypeError) return notFound();
-		throw error;
+		console.log(error);
+		return notFound();
 	}
 }

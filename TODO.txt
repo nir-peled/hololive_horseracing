@@ -1,5 +1,5 @@
 Add way to display different image sizes
-Finish management page
-Update RaceSubmitResultsPage to include race name in title, maybe remove intermediate component?
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Finish management pages
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Add /management/settings
-Add bet history page?
+Make notfound & error pages
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Fill localization files

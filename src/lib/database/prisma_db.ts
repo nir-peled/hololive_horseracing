@@ -403,7 +403,6 @@ export class PrismaDatabase
 	}
 
 	async try_delete_race(id: bigint): Promise<boolean> {
-		// add something to do with bets of removed contestants?
 		try {
 			let race_bets = await this.prisma.bet.findMany({
 				where: {
@@ -574,17 +573,7 @@ export class PrismaDatabase
 
 		for (let bet of result) {
 			let bet_details = this.#bet_details_from_result(bet);
-			switch (bet.type) {
-				case "WIN":
-					data.win = bet_details;
-					break;
-				case "PLACE":
-					data.place = bet_details;
-					break;
-				case "SHOW":
-					data.show = bet_details;
-					break;
-			}
+			data[to_lowercase(bet.type)] = bet_details;
 		}
 
 		return data;
@@ -610,29 +599,17 @@ export class PrismaDatabase
 	): Promise<number> {
 		let user = await this.prisma.user.findUnique({
 			where: { name: username },
-			select: { id: true, balance: true },
+			select: { id: true },
 		});
 		if (!user) throw Error("user-not-found");
-
-		let previous_bets = await this.prisma.bet.findMany({
-			where: {
-				user_id: user.id,
-				contestant: {
-					race_id: race,
-				},
-			},
-			select: { amount: true, id: true },
-		});
+		let { balance } = await this.#cancel_user_bets(user.id, race);
 
 		let bets_entries = Object.entries<FormBetDetails>(bets).filter(
 			([_, bet]) => bet !== null
 		) as [bet_type, FormBetDetails][];
 
-		let balance_delta =
-			sum(previous_bets, ({ amount }) => amount) -
-			sum(bets_entries, ([_, bet]) => bet.amount);
-
-		if (user.balance + balance_delta < 0) throw Error("user-balance-not-sufficient");
+		let delta = sum(bets_entries, ([_, bet]) => bet.amount);
+		if (balance < delta) throw Error("user-balance-not-sufficient");
 
 		let inserts = this.prisma.bet.createMany({
 			data: bets_entries.map(([type, bet]) => ({
@@ -643,22 +620,14 @@ export class PrismaDatabase
 			})),
 		});
 
-		let removal = this.prisma.bet.deleteMany({
-			where: {
-				id: {
-					in: previous_bets.map(({ id }) => id),
-				},
-			},
-		});
-
 		let balance_update = this.prisma.user.update({
-			where: { id: user.id },
-			data: { balance: { increment: balance_delta } },
+			where: { id: user.id, balance: { gte: delta } },
+			data: { balance: balance - delta },
 			select: { balance: true },
 		});
 
-		await this.prisma.$transaction([removal, inserts, balance_update]);
-		return balance_delta;
+		let result = await this.prisma.$transaction([inserts, balance_update]);
+		return delta;
 	}
 
 	async set_race_placements(
@@ -907,5 +876,38 @@ export class PrismaDatabase
 			select: { value: true },
 		});
 		if (result && result.value) return result.value;
+	}
+
+	async #cancel_user_bets(
+		user_id: bigint,
+		race_id: bigint
+	): Promise<{ balance: number; delta: number }> {
+		let previous_bets = await this.prisma.bet.findMany({
+			where: {
+				user_id,
+				contestant: {
+					race_id,
+				},
+			},
+			select: { amount: true, id: true },
+		});
+		let delta = sum(previous_bets, ({ amount }) => amount);
+
+		let result = await this.prisma.$transaction([
+			this.prisma.bet.deleteMany({
+				where: {
+					id: { in: previous_bets.map(({ id }) => id) },
+				},
+			}),
+			this.prisma.user.update({
+				where: { id: user_id },
+				data: { balance: { increment: delta } },
+			}),
+		]);
+
+		return {
+			delta,
+			balance: result[1].balance,
+		};
 	}
 }

@@ -26,7 +26,7 @@ export default async function BetsTable({ locale, bets }: Props) {
 			</thead>
 			<tbody>
 				{bets.map((bet) => (
-					<BetDisplayLine key={bet.race} bet={bet} locale={locale} />
+					<BetDisplayLine key={bet.id} bet={bet} locale={locale} />
 				))}
 			</tbody>
 		</table>
