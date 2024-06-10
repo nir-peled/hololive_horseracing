@@ -7,6 +7,8 @@ import { auth } from "@/src/lib/auth";
 import TranslationsProvider from "@/src/components/TranslationProvider";
 import BetEditForm from "@/src/components/bets/BetEditForm";
 import RaceDetails from "@/src/components/races/RaceDetails";
+import MarkedNote from "@/src/components/MarkedNote";
+import PageTitle from "@/src/components/PageTitle";
 
 export const dynamic = "force-dynamic";
 
@@ -21,10 +23,10 @@ interface Props {
 
 export default async function BetEditPage({ params: { locale, id: id_raw } }: Props) {
 	try {
-		const { resources } = await initTranslations(locale, namespaces);
+		const { t, resources } = await initTranslations(locale, namespaces);
 		const race_id = BigInt(id_raw);
 		const user = (await auth())?.user;
-		if (!user) throw Error("No user logged in");
+		if (!user) throw Error("not-logged-in");
 
 		const race_contestants = await database_factory
 			.race_database()
@@ -35,17 +37,30 @@ export default async function BetEditPage({ params: { locale, id: id_raw } }: Pr
 			.bets_database()
 			.get_user_bets_on_race(user.name, race_id);
 
+		const race_params = await database_factory
+			.race_database()
+			.get_race_parameters(race_id);
+		if (!race_params || race_params.isEnded || !race_params.isOpenBets)
+			throw Error("bets-not-open");
+
 		return (
-			<TranslationsProvider locale={locale} resources={resources} namespaces={namespaces}>
-				<BetEditForm
-					race={race_id}
-					user={user.name}
-					contestants={race_contestants}
-					existing_bet={existing_bet}
-					balance={user.balance}
-				/>
-				<RaceDetails id={race_id} locale={locale} />
-			</TranslationsProvider>
+			<>
+				<PageTitle>{t("bet-edit-page-title", { name: race_params.name })}</PageTitle>
+				<TranslationsProvider
+					locale={locale}
+					resources={resources}
+					namespaces={namespaces}>
+					<MarkedNote>{t("bets-rounded-down-note")}</MarkedNote>
+					<BetEditForm
+						race={race_id}
+						user={user.name}
+						contestants={race_contestants}
+						existing_bet={existing_bet}
+						balance={user.balance}
+					/>
+					<RaceDetails id={race_id} locale={locale} />
+				</TranslationsProvider>
+			</>
 		);
 	} catch (e) {
 		console.log(e); // debug
