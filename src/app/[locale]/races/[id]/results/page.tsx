@@ -36,7 +36,9 @@ export default async function RacePage({ params: { locale, id } }: Props) {
 	return (
 		// <TranslationsProvider namespaces={namespaces} locale={locale} resources={resources}>
 		<>
-			<PageTitle size="large">{t("race-page-title", { name: race_data.name })}</PageTitle>
+			<PageTitle size="large">
+				{t("race-results-title", { name: race_data.name })}
+			</PageTitle>
 			<RaceResultsTable contestants={contestants} />
 		</>
 		// </TranslationsProvider>

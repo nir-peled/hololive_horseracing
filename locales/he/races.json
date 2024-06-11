@@ -21,5 +21,6 @@
 	"race-open-bets-button": "שינוי סטטוס הימורים",
 	"races-list-header-name": "מירוץ",
 	"races-list-header-competitiors": "מתחרים",
-	"races-list-header-deadline": "נסגר ב"
+	"races-list-header-deadline": "נסגר ב",
+	"race-results-title": "תוצאות מירוץ {{name}}"
 }
