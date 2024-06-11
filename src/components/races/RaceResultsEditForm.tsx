@@ -58,6 +58,7 @@ export function RaceResultsEditForm({ id, contestants }: Props) {
 						<div ref={droppable_provided.innerRef} {...droppable_provided.droppableProps}>
 							{fields.map((item, i) => (
 								<DraggableRaceContestant
+									key={item.id}
 									contestant={
 										contestants.find(
 											(c) => c.id == item.contestant

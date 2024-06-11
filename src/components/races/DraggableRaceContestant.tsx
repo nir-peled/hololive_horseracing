@@ -16,7 +16,7 @@ export default function DraggableRaceContestant({
 	index,
 }: Props) {
 	return (
-		<Draggable key={id} draggableId={id} index={index}>
+		<Draggable draggableId={id} index={index}>
 			{(draggable_provided) => (
 				<div
 					ref={draggable_provided.innerRef}
