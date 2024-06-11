@@ -6,6 +6,8 @@ import PageTitle from "@/src/components/PageTitle";
 import initTranslations from "@/src/lib/i18n";
 import BetsTable from "@/src/components/bets/BetsTable";
 
+export const dynamic = "force-dynamic";
+
 interface Props {
 	params: {
 		locale: Locale;

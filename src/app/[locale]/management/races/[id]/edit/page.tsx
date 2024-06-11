@@ -8,8 +8,7 @@ import PageTitle from "@/src/components/PageTitle";
 import { database_factory } from "@/src/lib/database";
 import { notFound } from "next/navigation";
 
-// race id is dynamic
-export const dynamicParams = true;
+export const dynamic = "force-dynamic";
 
 const namespaces = ["management"];
 

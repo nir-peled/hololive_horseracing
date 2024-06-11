@@ -3,6 +3,8 @@ import { check_api_authorized } from "@/src/lib/auth";
 import { HTTPResponseCodes } from "@/src/lib/http";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
 	let res = await check_api_authorized(request);
 	if (res) return res;

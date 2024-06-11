@@ -7,8 +7,7 @@ import { Locale } from "@/src/lib/types";
 import PageTitle from "@/src/components/PageTitle";
 import { database_factory } from "@/src/lib/database";
 
-// race id is dynamic
-export const dynamicParams = true;
+export const dynamic = "force-dynamic";
 
 const namespaces = ["races", "management"];
 

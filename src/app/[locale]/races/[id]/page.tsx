@@ -6,6 +6,8 @@ import type { Locale } from "@/src/lib/types";
 import RaceDetails from "@/src/components/races/RaceDetails";
 import PageTitle from "@/src/components/PageTitle";
 
+export const dynamic = "force-dynamic";
+
 const namespaces = ["races"];
 
 interface Props {
