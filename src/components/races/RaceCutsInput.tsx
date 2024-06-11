@@ -34,16 +34,19 @@ export default function RaceCutsInput<T extends base_t>({
 			checkbox_label={t("race-cuts-checkbox-label")}
 			default_checked={!default_values || default_values.house_cut === undefined}
 			render={(checked) => {
+				let text_style = "text-slate-300";
 				if (!checked) {
 					cuts_names.forEach((taker) => set_field(as_cut(taker), undefined));
+					text_style = "text-black";
 				}
 
 				return cuts_names.map((taker, i) => {
 					let field_name = as_cut(taker);
 					return (
-						<label className="input input-bordered flex items-center gap-2">
+						<label
+							className={`input input-bordered flex items-center gap-2 ${text_style}`}
+							key={i}>
 							<TextFormInput
-								key={i}
 								label={t(`${taker}-cut-label`)}
 								field_name={field_name}
 								type="number"
