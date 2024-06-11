@@ -47,7 +47,14 @@ export default async function RaceDetails({ id, race_data, locale }: Props) {
 
 	return (
 		<div>
-			{deadline && t("race-deadline", { deadline })}
+			<ProtectedLink href={`/management/races/${id}/edit`} className="btn">
+				{t("race-edit-button")}
+			</ProtectedLink>
+			{deadline &&
+				t("race-deadline", {
+					deadline,
+					timezone: process.env.NEXT_PUBLIC_DEADLINE_TIMEZONE,
+				})}
 			<br />
 			{isEnded ? (
 				<h3>{t("race-ended")}</h3>
@@ -62,9 +69,6 @@ export default async function RaceDetails({ id, race_data, locale }: Props) {
 				</SessionProvider>
 			)}
 			<hr />
-			<ProtectedLink href={`/management/races/${id}/edit`} className="btn">
-				{t("race-edit-button")}
-			</ProtectedLink>
 			<br />
 			<br />
 			<div className="rounded-box table lg:block lg:carousel">

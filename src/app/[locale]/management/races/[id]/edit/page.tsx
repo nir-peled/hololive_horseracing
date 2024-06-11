@@ -11,7 +11,7 @@ import { notFound } from "next/navigation";
 // race id is dynamic
 export const dynamicParams = true;
 
-const namespaces = ["races", "management"];
+const namespaces = ["management"];
 
 interface Props {
 	params: {
@@ -32,7 +32,7 @@ export default async function RaceEditPage({ params: { locale, id } }: Props) {
 
 		return (
 			<>
-				<PageTitle>{t("edit-race-title", { ns: "management" })}</PageTitle>
+				<PageTitle>{t("edit-race-title")}</PageTitle>
 				<TranslationsProvider
 					namespaces={namespaces}
 					locale={locale}

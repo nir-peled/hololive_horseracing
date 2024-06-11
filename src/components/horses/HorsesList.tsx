@@ -12,7 +12,7 @@ interface Props {
 	locale: Locale;
 }
 
-const namespaces = ["races"];
+const namespaces = ["management"];
 
 export default async function HorsesList({ locale }: Props) {
 	const { t, resources } = await initTranslations(locale, namespaces);

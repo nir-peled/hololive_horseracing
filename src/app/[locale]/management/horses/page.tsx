@@ -25,12 +25,10 @@ export default async function HorsesPage({ params: { locale } }: Props) {
 	return (
 		// <TranslationsProvider namespaces={namespaces} locale={locale} resources={resources}>
 		<>
-			<PageTitle>{t("new-horse-title")}</PageTitle>
-			<Button>
-				<ProtectedLink href="/management/horses/new" locale={locale}>
-					{t("new-horse-page-button")}
-				</ProtectedLink>
-			</Button>
+			<PageTitle>{t("horse-list-title")}</PageTitle>
+			<ProtectedLink href="/management/horses/new" locale={locale} className="btn">
+				{t("new-horse-page-button")}
+			</ProtectedLink>
 			<HorsesList locale={locale} />
 		</>
 

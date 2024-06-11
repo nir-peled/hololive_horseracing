@@ -17,7 +17,7 @@ interface Props {
 	contestants: ContestantDisplayData[];
 }
 
-const namespaces = ["races"];
+const namespaces = ["races", "management"];
 
 const positions = ["first", "second", "third"] as const;
 // type position_t = (typeof positions)[number];
@@ -37,9 +37,9 @@ export function RaceResultsEditForm({ id, contestants }: Props) {
 		defaultValues: {},
 	});
 
-	const chosen_ids = [watch("first"), watch("second"), watch("third")];
-	// useMemo in order to call it unnecessarily?
-	const disabled_options = contestants.filter((con) => chosen_ids.includes(con.id));
+	// const chosen_ids = positions.map((p) => watch(p));
+	// // useMemo in order to call it unnecessarily?
+	// const disabled_options = contestants.filter((con) => chosen_ids.includes(con.id));
 
 	const submit_results = useSubmitter<ContestantPlacementData>(
 		(results) => set_race_results(id, results),
@@ -56,10 +56,10 @@ export function RaceResultsEditForm({ id, contestants }: Props) {
 				<SelectFormInput
 					key={i}
 					name={position}
-					label={t(`race-contestant-${position}`)}
+					label={t(`race-contestant-${position}`, { ns: "races" })}
 					error={errors[position]?.message}
 					options={contestants}
-					disabled_options={disabled_options}
+					// disabled_options={disabled_options}
 					control={control}
 					render_option={(data, option_state) => (
 						<ContestantSelectOption data={data} state={option_state} />
@@ -67,7 +67,7 @@ export function RaceResultsEditForm({ id, contestants }: Props) {
 				/>
 			))}
 			<Button type="submit" disabled={isSubmitted && !isSubmitSuccessful}>
-				{t("race-results-submit-label")}
+				{t("race-results-submit-label", { ns: "management" })}
 			</Button>
 		</form>
 	);
@@ -76,20 +76,26 @@ export function RaceResultsEditForm({ id, contestants }: Props) {
 function create_schema(t: TFunction) {
 	return z
 		.object({
-			first: z.bigint({ required_error: t("race-contestant_required") }),
-			second: z.bigint({ required_error: t("race-contestant_required") }),
-			third: z.bigint({ required_error: t("race-contestant_required") }),
+			first: z.bigint({
+				required_error: t("race-contestant_required", { ns: "management" }),
+			}),
+			second: z.bigint({
+				required_error: t("race-contestant_required", { ns: "management" }),
+			}),
+			third: z.bigint({
+				required_error: t("race-contestant_required", { ns: "management" }),
+			}),
 		})
 		.refine(({ first, second, third }) => first == second || first == third, {
-			message: t("race-contestant-duplicate"),
+			message: t("race-contestant-duplicate", { ns: "management" }),
 			path: ["first"],
 		})
 		.refine(({ first, second, third }) => second == first || second == third, {
-			message: t("race-contestant-duplicate"),
+			message: t("race-contestant-duplicate", { ns: "management" }),
 			path: ["second"],
 		})
 		.refine(({ first, second, third }) => third == second || first == third, {
-			message: t("race-contestant-duplicate"),
+			message: t("race-contestant-duplicate", { ns: "management" }),
 			path: ["third"],
 		});
 }

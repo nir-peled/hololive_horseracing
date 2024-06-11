@@ -13,7 +13,7 @@ interface Props<T> {
 	control: Control<any, any>;
 	name: string;
 	options: T[];
-	disabled_options: T[];
+	disabled_options?: T[];
 	render_option?: renderer<T>;
 }
 
@@ -35,7 +35,9 @@ export default function SelectFormInput<T>({
 					{...field}
 					components={render_option && { Option: option_factory<T>(render_option) }}
 					options={options}
-					isOptionDisabled={(option) => disabled_options.includes(option)}
+					isOptionDisabled={(option) =>
+						!!disabled_options && disabled_options.includes(option)
+					}
 				/>
 			)}
 		/>

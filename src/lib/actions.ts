@@ -130,3 +130,8 @@ export async function set_race_results(
 		return false;
 	}
 }
+
+export async function delete_race(id: bigint) {
+	let result = await database_factory.race_database().try_delete_race(id);
+	return result;
+}

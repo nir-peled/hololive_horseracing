@@ -79,7 +79,7 @@ export default function BetEditForm({
 					className={`flex flex-row ${
 						!watch(bet_type) && "border-gray-500 text-gray-500"
 					}`}
-					label={t(`bet-choose-${bet_type}`)}
+					label={t(`bet-${bet_type}`)}
 					error={
 						errors[bet_type]?.message ||
 						errors[bet_type]?.amount?.message ||

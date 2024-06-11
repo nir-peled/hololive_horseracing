@@ -29,7 +29,6 @@ export default function RaceOpenBetsButton({ id, isOpenBets, disabled }: Props) 
 		});
 		if (!response.ok) return alert(t("race-toggle-bets-failed-message"));
 
-		alert(t("race-ended-message"));
 		window.location.reload();
 	}
 

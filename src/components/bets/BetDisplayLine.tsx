@@ -34,12 +34,15 @@ export default async function BetDisplayLine({
 				<b>{jockey.name}</b>
 				<b>{horse.name}</b>
 			</td>
+			<td>{t(`bet-${type}`)}</td>
 			<td>
 				<AmountDisplay amount={amount} />
 			</td>
 			<td>{`${bet_odds.numerator} / ${bet_odds.denominator}`}</td>
 			<td>
-				<Link href={`/${locale}/bets/${race}`}>{t("edit-bet-button")}</Link>
+				<Link href={`/${locale}/bets/${race}`} className="btn">
+					{t("edit-bet-button")}
+				</Link>
 			</td>
 		</tr>
 	);

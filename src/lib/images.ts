@@ -39,7 +39,7 @@ export function refine_schema_for_image<
 			},
 			{
 				message: t("image-too-large", {
-					max_file_size,
+					max_file_size: max_file_size / 1000,
 					ns: namespace,
 				}),
 				path: [field_name],

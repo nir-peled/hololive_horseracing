@@ -19,7 +19,7 @@ export default function DeleteUserButton({ name, on_error, on_delete, hidden }: 
 	const { pending } = useFormStatus();
 
 	async function send_delete() {
-		if (!confirm(t("user-delete-confirm"))) return;
+		if (!confirm(t("user-delete-confirm", { name }))) return;
 		const response = await fetch("/api/management/users/delete", {
 			method: "POST",
 			body: JSON.stringify({ name }),

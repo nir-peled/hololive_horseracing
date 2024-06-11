@@ -11,7 +11,7 @@ interface Props {
 	hidden?: boolean | undefined;
 }
 
-const namespaces = ["races"];
+const namespaces = ["management"];
 
 export default function HorseDeleteButton({ name, on_delete, on_error, hidden }: Props) {
 	const { t } = useTranslation(namespaces);
@@ -20,7 +20,7 @@ export default function HorseDeleteButton({ name, on_delete, on_error, hidden }:
 	if (hidden) return;
 
 	async function send_delete() {
-		if (!confirm(t("horse-delete-confirm"))) return;
+		if (!confirm(t("horse-delete-confirm", { name }))) return;
 		const response = await fetch("/api/management/horses/delete", {
 			method: "POST",
 			body: JSON.stringify({ name }),

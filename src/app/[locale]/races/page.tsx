@@ -23,7 +23,7 @@ export default async function RacesPage({ params: { locale } }: Props) {
 	const { t, resources } = await initTranslations(locale, namespaces);
 	return (
 		<TranslationsProvider namespaces={namespaces} locale={locale} resources={resources}>
-			<PageTitle size="large">{t("races-list")}</PageTitle>
+			<PageTitle size="large">{t("races-list-title")}</PageTitle>
 			<ProtectedLink href="/races/history" locale={locale}>
 				{t("races-history-label")}
 			</ProtectedLink>

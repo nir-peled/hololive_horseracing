@@ -4,7 +4,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { TFunction } from "i18next";
 import { z } from "zod";
-import { date_to_datetime_local, datetime_local_to_date } from "@/src/lib/utils";
+import { date_to_datetime_local, datetime_local_to_date, sum } from "@/src/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSubmitter } from "@/src/lib/hooks";
 import { RaceFormData } from "@/src/lib/types";
@@ -21,7 +21,7 @@ interface Props {
 	default_values?: RaceFormData;
 }
 
-const namespaces = ["races", "management"];
+const namespaces = ["management"];
 
 export default function EditRaceForm({ id, default_values }: Props) {
 	const { t } = useTranslation(namespaces);
@@ -34,6 +34,7 @@ export default function EditRaceForm({ id, default_values }: Props) {
 		formState: { errors, isSubmitted, isSubmitSuccessful, isValid },
 		reset,
 		resetField,
+		setValue,
 	} = useForm<RaceFormData>({
 		resolver: zodResolver(race_schema),
 	});
@@ -63,18 +64,14 @@ export default function EditRaceForm({ id, default_values }: Props) {
 		<form onSubmit={handleSubmit(submit_form)} id="edit_race_form">
 			<Alert
 				type="success"
-				message={t("new-race-success", { ns: "management" })}
+				message={t("new-race-success")}
 				active={isSubmitSuccessful && !is_failed}
 			/>
-			<Alert
-				type="error"
-				message={t("new-race-fail", { ns: "management" })}
-				active={is_failed}
-			/>
+			<Alert type="error" message={t("new-race-fail")} active={is_failed} />
 			<label className="form-control w-full max-w-lg">
 				{/* input race name */}
 				<TextFormInput
-					label={t("race-name-label", { ns: "races" })}
+					label={t("race-name-label")}
 					field_name="name"
 					register={register}
 					error={errors?.name?.message}
@@ -83,9 +80,11 @@ export default function EditRaceForm({ id, default_values }: Props) {
 				<br />
 				{/* input race deadline, if it has */}
 				<EnabledFormInput
-					label={t("race-deadline-input", { ns: "races" })}
+					label={t("race-deadline-input", {
+						timezone: process.env.NEXT_PUBLIC_DEADLINE_TIMEZONE,
+					})}
 					error={errors?.deadline?.message}
-					default_enabled={!!default_values?.deadline}
+					default_checked={!!default_values?.deadline}
 					render={(enabled) => {
 						if (!enabled) resetField("deadline", { defaultValue: null });
 
@@ -110,7 +109,7 @@ export default function EditRaceForm({ id, default_values }: Props) {
 				{/* input race cuts, if not default */}
 				<RaceCutsInput
 					default_values={default_values}
-					reset={resetField}
+					set_field={setValue}
 					register={register}
 					errors={errors}
 				/>
@@ -139,31 +138,40 @@ function create_race_schema(t: TFunction) {
 
 	return z
 		.object({
-			name: z.string().min(3, t("race-name-too-short", { ns: "management" })),
-			deadline: z.string().optional(),
-			house_cut: z
-				.number()
-				.min(0, t("race-cut-negative-error", { ns: "management" }))
-				.optional(),
-			win_cut: z
-				.number()
-				.min(0, t("race-cut-negative-error", { ns: "management" }))
-				.optional(),
-			place_cut: z
-				.number()
-				.min(0, t("race-cut-negative-error", { ns: "management" }))
-				.optional(),
-			show_cut: z
-				.number()
-				.min(0, t("race-cut-negative-error", { ns: "management" }))
-				.optional(),
+			name: z.string().min(3, t("race-name-too-short")),
+			deadline: z.string().nullable(),
+			house_cut: z.number().min(0, t("race-cut-negative-error")).nullable(),
+			win_cut: z.number().min(0, t("race-cut-negative-error")).nullable(),
+			place_cut: z.number().min(0, t("race-cut-negative-error")).nullable(),
+			show_cut: z.number().min(0, t("race-cut-negative-error")).nullable(),
 			contestants: contestant_schema.array(),
 		})
 		.refine(
-			(data) => data.deadline && datetime_local_to_date(data.deadline) < new Date(),
+			(data) => !data.deadline || datetime_local_to_date(data.deadline) < new Date(),
 			{
-				message: t("race-deadline-passed", { ns: "management" }),
+				message: t("race-deadline-passed"),
 				path: ["deadline"],
+			}
+		)
+		.refine(
+			(data) =>
+				data.house_cut === undefined ||
+				![data.house_cut, data.win_cut, data.place_cut, data.show_cut].includes(null),
+			{
+				message: t("race-cuts-one-or-all"),
+				path: ["house_cut"],
+			}
+		)
+		.refine(
+			(data) =>
+				data.house_cut == null ||
+				sum(
+					[data.house_cut, data.win_cut, data.place_cut, data.show_cut],
+					(n: number | null) => n || 0
+				) < 100,
+			{
+				message: t("race-cuts-exceed-100"),
+				path: ["house_cut"],
 			}
 		);
 }

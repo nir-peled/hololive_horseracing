@@ -1,5 +1,5 @@
 Add way to display different image sizes
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Finish management pages
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Add /management/settings
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Add /races/[id]/results
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Add /bank & /bank/[user_id]
 Make notfound & error pages
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Fill localization files

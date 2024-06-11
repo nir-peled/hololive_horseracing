@@ -95,10 +95,10 @@ export type ContestantFormType = { jockey: string; horse: string };
 export interface RaceFormData {
 	name: string;
 	deadline?: Date | null;
-	house_cut?: number;
-	win_cut?: number;
-	place_cut?: number;
-	show_cut?: number;
+	house_cut?: number | null;
+	win_cut?: number | null;
+	place_cut?: number | null;
+	show_cut?: number | null;
 	contestants: ContestantFormType[];
 }
 

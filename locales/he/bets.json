@@ -1,0 +1,18 @@
+{
+	"bet-edit-page-title": "הימור על מירוץ {{name}}",
+	"bets-rounded-down-note": "※ כל הזכיות מעוגלות כלפי מטה",
+	"bets-page-title": "ההימורים שלי",
+	"edit-bet-button": "עריכה",
+	"edit-bet-submit": "שמירת הימור",
+	"bet-must-be-integer": "סכום הימור חייב להיות מספר שלם",
+	"bet-must-be-positive": "סכום הימור חייב להיות חיובי",
+	"bet-edit-contestant-duplicate": "הימורים חייבים להיות על מתחרים שונים",
+	"bet-amount-exceeds-max": "סכום ההימורים גבוהה מהזיכוי בחשבון שלך",
+	"bet-race-name-header": "מירוץ",
+	"bet-contestants-header": "מתחרה",
+	"bet-amount-header": "סכום",
+	"bet-odds-header": "סיכויים",
+	"bet-win": "זוכה",
+	"bet-place": "מגיע",
+	"bet-show": "מופיע"
+}

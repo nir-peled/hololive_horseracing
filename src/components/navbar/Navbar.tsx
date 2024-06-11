@@ -1,6 +1,5 @@
 import React from "react";
 import Image from "next/image";
-import { database_factory } from "@/src/lib/database";
 import initTranslations from "@/src/lib/i18n";
 import { Locale } from "@/src/lib/types";
 import { auth } from "@/src/lib/auth";

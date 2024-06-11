@@ -13,7 +13,7 @@ interface Props {
 	};
 }
 
-const namespaces = ["races", "bets"];
+const namespaces = ["management", "bets"];
 
 export default async function RaceAllBetsPage({ params: { locale, id } }: Props) {
 	try {
@@ -27,10 +27,12 @@ export default async function RaceAllBetsPage({ params: { locale, id } }: Props)
 
 		const race_bets = await database_factory.bets_database().get_race_bets(race_id);
 
+		race_bets.sort((a, b) => Number(b.race - a.race));
+
 		return (
 			<>
 				<PageTitle>
-					{t("race-all-bets-title", { ns: "races", name: race_parameters.name })}
+					{t("race-all-bets-title", { ns: "management", name: race_parameters.name })}
 				</PageTitle>
 				<BetsTable locale={locale} bets={race_bets} />
 			</>

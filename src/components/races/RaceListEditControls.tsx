@@ -37,8 +37,11 @@ export default async function RaceListEditControls({
 				<RaceEndButton id={id} />
 			</td>
 			<td>
-				<ProtectedLink href={`/management/races/${id}/bets`} locale={locale}>
-					<Button>{t("race-bets-button")}</Button>
+				<ProtectedLink
+					href={`/management/races/${id}/bets`}
+					locale={locale}
+					className="btn">
+					{t("race-bets-button")}
 				</ProtectedLink>
 			</td>
 			<td>
