@@ -1,5 +1,4 @@
 Add way to display different image sizes
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Add /management/settings
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Add /races/[id]/results
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Add /bank & /bank/[user_id]
 Make notfound & error pages

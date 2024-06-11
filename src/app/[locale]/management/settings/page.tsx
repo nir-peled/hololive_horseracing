@@ -30,9 +30,11 @@ export default async function GlobalSettingsPage({ params: { locale } }: Props) 
 		<TranslationsProvider namespaces={namespaces} locale={locale} resources={resources}>
 			<PageTitle>{t("management-settings-title")}</PageTitle>
 			<MenuCard title={t("set-global-cuts-title")} default_open={true}>
+				<p>{t("global-cuts-explanation")}</p>
 				<SetGlobalCutsForm cuts={cuts} />
 			</MenuCard>
-			<MenuCard title={t("set-global-cuts-title")}>
+			<MenuCard title={t("set-house-reward-target-title")}>
+				<p>{t("house-reward-target-explanation")}</p>
 				<HouseRewardTargetForm target={house_target} />
 			</MenuCard>
 		</TranslationsProvider>

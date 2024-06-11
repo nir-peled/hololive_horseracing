@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import { UseFormRegister } from "react-hook-form";
-// import { EnableInputContext } from "./EnabledFormInput";
 import FormInput from "./FormInput";
 
 const possible_value_types = ["text", "password", "datetime-local", "number"] as const;
@@ -28,6 +27,7 @@ export default function TextFormInput<T extends value_t = "text">({
 	default_value,
 	readonly,
 	disabled,
+	step,
 }: Props<T>) {
 	// const context_disabled = !useContext(EnableInputContext);
 
@@ -46,6 +46,7 @@ export default function TextFormInput<T extends value_t = "text">({
 				// disabled={disabled || context_disabled}
 				disabled={disabled}
 				defaultValue={default_value}
+				step={step}
 			/>
 		</FormInput>
 	);

@@ -71,8 +71,18 @@
 	"user-delete-button": "מחיקה",
 	"edit-user-button": "עריכה",
 	"user-selector-placeholder": "משתמש...",
-	"user-deleted-message": "משתמש {{name}} נמחק",
+	"user-deleted-message": "נמחק משתמש {{name}}",
 	"username-label": "שם משתמש",
 	"image-too-large": "תמונה חייבת להיות עד {{max_file_size, number}} KB",
-	"image-type-not-allowed": "סוג תמונה לא חוקי"
+	"image-type-not-allowed": "סוג תמונה לא חוקי",
+	"management-settings-title": "הגדרות גלובליות",
+	"house-reward-target-submit": "שמירה",
+	"house-reward-target-set-success": "יעד הבית נשמר בהצלחה",
+	"house-reward-target-set-fail": "שגיאה בנסיון לשמור יעד הבית",
+	"set-global-cuts-title": "חתכים ברירת מחדל",
+	"global-cuts-explanation": "החלקים באחוזים מקופת כל הימור שהולכות לבית או למנצחים",
+	"set-house-reward-target-title": "יעד חתכי הבית",
+	"house-reward-target-explanation": "המשתמש שמקבל את חתך הבית מכל מירוץ",
+	"set-global-cuts-success": "חתכים ברירת מחדל נשמרו בהצלחה",
+	"set-global-cuts-fail": "שגיאה בשמירת חתכים ברירת מחדל"
 }

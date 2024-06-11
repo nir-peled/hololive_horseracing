@@ -1,10 +1,30 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { set_house_reward_target } from "@/src/lib/actions";
+import UserSelector from "../users/UserSelector";
+import Button from "../Button";
 
 interface Props {
-	target: string | undefined;
+	target: string | null;
 }
 
+const namespaces = ["management"];
+
 export default function HouseRewardTargetForm({ target }: Props) {
-	return <div>HouseRewardTargetForm</div>;
+	const { t } = useTranslation(namespaces);
+	const [user, set_user] = useState<string | null>(target);
+
+	async function submit() {
+		let result = await set_house_reward_target(user);
+		if (result) alert(t("house-reward-target-set-success"));
+		else alert(t("house-reward-target-set-fail"));
+	}
+
+	return (
+		<div>
+			<UserSelector set_user={set_user} value={user} />
+			<Button onClick={submit}>{t("house-reward-target-submit")}</Button>
+		</div>
+	);
 }

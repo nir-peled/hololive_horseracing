@@ -12,7 +12,7 @@ import { sum } from "../utils";
 
 interface CutsDetails {
 	cuts: Cuts;
-	house?: string;
+	house: string | null;
 }
 
 export class BetsCloser {
@@ -33,7 +33,7 @@ export class BetsCloser {
 			{} as Record<bet_type, BetData[]>
 		);
 
-		this.cuts_details = { cuts: { house: 0, jockeys: [] } };
+		this.cuts_details = { cuts: { house: 0, jockeys: [] }, house: null };
 		this.rewards = [];
 		this.house_reward = 0;
 		this.total_bet_amount = 0;

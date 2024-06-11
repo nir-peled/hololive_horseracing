@@ -635,26 +635,16 @@ export class PrismaDatabase
 		placements: ContestantPlacementData
 	): Promise<boolean> {
 		try {
-			let result = await this.prisma.$transaction([
-				this.prisma.raceContestant.update({
-					where: { id: placements.first },
-					data: { place: 1 },
-				}),
-				this.prisma.raceContestant.update({
-					where: { id: placements.second },
-					data: { place: 2 },
-				}),
-				this.prisma.raceContestant.update({
-					where: { id: placements.second },
-					data: { place: 3 },
-				}),
-				this.prisma.race.update({
-					where: { id },
-					data: { isEnded: true, isOpenBets: false },
-				}),
-			]);
+			let result = await this.prisma.$transaction(
+				placements.placements.map((contestant, i) =>
+					this.prisma.raceContestant.update({
+						where: { id: contestant.contestant },
+						data: { place: i + 1 },
+					})
+				)
+			);
 
-			return result.length == Object.keys(placements).length;
+			return result.length == placements.placements.length;
 		} catch (e) {
 			console.log(e);
 			return false;
@@ -663,7 +653,7 @@ export class PrismaDatabase
 
 	async get_cuts(): Promise<Cuts> {
 		let house_cut = await this.#cache("house_cut");
-		let jockeys_cuts_raw = await await this.#cache("jockeys_cut");
+		let jockeys_cuts_raw = await this.#cache("jockeys_cut");
 
 		return {
 			house: house_cut ? Number(house_cut) : 0,
@@ -671,8 +661,10 @@ export class PrismaDatabase
 		};
 	}
 
-	async get_house_reward_target(): Promise<string | undefined> {
-		return await this.#cache("house_reward_target");
+	async get_house_reward_target(): Promise<string | null> {
+		let result = await this.#cache("house_reward_target");
+		if (result === undefined) return null;
+		return result;
 	}
 
 	async reward_users(rewards: Reward[]): Promise<void> {
@@ -715,6 +707,41 @@ export class PrismaDatabase
 		);
 
 		await this.prisma.$transaction(queries);
+	}
+
+	async set_house_reward_target(user: string | null): Promise<boolean> {
+		if (user === null) return this.#cache_set("house_reward_target", user);
+
+		let result = await this.prisma.user.findUnique({
+			where: { name: user },
+			select: { name: true },
+		});
+
+		if (result) return this.#cache_set("house_reward_target", user);
+		return false;
+	}
+
+	async set_cuts(cuts: Cuts): Promise<boolean> {
+		let jockeys_cut = JSON.stringify(cuts.jockeys);
+		try {
+			await this.prisma.$transaction([
+				this.prisma.cache.upsert({
+					where: { key: "house_cut" },
+					update: { value: String(cuts.house) },
+					create: { key: "house_cut", value: String(cuts.house) },
+				}),
+				this.prisma.cache.upsert({
+					where: { key: "jockeys_cut" },
+					update: { value: jockeys_cut },
+					create: { key: "jockeys_cut", value: jockeys_cut },
+				}),
+			]);
+
+			return true;
+		} catch (e) {
+			console.log(e); // debug
+			return false;
+		}
 	}
 
 	async #get_image_as_str(
@@ -876,6 +903,16 @@ export class PrismaDatabase
 			select: { value: true },
 		});
 		if (result && result.value) return result.value;
+	}
+
+	async #cache_set(key: string, value: string | null): Promise<boolean> {
+		let result = await this.prisma.cache.upsert({
+			where: { key },
+			update: { value },
+			create: { key, value },
+		});
+
+		return result.value === value;
 	}
 
 	async #cancel_user_bets(

@@ -122,9 +122,9 @@ export interface ContestantDisplayData
 }
 
 export interface ContestantPlacementData {
-	first: bigint;
-	second: bigint;
-	third: bigint;
+	placements: {
+		contestant: bigint;
+	}[];
 }
 
 export const BETS_TYPES = ["win", "place", "show"] as const;

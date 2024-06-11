@@ -3,6 +3,7 @@ import { AuthError } from "next-auth";
 import { auth, check_server_action_authorized, signIn, signOut } from "./auth";
 import {
 	ContestantPlacementData,
+	Cuts,
 	FullBetFormData,
 	Locale,
 	UserData,
@@ -131,7 +132,16 @@ export async function set_race_results(
 	}
 }
 
-export async function delete_race(id: bigint) {
+export async function delete_race(id: bigint): Promise<boolean> {
 	let result = await database_factory.race_database().try_delete_race(id);
 	return result;
+}
+
+export async function set_house_reward_target(user: string | null): Promise<boolean> {
+	let result = await database_factory.cache_database().set_house_reward_target(user);
+	return result;
+}
+
+export async function set_global_cuts(cuts: Cuts): Promise<boolean> {
+	return await database_factory.cache_database().set_cuts(cuts);
 }

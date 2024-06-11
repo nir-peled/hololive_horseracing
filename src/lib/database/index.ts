@@ -223,7 +223,11 @@ export interface BetsDatabase {
 export interface CacheDatabase {
 	get_cuts(): Promise<Cuts>;
 
-	get_house_reward_target(): Promise<string | undefined>;
+	get_house_reward_target(): Promise<string | null>;
+
+	set_house_reward_target(user: string | null): Promise<boolean>;
+
+	set_cuts(cuts: Cuts): Promise<boolean>;
 }
 
 export interface DatabaseFactory {
