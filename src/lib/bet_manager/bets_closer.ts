@@ -159,9 +159,10 @@ export class BetsCloser {
 	}
 
 	#is_bet_wins(contestant: bigint, type: bet_type): boolean {
-		let winners = [this.placements.first];
-		if (["place", "show"].includes(type)) winners.push(this.placements.second);
-		if (type == "show") winners.push(this.placements.third);
+		let winners = [this.placements.placements[0].contestant];
+		if (["place", "show"].includes(type))
+			winners.push(this.placements.placements[1].contestant);
+		if (type == "show") winners.push(this.placements.placements[2].contestant);
 
 		return winners.includes(contestant);
 	}
