@@ -2,22 +2,27 @@
 import React, { ReactNode } from "react";
 import { Control, Controller } from "react-hook-form";
 import Select, { components, OptionProps } from "react-select";
-import FormInput from "./FormInput";
 import { SelectOptionState } from "@/src/lib/types";
+import FormInput from "./FormInput";
 
 type renderer<T> = (data: T, state: SelectOptionState) => ReactNode;
 
-interface Props<T> {
+interface Props<T, TControl extends Control<any, any> | undefined> {
 	label?: string;
 	error?: string;
-	control: Control<any, any>;
+	control?: TControl;
 	name: string;
 	options: T[];
 	disabled_options?: T[];
 	render_option?: renderer<T>;
+	value?: TControl extends undefined ? T : never;
+	onChange?: TControl extends undefined ? (new_value: T) => void : never;
 }
 
-export default function SelectFormInput<T>({
+export default function SelectFormInput<
+	T,
+	TControl extends Control<any, any> | undefined
+>({
 	label,
 	error,
 	name,
@@ -25,28 +30,29 @@ export default function SelectFormInput<T>({
 	options,
 	disabled_options,
 	render_option,
-}: Props<T>) {
-	const component = (
-		<Controller
-			name={name}
-			control={control}
-			render={({ field }) => (
-				<Select
-					{...field}
-					components={render_option && { Option: option_factory<T>(render_option) }}
-					options={options}
-					isOptionDisabled={(option) =>
-						!!disabled_options && disabled_options.includes(option)
-					}
-				/>
-			)}
+	value,
+	onChange,
+}: Props<T, TControl>) {
+	const make_select = (fields?: Record<string, any>) => (
+		<Select
+			{...fields}
+			components={render_option && { Option: option_factory<T>(render_option) }}
+			options={options}
+			isOptionDisabled={(option) =>
+				!!disabled_options && disabled_options.includes(option)
+			}
 		/>
 	);
 
-	if (label === undefined && error === undefined) return component;
+	if (!control) return make_select({ value, onChange });
+
 	return (
 		<FormInput label={label} error={error}>
-			{component}
+			<Controller
+				name={name}
+				control={control}
+				render={({ field }) => make_select(field)}
+			/>
 		</FormInput>
 	);
 }

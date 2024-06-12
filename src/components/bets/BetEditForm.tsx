@@ -68,7 +68,6 @@ export default function BetEditForm({
 	);
 
 	const options = contestants.map((c) => c.id);
-	const chosen_options = BETS_TYPES.map((type) => watch(type)?.contestant);
 
 	return (
 		<form onSubmit={handleSubmit(submit_form)}>
@@ -90,7 +89,7 @@ export default function BetEditForm({
 						control={control}
 						name={`${bet_type}.contestant`}
 						options={options}
-						disabled_options={chosen_options}
+						// disabled_options={chosen_options}
 						render_option={(data, option_state) => {
 							const contestant = contestants.find((c) => c.id == data);
 							if (!contestant) return;

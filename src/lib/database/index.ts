@@ -144,6 +144,8 @@ export interface UserDatabase {
 
 	get_user_data(options?: GetUserDataOptions): Promise<UserData | null>;
 
+	get_user_data_all(where?: Partial<UserData>): Promise<UserData[]>;
+
 	get_user_image(name: string): Promise<Buffer | null>;
 
 	get_user_as_form_data(username: string | undefined): Promise<UserDefaultValues>;

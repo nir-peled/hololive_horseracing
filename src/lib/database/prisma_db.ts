@@ -156,6 +156,15 @@ export class PrismaDatabase
 		return user_data;
 	}
 
+	async get_user_data_all(where?: Partial<UserData>): Promise<UserData[]> {
+		let result = await this.prisma.user.findMany({
+			where,
+			select: user_data_select,
+		});
+
+		return result as UserData[];
+	}
+
 	async get_user_image(name: string): Promise<Buffer | null> {
 		let user_data = await this.prisma.user.findUnique({
 			where: { name },
