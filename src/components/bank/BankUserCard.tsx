@@ -30,7 +30,7 @@ export default function BankUserCard({ user }: Props) {
 	const {
 		register,
 		handleSubmit,
-		formState: { errors, isSubmitted, isSubmitSuccessful, isValid },
+		formState: { errors, isSubmitSuccessful, isValid },
 		watch,
 	} = useForm<{ amount: number }>({
 		resolver: zodResolver(schema),
