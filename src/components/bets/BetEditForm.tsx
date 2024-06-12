@@ -88,6 +88,7 @@ export default function BetEditForm({
 					<SelectFormInput
 						control={control}
 						name={`${bet_type}.contestant`}
+						placeholder={t("bet-select-contestant-placeholder")}
 						options={options}
 						// disabled_options={chosen_options}
 						render_option={(data, option_state) => {
