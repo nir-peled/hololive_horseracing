@@ -32,6 +32,7 @@ export interface GetUserDataOptions {
 }
 
 export const user_data_select = {
+	id: true,
 	name: true,
 	role: true,
 	display_name: true,

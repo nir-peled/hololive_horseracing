@@ -34,6 +34,7 @@ export interface UserFormData {
 }
 
 export interface UserData {
+	id: bigint;
 	name: string;
 	role: UserRole;
 	display_name: string;
