@@ -1,0 +1,15 @@
+{
+	"bank-page-title": "בנק - הפקדה ומשיכה",
+	"bank-user-select-paceholder": "בחר/י משתמש...",
+	"bank-balance-update-success": "יתרה עודכנה בהצלחה",
+	"bank-balance-update-fail": "שגיאה בנסיון עדכון יתרה",
+	"bank-user-balance": "יתרה",
+	"bank-action-deposit-label": "הפקדה",
+	"bank-deposit-amount-label": "סכום",
+	"bank-action-withdrawal-label": "משיכה",
+	"bank-new-balance": "יתרה בחשבון לאחר הפעולה",
+	"bank-deposit-submit": "בצע/י פעולה",
+	"deposit-must-be-int": "הסכום חייב להיות מספר שלם",
+	"deposit-must-be-positive": "הסכום חייב להיות חיובי",
+	"withdrawal-capped-at-balanced": "לא ניתן למשוך יותר מהיתרה"
+}

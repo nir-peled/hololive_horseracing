@@ -83,6 +83,7 @@ interface UseSubmitterParams<
 	on_success?: (data: Partial<T>, response?: Response) => void;
 	transform?: (data: T) => D;
 	fetch_options?: RequestInit;
+	confirmation?: string;
 }
 
 /**
@@ -111,6 +112,7 @@ export function useSubmitter<
 		on_success,
 		transform,
 		fetch_options,
+		confirmation,
 	}: UseSubmitterParams<T, D>
 ): (data: T, event?: BaseSyntheticEvent) => Promise<void> {
 	return async (data: T, event?: BaseSyntheticEvent) => {
@@ -119,6 +121,7 @@ export function useSubmitter<
 
 		let submit_ok = false;
 		let response: Response | undefined;
+		if (confirmation && !confirm(confirmation)) return;
 		try {
 			if (typeof destination == "string") {
 				let form_data = to_form_data_without_default(transed_data as D, default_values);

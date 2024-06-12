@@ -31,6 +31,7 @@ export default function BankUserCard({ user }: Props) {
 		register,
 		handleSubmit,
 		formState: { errors, isSubmitted, isSubmitSuccessful, isValid },
+		watch,
 	} = useForm<{ amount: number }>({
 		resolver: zodResolver(schema),
 	});
@@ -50,6 +51,7 @@ export default function BankUserCard({ user }: Props) {
 			set_is_failed,
 			on_success({ amount }) {
 				if (!amount) return;
+				set_balance(new_balance(balance, action, amount));
 				if (action == "deposit") set_balance(balance + amount);
 				else set_balance(balance - amount);
 			},
@@ -61,7 +63,7 @@ export default function BankUserCard({ user }: Props) {
 			{isSubmitSuccessful && (
 				<Alert type="success" message={t("bank-balance-update-success")} />
 			)}
-			{is_failed && <Alert type="error" message={t("bank-balance-update-success")} />}
+			{is_failed && <Alert type="error" message={t("bank-balance-update-fail")} />}
 			{user.image && <IconImage icon={user.image} />}
 			<h4>{user.display_name || user.name}</h4>
 			<div className="stats shadow">
@@ -104,6 +106,12 @@ export default function BankUserCard({ user }: Props) {
 					label={t("bank-deposit-amount-label")}
 					error={errors?.amount?.message}
 				/>
+				{isValid && (
+					<p className="text-slate-400">
+						{t("bank-new-balance")}
+						<AmountDisplay amount={new_balance(balance, action, watch("amount"))} />
+					</p>
+				)}
 				<Button type="submit">{t("bank-deposit-submit")}</Button>
 			</form>
 		</div>
@@ -121,4 +129,13 @@ function create_schema(t: TFunction, action: "deposit" | "withdrawal", balance: 
 				? amount
 				: amount.max(balance, t("withdrawal-capped-at-balanced")),
 	});
+}
+
+function new_balance(
+	prev_balance: number,
+	action: "deposit" | "withdrawal",
+	amount: number
+) {
+	if (action == "deposit") return prev_balance + amount;
+	return prev_balance - amount;
 }
