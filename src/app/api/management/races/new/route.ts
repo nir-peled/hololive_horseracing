@@ -10,10 +10,7 @@ export async function POST(request: NextRequest) {
 	if (res) return res;
 
 	let data = await request.formData();
-	if (!data) {
-		console.log("no form data, bad request"); // debug
-		return HTTPResponseCodes.bad_request();
-	}
+	if (!data) return HTTPResponseCodes.bad_request();
 
 	// validate & decode data
 	let race_data = validate_race_form_data(data);

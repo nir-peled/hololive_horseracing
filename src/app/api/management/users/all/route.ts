@@ -1,7 +1,7 @@
-import { fetch_usernames } from "@/src/lib/actions";
-import { check_api_authorized } from "@/src/lib/auth";
-import { HTTPResponseCodes } from "@/src/lib/http";
 import { NextRequest, NextResponse } from "next/server";
+import { check_api_authorized } from "@/src/lib/auth";
+import { fetch_usernames } from "@/src/lib/actions";
+import { HTTPResponseCodes } from "@/src/lib/http";
 
 export const dynamic = "force-dynamic";
 

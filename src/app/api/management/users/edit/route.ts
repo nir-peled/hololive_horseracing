@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { check_api_authorized } from "@/src/lib/auth";
-import { UserFormData } from "@/src/lib/types";
 import { database_factory } from "@/src/lib/database";
 import { HTTPResponseCodes } from "@/src/lib/http";
+import { UserFormData } from "@/src/lib/types";
 
 export async function POST(request: NextRequest) {
 	console.log("got POST /api/management/users/new"); // debug

@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
-import { check_api_authorized } from "@/src/lib/auth";
 import { validate_race_form_data } from "@/src/lib/utils";
+import { check_api_authorized } from "@/src/lib/auth";
 import { database_factory } from "@/src/lib/database";
 import { HTTPResponseCodes } from "@/src/lib/http";
 
@@ -19,10 +19,7 @@ export async function POST(request: NextRequest) {
 	}
 
 	let data = await request.formData();
-	if (!data) {
-		console.log("no form data, bad request"); // debug
-		return HTTPResponseCodes.bad_request();
-	}
+	if (!data) return HTTPResponseCodes.bad_request();
 
 	let race_data = validate_race_form_data(data);
 	if (!race_data) return HTTPResponseCodes.bad_request();

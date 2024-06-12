@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { HTTPResponseCodes } from "@/src/lib/http";
 import { check_api_authorized } from "@/src/lib/auth";
 import { database_factory } from "@/src/lib/database";
+import { HTTPResponseCodes } from "@/src/lib/http";
 import { image_as_buffer } from "@/src/lib/images";
 
 export async function POST(request: NextRequest) {
@@ -9,10 +9,7 @@ export async function POST(request: NextRequest) {
 	if (res) return res;
 
 	let form_data = await request.formData();
-	if (!form_data) {
-		console.log("no form data, bad request"); // debug
-		return HTTPResponseCodes.bad_request();
-	}
+	if (!form_data) return HTTPResponseCodes.bad_request();
 
 	let name = form_data.get("name");
 	let image = form_data.get("image");
@@ -27,7 +24,6 @@ export async function POST(request: NextRequest) {
 	let is_successful = await database_factory.horse_database().create_horse(horse_data);
 	if (!is_successful) return NextResponse.error();
 
-	console.log("got new horse, success!"); // debug
 	return HTTPResponseCodes.success();
 }
 
