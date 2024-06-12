@@ -145,3 +145,13 @@ export async function set_house_reward_target(user: string | null): Promise<bool
 export async function set_global_cuts(cuts: Cuts): Promise<boolean> {
 	return await database_factory.cache_database().set_cuts(cuts);
 }
+
+export async function deposit_to_user(user: string, amount: number): Promise<boolean> {
+	if (amount <= 0 || Math.floor(amount) != amount) return false;
+	return await database_factory.user_database().update_user_balance(user, amount);
+}
+
+export async function withdraw_from_user(user: string, amount: number): Promise<boolean> {
+	if (amount <= 0 || Math.floor(amount) != amount) return false;
+	return await database_factory.user_database().update_user_balance(user, -amount);
+}

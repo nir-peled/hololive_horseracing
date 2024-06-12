@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { UserData } from "@/src/lib/types";
 import SelectFormInput from "../forms/SelectFormInput";
-import ProtectedLink from "../ProtectedLink";
+import BankUserCard from "./BankUserCard";
 import IconImage from "../IconImage";
 
 interface Props {
@@ -16,10 +16,16 @@ export default function BankUserSelect({ users }: Props) {
 	const [user_id, set_user_id] = useState<bigint | undefined>();
 	const { t } = useTranslation(namespaces);
 
+	const selected_user =
+		user_id !== undefined
+			? users.find((user_data) => user_data.id == user_id)
+			: undefined;
+
 	return (
 		<div>
 			<SelectFormInput
 				name="user_selector"
+				placeholder={t("bank-user-select-paceholder")}
 				options={users.map(({ id }) => id)}
 				value={user_id}
 				onChange={set_user_id}
@@ -37,7 +43,7 @@ export default function BankUserSelect({ users }: Props) {
 					);
 				}}
 			/>
-			<ProtectedLink href={`/bank/${user_id}`}>{t("bank-user-link")}</ProtectedLink>
+			{selected_user !== undefined && <BankUserCard user={selected_user} />}
 		</div>
 	);
 }

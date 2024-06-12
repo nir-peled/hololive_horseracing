@@ -226,6 +226,20 @@ export class PrismaDatabase
 		return this.#get_image_as_str("user", user);
 	}
 
+	async update_user_balance(name: string, delta: number): Promise<boolean> {
+		try {
+			let result = await this.prisma.user.update({
+				where: { name, balance: { gte: -delta } },
+				data: { balance: { increment: delta } },
+			});
+
+			return result.name == name;
+		} catch (e) {
+			console.log(e);
+			return false;
+		}
+	}
+
 	async create_horse(horse_data: Omit<HorseData, "id">): Promise<boolean> {
 		let horse = await this.prisma.horse.create({ data: horse_data });
 		return !!horse;

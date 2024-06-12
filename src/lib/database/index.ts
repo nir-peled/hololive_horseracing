@@ -159,6 +159,8 @@ export interface UserDatabase {
 	get_user_image_as_str(user: string | UserData): Promise<string>;
 
 	reward_users(rewards: Reward[]): Promise<void>;
+
+	update_user_balance(name: string, delta: number): Promise<boolean>;
 }
 
 export interface HorseDatabase {

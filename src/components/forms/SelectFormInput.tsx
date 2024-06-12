@@ -10,6 +10,7 @@ type renderer<T> = (data: T, state: SelectOptionState) => ReactNode;
 interface Props<T, TControl extends Control<any, any> | undefined> {
 	label?: string;
 	error?: string;
+	placeholder?: string;
 	control?: TControl;
 	name: string;
 	options: T[];
@@ -25,6 +26,7 @@ export default function SelectFormInput<
 >({
 	label,
 	error,
+	placeholder,
 	name,
 	control,
 	options,
@@ -41,6 +43,7 @@ export default function SelectFormInput<
 			isOptionDisabled={(option) =>
 				!!disabled_options && disabled_options.includes(option)
 			}
+			placeholder={placeholder}
 		/>
 	);
 
