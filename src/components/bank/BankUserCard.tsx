@@ -6,13 +6,15 @@ import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { deposit_to_user, withdraw_from_user } from "@/src/lib/actions";
-import { useSubmitter } from "@/src/lib/hooks";
+import { json_fetcher, useSubmitter } from "@/src/lib/hooks";
 import { UserData } from "@/src/lib/types";
 import TextFormInput from "../forms/TextFormInput";
 import AmountDisplay from "../AmountDisplay";
 import IconImage from "../IconImage";
 import Button from "../Button";
 import Alert from "../Alert";
+import useSWR from "swr";
+import LoadingMarker from "../LoadingMarker";
 
 const namespaces = ["bank"];
 
@@ -22,10 +24,16 @@ interface Props {
 
 export default function BankUserCard({ user }: Props) {
 	const { t } = useTranslation(namespaces);
+	const {
+		isLoading,
+		data: balance,
+		mutate,
+	} = useSWR<number>(`/bank/balance?user=${user.id}`, json_fetcher);
 	const [action, set_action] = useState<"deposit" | "withdrawal">("deposit");
-	const [balance, set_balance] = useState<number>(user.balance);
 	const [is_failed, set_is_failed] = useState<boolean>(false);
-	const schema = create_schema(t, action, balance);
+
+	const using_balance = balance !== undefined ? balance : user.balance;
+	const schema = create_schema(t, action, using_balance);
 
 	const {
 		register,
@@ -35,11 +43,6 @@ export default function BankUserCard({ user }: Props) {
 	} = useForm<{ amount: number }>({
 		resolver: zodResolver(schema),
 	});
-
-	// async function submit({ amount }: { amount: number }) {
-	// 	let action_func = action == "deposit" ? deposit_to_user : withdraw_from_user;
-	// 	let result = await action_func(user.name, amount);
-	// }
 
 	const submit_form = useSubmitter<{ amount: number }>(
 		async ({ amount }) => {
@@ -51,12 +54,12 @@ export default function BankUserCard({ user }: Props) {
 			set_is_failed,
 			on_success({ amount }) {
 				if (!amount) return;
-				set_balance(new_balance(balance, action, amount));
-				if (action == "deposit") set_balance(balance + amount);
-				else set_balance(balance - amount);
+				mutate(new_balance(using_balance, action, amount));
 			},
 		}
 	);
+
+	if (isLoading) return <LoadingMarker />;
 
 	return (
 		<div>
@@ -70,7 +73,7 @@ export default function BankUserCard({ user }: Props) {
 				<div className="stat">
 					<div className="stat-title">{t("bank-user-balance")}</div>
 					<div className="stat-value">
-						<AmountDisplay amount={balance} />
+						<AmountDisplay amount={using_balance} />
 					</div>
 				</div>
 			</div>
@@ -109,7 +112,7 @@ export default function BankUserCard({ user }: Props) {
 				{isValid && (
 					<p className="text-slate-400">
 						{t("bank-new-balance")}
-						<AmountDisplay amount={new_balance(balance, action, watch("amount"))} />
+						<AmountDisplay amount={new_balance(using_balance, action, watch("amount"))} />
 					</p>
 				)}
 				<Button type="submit">{t("bank-deposit-submit")}</Button>

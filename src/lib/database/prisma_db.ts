@@ -226,6 +226,16 @@ export class PrismaDatabase
 		return this.#get_image_as_str("user", user);
 	}
 
+	async get_user_balance(id: bigint): Promise<number | null> {
+		const result = await this.prisma.user.findUnique({
+			where: { id },
+			select: { id: true, balance: true },
+		});
+
+		if (result && result.id == id) return result.balance;
+		return null;
+	}
+
 	async update_user_balance(name: string, delta: number): Promise<boolean> {
 		try {
 			let result = await this.prisma.user.update({

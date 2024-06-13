@@ -161,6 +161,8 @@ export interface UserDatabase {
 	reward_users(rewards: Reward[]): Promise<void>;
 
 	update_user_balance(name: string, delta: number): Promise<boolean>;
+
+	get_user_balance(id: bigint): Promise<number | null>;
 }
 
 export interface HorseDatabase {

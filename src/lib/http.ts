@@ -16,6 +16,10 @@ export namespace HTTPResponseCodes {
 		return response_with_status(401, body);
 	}
 
+	export function not_found(body: Body = null) {
+		return response_with_status(404, body);
+	}
+
 	export function method_forbidden(body: Body = null) {
 		return response_with_status(405, body);
 	}
