@@ -1,3 +1,4 @@
 Add way to display different image sizes
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Add /bank & /bank/[user_id]
 Make notfound & error pages
+change /bank to fetch dynamically?
