@@ -25,7 +25,7 @@ export default function BankUserCard({ user }: Props) {
 	const [action, set_action] = useState<"deposit" | "withdrawal">("deposit");
 	const [balance, set_balance] = useState<number>(user.balance);
 	const [is_failed, set_is_failed] = useState<boolean>(false);
-	const schema = create_schema(t, action, user.balance);
+	const schema = create_schema(t, action, balance);
 
 	const {
 		register,
