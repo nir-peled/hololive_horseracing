@@ -7,6 +7,8 @@ import type { Locale } from "@/src/lib/types";
 import ProtectedLink from "@/src/components/ProtectedLink";
 import PageTitle from "@/src/components/PageTitle";
 
+export const dynamic = "force-dynamic";
+
 const namespaces = ["races"];
 
 interface Props {

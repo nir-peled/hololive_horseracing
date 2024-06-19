@@ -7,6 +7,8 @@ import { generate_locale_params } from "@/src/lib/utils";
 import LoadingMarker from "@/src/components/LoadingMarker";
 import PageTitle from "@/src/components/PageTitle";
 
+export const dynamic = "force-dynamic";
+
 interface Props {
 	params: { locale: Locale };
 }

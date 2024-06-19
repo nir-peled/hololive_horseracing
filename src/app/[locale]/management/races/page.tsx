@@ -3,10 +3,11 @@ import { generate_locale_params } from "@/src/lib/utils";
 import { Locale } from "@/src/lib/types";
 import initTranslations from "@/src/lib/i18n";
 // import TranslationsProvider from "@/src/components/TranslationProvider";
-import Button from "@/src/components/Button";
 import ProtectedLink from "@/src/components/ProtectedLink";
 import RacesList from "@/src/components/races/RacesList";
 import PageTitle from "@/src/components/PageTitle";
+
+export const dynamic = "force-dynamic";
 
 export async function generateStaticParams() {
 	return generate_locale_params();

@@ -9,6 +9,8 @@ import MenuCard from "@/src/components/MenuCard";
 import SetGlobalCutsForm from "@/src/components/management/SetGlobalCutsForm";
 import HouseRewardTargetForm from "@/src/components/management/HouseRewardTargetForm";
 
+export const dynamic = "force-dynamic";
+
 interface Props {
 	params: {
 		locale: Locale;

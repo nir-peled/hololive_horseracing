@@ -4,9 +4,10 @@ import { Locale } from "@/src/lib/types";
 import initTranslations from "@/src/lib/i18n";
 // import TranslationsProvider from "@/src/components/TranslationProvider";
 import HorsesList from "@/src/components/horses/HorsesList";
-import Button from "@/src/components/Button";
 import ProtectedLink from "@/src/components/ProtectedLink";
 import PageTitle from "@/src/components/PageTitle";
+
+export const dynamic = "force-dynamic";
 
 export async function generateStaticParams() {
 	return generate_locale_params();

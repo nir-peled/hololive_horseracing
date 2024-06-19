@@ -4,8 +4,6 @@ import { Locale } from "@/src/lib/types";
 import initTranslations from "@/src/lib/i18n";
 import TranslationsProvider from "@/src/components/TranslationProvider";
 import NewHorseForm from "@/src/components/horses/NewHorseForm";
-import Button from "@/src/components/Button";
-import ProtectedLink from "@/src/components/ProtectedLink";
 import PageTitle from "@/src/components/PageTitle";
 
 export async function generateStaticParams() {

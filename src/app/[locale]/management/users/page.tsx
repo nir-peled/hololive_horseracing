@@ -3,10 +3,11 @@ import TranslationsProvider from "@/src/components/TranslationProvider";
 import initTranslations from "@/src/lib/i18n";
 import { generate_locale_params } from "@/src/lib/utils";
 import UsersList from "@/src/components/users/UsersList";
-import Button from "@/src/components/Button";
 import ProtectedLink from "@/src/components/ProtectedLink";
 import { Locale } from "@/src/lib/types";
 import PageTitle from "@/src/components/PageTitle";
+
+export const dynamic = "force-dynamic";
 
 interface Props {
 	params: { locale: Locale };

@@ -6,6 +6,8 @@ import UserBetsList from "@/src/components/bets/UserBetsList";
 import MarkedNote from "@/src/components/MarkedNote";
 import PageTitle from "@/src/components/PageTitle";
 
+export const dynamic = "force-dynamic";
+
 const namespaces = ["bets"];
 
 interface Props {
