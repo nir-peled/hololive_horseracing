@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import {
 	UserDatabase,
@@ -146,6 +146,7 @@ export class PrismaDatabase
 			: {
 					...user_data_select,
 					image: !to_token,
+					id: !to_token,
 			  };
 
 		let user_data = (await this.prisma.user.findUnique({
@@ -156,7 +157,7 @@ export class PrismaDatabase
 		return user_data;
 	}
 
-	async get_user_data_all(where?: Partial<UserData>): Promise<UserData[]> {
+	async get_user_data_all(where?: Partial<Omit<UserData, "image">>): Promise<UserData[]> {
 		let result = await this.prisma.user.findMany({
 			where,
 			select: user_data_select,
@@ -787,7 +788,7 @@ export class PrismaDatabase
 
 		try {
 			if (!image) throw new Error();
-			let image_str = get_image_buffer_as_str(image);
+			let image_str = typeof image == "string" ? image : get_image_buffer_as_str(image);
 			if (!image_str) throw new Error();
 			return image_str;
 		} catch (e) {

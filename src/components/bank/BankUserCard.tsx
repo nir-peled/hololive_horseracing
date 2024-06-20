@@ -28,7 +28,7 @@ export default function BankUserCard({ user }: Props) {
 		isLoading,
 		data: balance,
 		mutate,
-	} = useSWR<number>(`/bank/balance?user=${user.id}`, json_fetcher);
+	} = useSWR<number>(`/api/bank/balance?user=${user.id}`, json_fetcher);
 	const [action, set_action] = useState<"deposit" | "withdrawal">("deposit");
 	const [is_failed, set_is_failed] = useState<boolean>(false);
 
@@ -110,10 +110,10 @@ export default function BankUserCard({ user }: Props) {
 					error={errors?.amount?.message}
 				/>
 				{isValid && (
-					<p className="text-slate-400">
-						{t("bank-new-balance")}
+					<>
+						<p className="text-slate-400">{t("bank-new-balance")}</p>
 						<AmountDisplay amount={new_balance(using_balance, action, watch("amount"))} />
-					</p>
+					</>
 				)}
 				<Button type="submit">{t("bank-deposit-submit")}</Button>
 			</form>
@@ -123,7 +123,7 @@ export default function BankUserCard({ user }: Props) {
 
 function create_schema(t: TFunction, action: "deposit" | "withdrawal", balance: number) {
 	let amount = z
-		.number()
+		.number({ errorMap: () => ({ message: t("deposit-must-be-int") }) })
 		.int(t("deposit-must-be-int"))
 		.min(1, t("deposit-must-be-positive"));
 	return z.object({

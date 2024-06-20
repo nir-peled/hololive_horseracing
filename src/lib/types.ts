@@ -38,7 +38,7 @@ export interface UserData {
 	name: string;
 	role: UserRole;
 	display_name: string;
-	image?: Buffer;
+	image?: Buffer | string;
 	balance: number;
 	dept: number;
 }

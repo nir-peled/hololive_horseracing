@@ -32,7 +32,9 @@ export default function TextFormInput<T extends value_t = "text">({
 	// const context_disabled = !useContext(EnableInputContext);
 
 	const get_attrs = () =>
-		register ? register(field_name) : { id: field_name, name: field_name };
+		register
+			? register(field_name, { valueAsNumber: type == "number" })
+			: { id: field_name, name: field_name };
 
 	// if (register) console.log(`register as ${field_name}`); // debug
 

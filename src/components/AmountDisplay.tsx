@@ -9,7 +9,9 @@ export default function AmountDisplay({ amount }: Props) {
 	return (
 		<span className="flex justify-center">
 			<b>{Math.floor(amount)}</b>
-			<Image src="/diamond.png" alt="diamond" width={5} height={5} />
+			<div className="w-5">
+				<Image src="/diamond.png" alt="diamond" width={20} height={20} />
+			</div>
 		</span>
 	);
 }

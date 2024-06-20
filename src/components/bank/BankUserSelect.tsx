@@ -26,11 +26,11 @@ export default function BankUserSelect({ users }: Props) {
 			<SelectFormInput
 				name="user_selector"
 				placeholder={t("bank-user-select-paceholder")}
-				options={users.map(({ id }) => id)}
-				value={user_id}
-				onChange={set_user_id}
-				render_option={(option_id) => {
-					let option_user = users.find((user_data) => user_data.id == option_id);
+				options={users.map(({ id }) => ({ id }))}
+				value={user_id !== undefined ? { id: user_id } : undefined}
+				onChange={({ id }) => set_user_id(id)}
+				render_option={(option) => {
+					let option_user = users.find((user_data) => user_data.id == option.id);
 					if (!option_user) return;
 
 					return (
