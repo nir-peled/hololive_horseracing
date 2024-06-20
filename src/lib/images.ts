@@ -58,7 +58,8 @@ function filelist_get_file(data: FileList | undefined): File | undefined {
 	return data && data.length > 0 ? data[0] : undefined;
 }
 
-export function get_image_buffer_as_str(image: Buffer): string | undefined {
+export function get_image_buffer_as_str(image: Buffer | string): string | undefined {
+	if (typeof image == "string") return image;
 	let mime_type = file_mime_from_buffer(image);
 	if (!mime_type) return;
 	return `data:${mime_type};base64,${image.toString("base64")}`;
