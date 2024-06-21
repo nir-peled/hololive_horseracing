@@ -1,5 +1,6 @@
 import React from "react";
 import { SessionProvider } from "next-auth/react";
+import { notFound } from "next/navigation";
 import { auth } from "@/src/lib/auth";
 import initTranslations from "@/src/lib/i18n";
 import { database_factory } from "@/src/lib/database";
@@ -7,9 +8,8 @@ import { Locale, RaceParameters } from "@/src/lib/types";
 // import TranslationsProvider from "../TranslationProvider";
 import RaceOpenBetsButton from "./RaceOpenBetsButton";
 import RaceDetailsRacer from "./RaceDetailsRacer";
-import RaceEndButton from "./RaceEndButton";
 import ProtectedLink from "../ProtectedLink";
-import { notFound } from "next/navigation";
+import RaceEndButton from "./RaceEndButton";
 
 interface Props {
 	id: bigint;
@@ -65,7 +65,7 @@ export default async function RaceDetails({ id, race_data, locale }: Props) {
 						<RaceOpenBetsButton id={id} isOpenBets={isOpenBets} />
 					</span>
 					<br />
-					<RaceEndButton id={id} />
+					<RaceEndButton locale={locale} id={id} />
 				</SessionProvider>
 			)}
 			<hr />

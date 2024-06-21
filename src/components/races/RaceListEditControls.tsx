@@ -7,6 +7,7 @@ import ProtectedLink from "../ProtectedLink";
 import RaceDeleteButton from "./RaceDeleteButton";
 import { auth, is_path_authorized } from "@/src/lib/auth";
 import { SessionProvider } from "next-auth/react";
+import RaceEndButton from "./RaceEndButton";
 
 interface Props {
 	id: bigint;
@@ -39,9 +40,7 @@ export default async function RaceListEditControls({
 				)}
 			</td>
 			<td>
-				<ProtectedLink href={`/management/races/${id}/results`} className="btn">
-					{t("race-end-button")}
-				</ProtectedLink>
+				<RaceEndButton locale={locale} id={id} />
 			</td>
 			<td>
 				<ProtectedLink
