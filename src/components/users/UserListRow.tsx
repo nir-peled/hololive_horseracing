@@ -1,8 +1,8 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import Link from "next/link";
 import type { Locale } from "@/src/lib/types";
 import Button from "../Button";
-import ProtectedLink from "../ProtectedLink";
 import DeleteUserButton from "./DeleteUserButton";
 
 interface Props {
@@ -28,14 +28,14 @@ export default function UserListRow({
 			<td>{name}</td>
 			<td>
 				<Button className={hidden && "max-h-0"}>
-					<ProtectedLink
+					<Link
 						href={{
 							pathname: "management/users/edit",
 							query: { user: name },
 						}}
 						locale={i18n.language as Locale}>
 						{t("edit-user-button")}
-					</ProtectedLink>
+					</Link>
 				</Button>
 			</td>
 			<td>

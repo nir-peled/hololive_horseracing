@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { set_global_cuts } from "@/src/lib/actions";
 import { Cuts } from "@/src/lib/types";
 import TextFormInput from "../forms/TextFormInput";
+import Button from "../Button";
 
 interface Props {
 	cuts: Cuts;
@@ -54,7 +55,7 @@ export default function SetGlobalCutsForm({ cuts }: Props) {
 				field_name="house"
 				register={register}
 				error={errors?.house?.message}
-				default_value={cuts.house}
+				default_value={cuts.house || 0}
 			/>
 			<TextFormInput
 				type="number"
@@ -62,7 +63,7 @@ export default function SetGlobalCutsForm({ cuts }: Props) {
 				field_name="first"
 				register={register}
 				error={errors?.first?.message}
-				default_value={cuts.jockeys[0]}
+				default_value={cuts.jockeys[0] || 0}
 			/>
 			<TextFormInput
 				type="number"
@@ -70,7 +71,7 @@ export default function SetGlobalCutsForm({ cuts }: Props) {
 				field_name="second"
 				register={register}
 				error={errors?.second?.message}
-				default_value={cuts.jockeys[1]}
+				default_value={cuts.jockeys[1] || 0}
 			/>
 			<TextFormInput
 				type="number"
@@ -78,8 +79,11 @@ export default function SetGlobalCutsForm({ cuts }: Props) {
 				field_name="third"
 				register={register}
 				error={errors?.third?.message}
-				default_value={cuts.jockeys[2]}
+				default_value={cuts.jockeys[2] || 0}
 			/>
+			<Button type="submit" className="bg-primary-content mt-3">
+				{t("house-reward-target-submit")}
+			</Button>
 		</form>
 	);
 }

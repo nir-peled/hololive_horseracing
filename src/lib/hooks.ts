@@ -1,5 +1,4 @@
 import { BaseSyntheticEvent, useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
 import useSWR from "swr";
 import { RaceData, UserData } from "./types";
 

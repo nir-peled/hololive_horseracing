@@ -24,7 +24,9 @@ export default function HouseRewardTargetForm({ target }: Props) {
 	return (
 		<div>
 			<UserSelector set_user={set_user} value={user} />
-			<Button onClick={submit}>{t("house-reward-target-submit")}</Button>
+			<Button onClick={submit} className="bg-primary-content mt-3">
+				{t("house-reward-target-submit")}
+			</Button>
 		</div>
 	);
 }

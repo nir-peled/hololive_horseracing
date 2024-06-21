@@ -42,7 +42,9 @@ export default function SelectOption({
 	return (
 		<Select<value_t, false>
 			name={name}
-			className="select select-bordered"
+			menuPortalTarget={document.body}
+			styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+			// className="select select-bordered"
 			options={using_options}
 			defaultValue={
 				typeof defaultValue == "string"
@@ -59,7 +61,7 @@ export default function SelectOption({
 			value={
 				typeof value == "string" ? using_options.find((op) => op.value == value) : value
 			}
-			onChange={(option) => onChange && onChange(option && option.value)}
+			onChange={(option) => onChange && onChange(option ? option.value : null)}
 			onBlur={onBlur}
 			ref={ref}
 		/>
