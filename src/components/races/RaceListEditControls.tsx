@@ -3,10 +3,9 @@ import { Locale } from "@/src/lib/types";
 import initTranslations from "@/src/lib/i18n";
 import Button from "../Button";
 import RaceOpenBetsButton from "./RaceOpenBetsButton";
-import RaceEndButton from "./RaceEndButton";
 import ProtectedLink from "../ProtectedLink";
 import RaceDeleteButton from "./RaceDeleteButton";
-import { auth } from "@/src/lib/auth";
+import { auth, is_path_authorized } from "@/src/lib/auth";
 import { SessionProvider } from "next-auth/react";
 
 interface Props {
@@ -27,14 +26,22 @@ export default async function RaceListEditControls({
 	const { t } = await initTranslations(locale, namespaces);
 	const session = await auth();
 	const is_editable = !isOpenBets && !isEnded;
+	const is_management = is_path_authorized(
+		`/management/races/${id}/bets`,
+		session?.user?.role
+	);
 
 	return (
 		<SessionProvider session={session}>
 			<td>
-				<RaceOpenBetsButton id={id} isOpenBets={isOpenBets} disabled={isEnded} />
+				{is_management && (
+					<RaceOpenBetsButton id={id} isOpenBets={isOpenBets} disabled={isEnded} />
+				)}
 			</td>
 			<td>
-				<RaceEndButton id={id} />
+				<ProtectedLink href={`/management/races/${id}/results`} className="btn">
+					{t("race-end-button")}
+				</ProtectedLink>
 			</td>
 			<td>
 				<ProtectedLink

@@ -27,7 +27,7 @@ export default async function RacesPage({ params: { locale } }: Props) {
 		// <TranslationsProvider namespaces={namespaces} locale={locale} resources={resources}>
 		<>
 			<PageTitle>{t("races-management-title", { ns: "management" })}</PageTitle>
-			<ProtectedLink href="/management/races/new" locale={locale}>
+			<ProtectedLink href="/management/races/new" locale={locale} className="btn mb-5">
 				{t("new-race-page-button", { ns: "management" })}
 			</ProtectedLink>
 			<RacesList locale={locale} is_management={true} />

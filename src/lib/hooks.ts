@@ -4,7 +4,7 @@ import { RaceData, UserData } from "./types";
 
 // type UsersList = Awaited<ReturnType<typeof fetch_usernames>>;
 type UseUsersData = { name: string; display_name: string };
-type UseHorsesData = string;
+type UseHorsesData = { id: bigint; name: string; image: string };
 
 interface UseListReturnType<TValue> {
 	data: TValue[];
@@ -54,7 +54,7 @@ export function useCountdown(deadline: Date) {
 }
 
 export function useHorsesList(images: boolean = false): UseListReturnType<UseHorsesData> {
-	const url = "/api/horses/all" + (images ? "?images=true" : "");
+	const url = "/api/horses/list" + (images ? "?images=true" : "");
 	return useFetchList<UseHorsesData>(url);
 }
 

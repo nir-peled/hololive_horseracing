@@ -22,14 +22,16 @@ export default function HorseSelector({
 	const { t } = useTranslation(namespaces);
 	const { data, loading } = useHorsesList();
 
+	const horses = data.map(({ name }) => name);
+
 	return (
 		<div>
 			<SelectOption
 				name={field_name}
 				loading={loading}
 				onChange={set_horse}
-				options={data}
-				labels={data}
+				options={horses}
+				labels={horses}
 				placeholder={t("horse-selector-placeholder")}
 				value={value}
 				filter={true}
