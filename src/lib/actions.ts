@@ -8,6 +8,7 @@ import {
 	Locale,
 	UserData,
 	UserDataSelect,
+	UserEditFormData,
 	UserFormData,
 } from "./types";
 import { database_factory } from "./database";
@@ -56,6 +57,20 @@ export async function new_user(params: UserFormData): Promise<boolean> {
 		// console.log(error); // debug
 		return false;
 	}
+}
+
+export async function edit_user(params: UserEditFormData): Promise<boolean> {
+	console.log("edit user"); //debug
+	return true;
+	/*
+	check_server_action_authorized("manager");
+	console.log(JSON.stringify(params));
+
+	let is_successful = await database_factory
+		.user_database()
+		.edit_user(params.username, params);
+	return is_successful;
+	*/
 }
 
 export async function fetch_usernames(
@@ -154,4 +169,8 @@ export async function deposit_to_user(user: string, amount: number): Promise<boo
 export async function withdraw_from_user(user: string, amount: number): Promise<boolean> {
 	if (amount <= 0 || Math.floor(amount) != amount) return false;
 	return await database_factory.user_database().update_user_balance(user, -amount);
+}
+
+export async function echo(param: any): Promise<any> {
+	return param;
 }
