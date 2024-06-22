@@ -30,8 +30,14 @@ export interface UserFormData {
 	confirm_password?: string;
 	role: UserRole;
 	display_name: string;
-	image?: File;
+	image?: File | Buffer | null;
 }
+
+export type UserEditFormData = {
+	[k in keyof UserFormData]?: UserFormData[k] | undefined;
+} & {
+	username: string;
+};
 
 export interface UserData {
 	id: bigint;
