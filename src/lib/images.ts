@@ -114,11 +114,12 @@ function check_png_type(buffer: Buffer): "image/png" | "image/apng" | undefined 
 	}
 }
 
-export async function image_as_buffer(
-	image: File | Blob | null | undefined
-): Promise<Buffer | null> {
-	if (!image) return null;
+export async function image_as_buffer<T extends Blob | Buffer | null | undefined>(
+	image: T
+): Promise<T extends Blob | Buffer ? Buffer : null> {
+	if (image == null || image == undefined) return null as any;
+	if (image instanceof Buffer) return image as any;
 
 	let array_buffer = await image.arrayBuffer();
-	return Buffer.from(array_buffer);
+	return Buffer.from(array_buffer) as any;
 }
