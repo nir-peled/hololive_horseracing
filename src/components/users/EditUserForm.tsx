@@ -9,5 +9,5 @@ export default function EditUserForm() {
 	const user = search_params.get("user");
 	if (!user) throw new Error("bad-request-parameters");
 
-	return <UserDetailsForm edit_user={user} />;
+	return <UserDetailsForm edited_user={user} />;
 }

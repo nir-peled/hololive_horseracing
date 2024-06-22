@@ -27,16 +27,15 @@ export default function UserListRow({
 			<td>{display_name}</td>
 			<td>{name}</td>
 			<td>
-				<Button className={hidden && "max-h-0"}>
-					<Link
-						href={{
-							pathname: "management/users/edit",
-							query: { user: name },
-						}}
-						locale={i18n.language as Locale}>
-						{t("edit-user-button")}
-					</Link>
-				</Button>
+				<Link
+					href={{
+						pathname: "/management/users/edit",
+						query: { user: name },
+					}}
+					locale={i18n.language as Locale}
+					className={`btn ${hidden && "max-h-0"}`}>
+					{t("edit-user-button")}
+				</Link>
 			</td>
 			<td>
 				<DeleteUserButton

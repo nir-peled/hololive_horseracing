@@ -16,7 +16,7 @@ interface Props {
 	defaultValue?: string | null;
 	filter?: boolean;
 	onBlur?: (e: React.FocusEvent<HTMLInputElement, Element>) => void;
-	ref?: RefCallBack;
+	inner_ref?: RefCallBack;
 }
 
 type value_t = { value: string; label: string };
@@ -33,7 +33,7 @@ export default function SelectOption({
 	defaultValue,
 	filter,
 	onBlur,
-	ref,
+	inner_ref,
 }: Props) {
 	if (loading) return <LoadingMarker />;
 
@@ -63,7 +63,7 @@ export default function SelectOption({
 			}
 			onChange={(option) => onChange && onChange(option ? option.value : null)}
 			onBlur={onBlur}
-			ref={ref}
+			ref={inner_ref}
 		/>
 	);
 	// <select {...get_attrs()} className="select select-bordered">

@@ -112,6 +112,10 @@ export class PrismaDatabase
 	async edit_user(name: string, data: Partial<UserFormData>): Promise<boolean> {
 		let image_buffer = await image_as_buffer(data.image);
 		try {
+			if (data.username) delete data.username;
+			if (data.password)
+				data.password = await this.encryptor?.hash_password(data.password);
+
 			let _ = await this.prisma.user.update({
 				where: { name },
 				data: {

@@ -1,6 +1,7 @@
 import { BaseSyntheticEvent, useEffect, useState } from "react";
 import useSWR from "swr";
 import { RaceData, UserData } from "./types";
+import { get_image_buffer_as_str, image_as_buffer } from "./images";
 
 // type UsersList = Awaited<ReturnType<typeof fetch_usernames>>;
 type UseUsersData = { name: string; display_name: string };
@@ -117,7 +118,10 @@ export function useSubmitter<
 		if (confirmation && !confirm(confirmation)) return;
 		try {
 			if (typeof destination == "string") {
-				let form_data = to_form_data_without_default(transed_data as D, default_values);
+				let form_data = await to_form_data_without_default(
+					transed_data as D,
+					default_values
+				);
 
 				response = await fetch(destination, {
 					method,
@@ -126,8 +130,11 @@ export function useSubmitter<
 				});
 				submit_ok = response && response.ok;
 			} else {
+				console.log("try call destination function"); // debug
 				submit_ok = await destination(transed_data as D);
 			}
+		} catch (e) {
+			console.log(e); // debug
 		} finally {
 			if (submit_ok) {
 				// if form is used for new user, reset the form to empty
@@ -157,17 +164,58 @@ function get_countdown_parts(countdown: number) {
 	return { days, hours, minutes, seconds };
 }
 
-function to_form_data_without_default<T extends Record<string, any>>(
+async function to_form_data_without_default<T extends Record<string, any>>(
 	data: T,
 	default_data?: T
-): FormData {
+): Promise<FormData> {
 	let form_data = new FormData();
 	for (let [key, value] of Object.entries(data)) {
-		if (value != undefined && (!default_data || default_data[key as keyof T] != value)) {
-			const form_value = typeof value == "string" ? value : JSON.stringify(value);
+		if (
+			value &&
+			(!default_data || !(await is_same_values(value, default_data[key as keyof T])))
+		) {
+			console.log(`adding ${key}`);
+			const form_value =
+				typeof value == "string" || value instanceof File ? value : JSON.stringify(value);
 			form_data.append(key, form_value);
 		}
 	}
 
 	return form_data;
+}
+
+async function is_same_values<T, D extends T | string | Buffer | Blob>(
+	value: T,
+	default_value: D | string
+): Promise<boolean> {
+	console.log(`checking value:`); // debug
+	console.log(value); // debug
+	console.log("vs default:"); // debug
+	console.log(default_value); // debug
+	if (!default_value) return false;
+	if (value instanceof File)
+		return await is_same_files(value, default_value as string | Buffer | Blob);
+
+	if (typeof default_value == "string" && typeof value != "string")
+		return JSON.stringify(value) == default_value;
+	return value == default_value;
+}
+
+async function is_same_files(
+	value: File,
+	default_value: Blob | string | Buffer
+): Promise<boolean> {
+	let value_buffer = await image_as_buffer(value);
+	let value_str = get_image_buffer_as_str(value_buffer);
+
+	let default_str: string | undefined;
+	if (typeof default_value == "string") default_str = default_value;
+	else if (default_value instanceof Buffer || default_value.type == "Buffer")
+		default_str = get_image_buffer_as_str(default_value as Buffer);
+	else {
+		let default_buffer = await image_as_buffer(default_value);
+		default_str = get_image_buffer_as_str(default_buffer);
+	}
+
+	return value_str != default_str;
 }

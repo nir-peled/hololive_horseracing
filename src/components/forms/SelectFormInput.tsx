@@ -18,6 +18,7 @@ interface Props<T, TControl extends Control<any, any> | undefined> {
 	render_option?: renderer<T>;
 	value?: TControl extends undefined ? T : never;
 	onChange?: TControl extends undefined ? (new_value: T) => void : never;
+	default_value?: T;
 }
 
 export default function SelectFormInput<
@@ -34,6 +35,7 @@ export default function SelectFormInput<
 	render_option,
 	value,
 	onChange,
+	default_value,
 }: Props<T, TControl>) {
 	const make_select = (fields?: Record<string, any>) => (
 		<Select
@@ -44,6 +46,7 @@ export default function SelectFormInput<
 				!!disabled_options && disabled_options.includes(option)
 			}
 			placeholder={placeholder}
+			defaultValue={default_value}
 		/>
 	);
 

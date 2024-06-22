@@ -29,8 +29,8 @@ export default async function BetDisplayLine({
 		<tr className="border-none glass shadow-sm">
 			<td>{race_name}</td>
 			<td className="inline-grid grid-rows-2">
-				<IconImage icon={jockey.image} />
-				<IconImage icon={horse.image} />
+				<IconImage icon={jockey.image} shape="square" />
+				<IconImage icon={horse.image} shape="square" />
 				<b>{jockey.name}</b>
 				<b>{horse.name}</b>
 			</td>

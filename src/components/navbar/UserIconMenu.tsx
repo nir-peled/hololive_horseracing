@@ -12,15 +12,13 @@ interface Props {
 }
 
 export default async function UserIconMenu({ label, locale, user }: Props) {
-	const image = await database_factory.user_database().get_user_image_as_str(user);
+	const image = await database_factory.user_database().get_user_image_as_str(user.name);
 
 	return (
 		<div className="dropdown dropdown-end">
-			<div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+			<div tabIndex={0} role="button" className="btn btn-ghost avatar">
 				{image && image.length > 2 ? (
-					<div className="w-12 h-12 rounded-full">
-						<IconImage icon={image} />
-					</div>
+					<IconImage icon={image} />
 				) : (
 					<div className="avatar placeholder w-12 h-12">
 						<div className="bg-netural text-black rounded-full">

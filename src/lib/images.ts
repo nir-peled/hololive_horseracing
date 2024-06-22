@@ -117,8 +117,8 @@ function check_png_type(buffer: Buffer): "image/png" | "image/apng" | undefined 
 export async function image_as_buffer<T extends Blob | Buffer | null | undefined>(
 	image: T
 ): Promise<T extends Blob | Buffer ? Buffer : null> {
-	if (image == null || image == undefined) return null as any;
-	if (image instanceof Buffer) return image as any;
+	if (!image) return null as any;
+	if (image instanceof Buffer || image.type == "Buffer") return image as any;
 
 	let array_buffer = await image.arrayBuffer();
 	return Buffer.from(array_buffer) as any;

@@ -5,6 +5,8 @@ import { HTTPResponseCodes } from "@/src/lib/http";
 import { UserFormData } from "@/src/lib/types";
 
 export async function POST(request: NextRequest) {
+	// return HTTPResponseCodes.method_forbidden();
+	// /*
 	console.log("got POST /api/management/users/new"); // debug
 	let res = await check_api_authorized(request);
 	if (res) return res;
@@ -26,8 +28,10 @@ export async function POST(request: NextRequest) {
 		image: data.get("image"),
 	};
 	for (let [key, value] of Object.entries(user_data)) {
+		console.log(`key: ${key}. value:`); // debug
+		console.log(value); // debug
 		if (key != "image" && value instanceof File) return HTTPResponseCodes.bad_request();
-		if (key == "image" && !(value instanceof File))
+		if (key == "image" && !(value instanceof File || value === null))
 			return HTTPResponseCodes.bad_request();
 	}
 
@@ -42,6 +46,7 @@ export async function POST(request: NextRequest) {
 	}
 	console.log("could not create new user, failure"); // debug
 	return NextResponse.error();
+	// */
 }
 
 // don't allow GET to this path

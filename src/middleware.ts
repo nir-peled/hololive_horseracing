@@ -22,6 +22,19 @@ export function middleware(request: NextRequest) {
 */
 
 // applies this middleware only to files in the app directory
+// export const config = {
+// 	matcher: [
+// 		{
+// 			source: "/((?!api|static|.*\\..*|_next|favicon.ico).*)",
+// 			missing: [
+// 				{ type: "header", key: "next-router-prefetch" },
+// 				{ type: "header", key: "next-action" },
+// 				{ type: "header", key: "purpose", value: "prefetch" },
+// 			],
+// 		},
+// 	],
+// };
+
 export const config = {
 	matcher: "/((?!api|static|.*\\..*|_next|favicon.ico).*)",
 };

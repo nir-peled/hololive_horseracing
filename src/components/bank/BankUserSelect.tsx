@@ -29,17 +29,19 @@ export default function BankUserSelect({ users }: Props) {
 				options={users.map(({ id }) => ({ id }))}
 				value={user_id !== undefined ? { id: user_id } : undefined}
 				onChange={({ id }) => set_user_id(id)}
-				render_option={(option, { isFocused }) => {
-					let background = isFocused ? "bg-blue-500" : "bg-white";
+				render_option={(option) => {
 					let option_user = users.find((user_data) => user_data.id == option.id);
 					if (!option_user) return;
 
 					return (
-						<div className={`inline-block ${background} grid grid-rows-1`}>
+						<div className="flex flex-row items-center columns-2">
 							<IconImage
 								icon={option_user.image || option_user.display_name || option_user.name}
+								className="justify-self-start basis-1/4"
 							/>
-							<p>{option_user.display_name || option_user.name}</p>
+							<div className="flex justify-self-center basis-3/4 justify-center">
+								<p>{option_user.display_name || option_user.name}</p>
+							</div>
 						</div>
 					);
 				}}

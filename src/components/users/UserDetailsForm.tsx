@@ -6,10 +6,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { TFunction } from "i18next";
 import useSWR from "swr";
 import { z } from "zod";
-import { UserDefaultValues, UserRole, userRoles } from "@/src/lib/types";
+import {
+	UserDefaultValues,
+	UserEditFormData,
+	UserFormData,
+	UserRole,
+	userRoles,
+} from "@/src/lib/types";
 import { json_fetcher, useSubmitter } from "@/src/lib/hooks";
 import { refine_schema_for_image } from "@/src/lib/images";
-import FormLoginInputs from "../forms/FormLoginInputs";
 import ImageFormInput from "../forms/ImageFormInput";
 import TextFormInput from "../forms/TextFormInput";
 import FormInput from "../forms/FormInput";
@@ -17,33 +22,34 @@ import SelectOption from "../SelectOption";
 import LoadingMarker from "../LoadingMarker";
 import Button from "../Button";
 import Alert from "../Alert";
+import { edit_user, new_user } from "@/src/lib/actions";
 
 const namespaces = ["management"];
 
 interface Props {
-	edit_user?: string;
+	edited_user?: string;
 }
 
-interface UserFormData {
+interface UserDetailsFormData {
 	username: string;
 	password: string;
-	confirm_password?: string;
+	confirm_password: string;
 	role: UserRole;
 	display_name: string;
 	image: FileList | null;
 }
 
-export default function UserDetailsForm({ edit_user }: Props) {
+export default function UserDetailsForm({ edited_user }: Props) {
 	const { t } = useTranslation(namespaces);
-	const UserSchema = create_user_schema(t);
+	const UserSchema = create_user_schema(t, !!edited_user);
 
 	// if edit_user is given, those are the user's details.
 	// otherwise, they are empty
 	const { data: default_values, isLoading } = useSWR<Partial<UserDefaultValues>>(
 		"/api/management/users/form_data",
 		(url: string) => {
-			if (edit_user)
-				return json_fetcher(url + "?" + new URLSearchParams({ username: edit_user }));
+			if (edited_user)
+				return json_fetcher(url + "?" + new URLSearchParams({ username: edited_user }));
 			else return {};
 		}
 	);
@@ -52,18 +58,30 @@ export default function UserDetailsForm({ edit_user }: Props) {
 		control,
 		register,
 		handleSubmit,
-		formState: { errors, isSubmitted, isSubmitSuccessful, isValid },
+		formState: { errors, isSubmitSuccessful, isSubmitting },
 		reset,
-	} = useForm<UserFormData>({
+	} = useForm<UserDetailsFormData>({
 		resolver: zodResolver(UserSchema),
+		defaultValues: default_values as Partial<UserDetailsFormData>,
 	});
 
 	const [isFailed, setIsFailed] = useState<boolean>(false);
-	const endpoint = `/api/management/users/${edit_user ? "edit" : "new"}`;
-	const submit_form = useSubmitter<UserFormData>(endpoint, {
+	const endpoint = `/api/management/users/${edited_user ? "edit" : "new"}`;
+	// const endpoint = edited_user ? edit_user : new_user;
+	const submit_form = useSubmitter<UserDetailsFormData, UserFormData>(endpoint, {
+		transform(data) {
+			return {
+				...data,
+				image: data.image && data.image.length > 0 ? data.image[0] : null,
+			};
+		},
 		is_failed: isFailed,
 		set_is_failed: setIsFailed,
-		default_values: default_values as Partial<UserFormData> | undefined,
+		default_values: {
+			...default_values,
+			role: default_values?.role as UserRole | undefined,
+			image: default_values?.image as unknown as Buffer,
+		},
 		reset,
 	});
 
@@ -87,10 +105,21 @@ export default function UserDetailsForm({ edit_user }: Props) {
 					default_value={default_values?.display_name}
 				/>
 				{/* input username & password */}
-				<FormLoginInputs
+				<TextFormInput
+					label={t("username-label")}
+					field_name="username"
 					register={register}
-					errors={errors}
-					username={default_values?.username}
+					error={errors?.username?.message}
+					default_value={default_values?.username}
+					readonly={!!default_values?.username}
+				/>
+				{/* <br /> */}
+				<TextFormInput
+					label={t("password-label")}
+					field_name="password"
+					type="password"
+					register={register}
+					error={errors?.password?.message}
 				/>
 				<br />
 				{/* input confirm password */}
@@ -120,7 +149,7 @@ export default function UserDetailsForm({ edit_user }: Props) {
 									onChange={onChange}
 									value={value}
 									onBlur={onBlur}
-									ref={ref}
+									inner_ref={ref}
 								/>
 							)}
 						/>
@@ -135,7 +164,7 @@ export default function UserDetailsForm({ edit_user }: Props) {
 					preview={true}
 					default_display={default_values?.image}
 				/>
-				<Button type="submit" disabled={isValid && isSubmitted} className="m-2">
+				<Button type="submit" disabled={isSubmitting} className="m-2">
 					{t("new-user-submit")}
 				</Button>
 			</label>
@@ -143,7 +172,12 @@ export default function UserDetailsForm({ edit_user }: Props) {
 	);
 }
 
-function create_user_schema(t: TFunction) {
+function create_user_schema(t: TFunction, is_edit: boolean = false) {
+	let password_schema = z
+		.string()
+		.min(8, { message: t("password-too-short") })
+		.max(31, { message: t("password-too-long") });
+
 	let schema = z
 		.object({
 			display_name: z.string().min(3, { message: t("display-name-too-short") }),
@@ -151,10 +185,7 @@ function create_user_schema(t: TFunction) {
 				.string()
 				.min(3, { message: t("username-too-short") })
 				.regex(new RegExp("[wd_]+"), t("username-illegal-characters")),
-			password: z
-				.string()
-				.min(8, { message: t("password-too-short") })
-				.max(31, { message: t("password-too-long") }),
+			password: is_edit ? password_schema.or(z.enum([""])) : password_schema,
 			confirm_password: z.string(),
 			role: z.enum(userRoles, {
 				errorMap: () => ({ message: t("role-not-selected") }),
