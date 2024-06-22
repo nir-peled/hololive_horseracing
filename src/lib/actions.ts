@@ -60,17 +60,12 @@ export async function new_user(params: UserFormData): Promise<boolean> {
 }
 
 export async function edit_user(params: UserEditFormData): Promise<boolean> {
-	console.log("edit user"); //debug
-	return true;
-	/*
 	check_server_action_authorized("manager");
-	console.log(JSON.stringify(params));
 
 	let is_successful = await database_factory
 		.user_database()
 		.edit_user(params.username, params);
 	return is_successful;
-	*/
 }
 
 export async function fetch_usernames(

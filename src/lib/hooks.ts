@@ -74,10 +74,11 @@ interface UseSubmitterParams<
 	default_values?: { [K in keyof D]?: D[K] | undefined } | undefined;
 	reset?: (data?: Partial<T> | undefined) => void;
 	method?: string;
-	on_success?: (data: Partial<T>, response?: Response) => void;
+	on_success?: (data: Partial<D>, response?: Response) => void;
 	transform?: (data: T) => D;
 	fetch_options?: RequestInit;
 	confirmation?: string;
+	mutate?: (data: D) => void;
 }
 
 /**
@@ -107,21 +108,19 @@ export function useSubmitter<
 		transform,
 		fetch_options,
 		confirmation,
+		mutate,
 	}: UseSubmitterParams<T, D>
 ): (data: T, event?: BaseSyntheticEvent) => Promise<void> {
 	return async (data: T, event?: BaseSyntheticEvent) => {
 		if (event) event.preventDefault();
-		let transed_data = transform ? transform(data) : data;
+		let transed_data: D = (transform ? transform(data) : data) as D;
 
 		let submit_ok = false;
 		let response: Response | undefined;
 		if (confirmation && !confirm(confirmation)) return;
 		try {
 			if (typeof destination == "string") {
-				let form_data = await to_form_data_without_default(
-					transed_data as D,
-					default_values
-				);
+				let form_data = await to_form_data_without_default(transed_data, default_values);
 
 				response = await fetch(destination, {
 					method,
@@ -140,7 +139,8 @@ export function useSubmitter<
 				// if form is used for new user, reset the form to empty
 				if (reset) reset();
 				if (is_failed && set_is_failed) set_is_failed(false);
-				if (on_success) on_success(data, response);
+				if (on_success) on_success(transed_data, response);
+				if (mutate) mutate_data(mutate, transed_data, default_values);
 			} else {
 				if (reset) reset(data);
 				if (set_is_failed) set_is_failed(true);
@@ -218,4 +218,23 @@ async function is_same_files(
 	}
 
 	return value_str != default_str;
+}
+
+async function mutate_data<T extends Record<string, any>>(
+	mutate: (data: T) => void,
+	data: T,
+	default_values: { [K in keyof T]?: T[K] | undefined } | undefined
+) {
+	if (!default_values) mutate(data);
+
+	let new_data = default_values as T;
+	for (let key of Object.keys(default_values as Partial<T>)) {
+		let old_value = new_data[key as keyof T];
+		let new_value = data[key as keyof T];
+		if (old_value == undefined || new_value == undefined) {
+			new_data[key as keyof T] = new_value as T[keyof T];
+		}
+	}
+
+	mutate(new_data);
 }

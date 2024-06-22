@@ -115,6 +115,7 @@ export class PrismaDatabase
 			if (data.username) delete data.username;
 			if (data.password)
 				data.password = await this.encryptor?.hash_password(data.password);
+			if (data.confirm_password !== undefined) delete data.confirm_password;
 
 			let _ = await this.prisma.user.update({
 				where: { name },

@@ -14,7 +14,7 @@ import {
 	userRoles,
 } from "@/src/lib/types";
 import { json_fetcher, useSubmitter } from "@/src/lib/hooks";
-import { refine_schema_for_image } from "@/src/lib/images";
+import { image_as_buffer, refine_schema_for_image } from "@/src/lib/images";
 import ImageFormInput from "../forms/ImageFormInput";
 import TextFormInput from "../forms/TextFormInput";
 import FormInput from "../forms/FormInput";
@@ -45,7 +45,11 @@ export default function UserDetailsForm({ edited_user }: Props) {
 
 	// if edit_user is given, those are the user's details.
 	// otherwise, they are empty
-	const { data: default_values, isLoading } = useSWR<Partial<UserDefaultValues>>(
+	const {
+		data: default_values,
+		isLoading,
+		mutate,
+	} = useSWR<Partial<UserDefaultValues>>(
 		"/api/management/users/form_data",
 		(url: string) => {
 			if (edited_user)
@@ -66,8 +70,8 @@ export default function UserDetailsForm({ edited_user }: Props) {
 	});
 
 	const [isFailed, setIsFailed] = useState<boolean>(false);
-	const endpoint = `/api/management/users/${edited_user ? "edit" : "new"}`;
-	// const endpoint = edited_user ? edit_user : new_user;
+	// const endpoint = `/api/management/users/${edited_user ? "edit" : "new"}`;
+	const endpoint = edited_user ? edit_user : new_user;
 	const submit_form = useSubmitter<UserDetailsFormData, UserFormData>(endpoint, {
 		transform(data) {
 			return {
@@ -83,6 +87,12 @@ export default function UserDetailsForm({ edited_user }: Props) {
 			image: default_values?.image as unknown as Buffer,
 		},
 		reset,
+		async mutate(data) {
+			mutate({
+				...data,
+				image: data.image && (await transform_image_field(data.image)),
+			});
+		},
 	});
 
 	if (isLoading) return <LoadingMarker />;
@@ -198,4 +208,13 @@ function create_user_schema(t: TFunction, is_edit: boolean = false) {
 		});
 
 	return refine_schema_for_image(schema, t);
+}
+
+async function transform_image_field(
+	image: FileList | File | Buffer | undefined | null
+): Promise<Buffer | undefined> {
+	if (!image) return undefined;
+	if (image instanceof Buffer || (image as any).type == "Buffer") return image as Buffer;
+	if (image instanceof File) return image_as_buffer(image);
+	return await image_as_buffer(image[0]);
 }
