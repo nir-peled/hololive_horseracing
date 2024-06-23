@@ -1,4 +1,27 @@
 Add way to display different image sizes
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Add /bank & /bank/[user_id]
 Make notfound & error pages
 change /bank to fetch dynamically?
+Add something for odds at the start?
+
+Testing:
+bank V
+management
+	users V
+		new V
+		edit V
+	races
+		new
+		edit 
+		close
+		results
+		bets
+	settings
+races 
+	list
+	details (unify?)
+	results (unify?)
+bets
+	list
+	make/edit
+odds calculation
+reward distribution

@@ -30,14 +30,11 @@ class DatabaseBetManager implements BetManager {
 			let total_reward_amount = (total_pool_amount * (100 - total_cuts)) / 100;
 			if (total_reward_amount < 0) total_reward_amount = 0;
 
-			let pool_updates = (updates = updates.concat(
-				this.#get_pool_contestants_odds_updates(
-					pool,
-					total_reward_amount,
-					type as bet_type
-				)
-			));
-
+			let pool_updates = this.#get_pool_contestants_odds_updates(
+				pool,
+				total_reward_amount,
+				type as bet_type
+			);
 			updates = updates.concat(pool_updates);
 		}
 
@@ -54,6 +51,7 @@ class DatabaseBetManager implements BetManager {
 
 		let updates: ContestantOddsUpdate[] = [];
 		for (let [contestant, amount] of contestants_bet_amounts) {
+			if (amount == 0) amount = 1;
 			let part_in_contestant = amount / total_amount;
 			// round to precision
 			part_in_contestant =
