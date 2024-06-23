@@ -8,7 +8,8 @@
 		"start": "next start",
 		"lint": "next lint",
 		"migrate": "dotenv -e .env.local -- npx prisma migrate dev",
-		"info": "next info"
+		"info": "next info",
+		"env": "vercel env pull .env.local"
 	},
 	"dependencies": {
 		"@hookform/resolvers": "^3.3.4",
