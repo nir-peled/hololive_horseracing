@@ -70,8 +70,8 @@ export default function UserDetailsForm({ edited_user }: Props) {
 	});
 
 	const [isFailed, setIsFailed] = useState<boolean>(false);
-	// const endpoint = `/api/management/users/${edited_user ? "edit" : "new"}`;
-	const endpoint = edited_user ? edit_user : new_user;
+	const endpoint = `/api/management/users/${edited_user ? "edit" : "new"}`;
+	// const endpoint = edited_user ? edit_user : new_user;
 	const submit_form = useSubmitter<UserDetailsFormData, UserFormData>(endpoint, {
 		transform(data) {
 			return {
@@ -83,6 +83,7 @@ export default function UserDetailsForm({ edited_user }: Props) {
 		set_is_failed: setIsFailed,
 		default_values: {
 			...default_values,
+			username: undefined,
 			role: default_values?.role as UserRole | undefined,
 			image: default_values?.image as unknown as Buffer,
 		},

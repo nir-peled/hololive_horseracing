@@ -22,6 +22,7 @@ races
 	results (unify?)
 bets
 	list
-	make/edit
+	make
+	edit
 odds calculation
 reward distribution

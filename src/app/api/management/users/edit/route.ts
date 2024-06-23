@@ -7,7 +7,7 @@ import { UserFormData } from "@/src/lib/types";
 export async function POST(request: NextRequest) {
 	// return HTTPResponseCodes.method_forbidden();
 	// /*
-	console.log("got POST /api/management/users/new"); // debug
+	console.log("got POST /api/management/users/edit"); // debug
 	let res = await check_api_authorized(request);
 	if (res) return res;
 
@@ -22,20 +22,18 @@ export async function POST(request: NextRequest) {
 		return HTTPResponseCodes.bad_request();
 
 	let user_data = {
-		password: data.get("password"),
-		role: data.get("role"),
-		display_name: data.get("display_name"),
-		image: data.get("image"),
+		password: data.get("password") || undefined,
+		role: data.get("role") || undefined,
+		display_name: data.get("display_name") || undefined,
+		image: data.get("image") || undefined,
 	};
 	for (let [key, value] of Object.entries(user_data)) {
-		console.log(`key: ${key}. value:`); // debug
-		console.log(value); // debug
 		if (key != "image" && value instanceof File) return HTTPResponseCodes.bad_request();
 		if (key == "image" && !(value instanceof File || value === null))
 			return HTTPResponseCodes.bad_request();
 	}
 
-	console.log("try creating new user"); // debug
+	console.log("try editing user"); // debug
 	let is_successful = await database_factory
 		.user_database()
 		.edit_user(username, user_data as Partial<UserFormData>);

@@ -121,7 +121,6 @@ export function useSubmitter<
 		try {
 			if (typeof destination == "string") {
 				let form_data = await to_form_data_without_default(transed_data, default_values);
-
 				response = await fetch(destination, {
 					method,
 					body: form_data,
@@ -174,7 +173,6 @@ async function to_form_data_without_default<T extends Record<string, any>>(
 			value &&
 			(!default_data || !(await is_same_values(value, default_data[key as keyof T])))
 		) {
-			console.log(`adding ${key}`);
 			const form_value =
 				typeof value == "string" || value instanceof File ? value : JSON.stringify(value);
 			form_data.append(key, form_value);
@@ -188,10 +186,6 @@ async function is_same_values<T, D extends T | string | Buffer | Blob>(
 	value: T,
 	default_value: D | string
 ): Promise<boolean> {
-	console.log(`checking value:`); // debug
-	console.log(value); // debug
-	console.log("vs default:"); // debug
-	console.log(default_value); // debug
 	if (!default_value) return false;
 	if (value instanceof File)
 		return await is_same_files(value, default_value as string | Buffer | Blob);
