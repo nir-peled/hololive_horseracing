@@ -1,5 +1,5 @@
 import { database_factory } from "../database";
-import { ContestantOddsUpdate } from "../types";
+import { ContestantData, ContestantOddsUpdate } from "../types";
 import { bet_type, BetData, ContestantPlacementData, FullBetFormData } from "../types";
 import { sum } from "../utils";
 import { BetsCloser } from "./bets_closer";
@@ -16,24 +16,24 @@ class DatabaseBetManager implements BetManager {
 
 	async make_full_bet(user: string, race: bigint, bets: FullBetFormData): Promise<void> {
 		await database_factory.bets_database().update_user_race_bets(user, race, bets);
-		await this.#update_race_odds(race);
+		await this.update_race_odds(race);
 	}
 
-	async #update_race_odds(race: bigint) {
+	async update_race_odds(race: bigint) {
+		let contestants = await database_factory.race_database().get_race_contestants(race);
+		if (contestants == null) return;
+
 		let bets_pools = await database_factory.bets_database().get_race_bets_by_pools(race);
 		let cuts = await database_factory.cache_database().get_cuts();
 		let total_cuts = cuts.house + sum(cuts.jockeys);
 		let updates: ContestantOddsUpdate[] = [];
 
 		for (let [type, pool] of Object.entries(bets_pools)) {
-			let total_pool_amount = sum(pool, ({ amount }) => amount);
-			let total_reward_amount = (total_pool_amount * (100 - total_cuts)) / 100;
-			if (total_reward_amount < 0) total_reward_amount = 0;
-
-			let pool_updates = this.#get_pool_contestants_odds_updates(
+			let pool_updates = this.#calc_pool_updates(
 				pool,
-				total_reward_amount,
-				type as bet_type
+				type as bet_type,
+				total_cuts,
+				contestants
 			);
 			updates = updates.concat(pool_updates);
 		}
@@ -41,17 +41,50 @@ class DatabaseBetManager implements BetManager {
 		await database_factory.race_database().update_race_odds(updates);
 	}
 
+	#calc_pool_updates(
+		pool: BetData[],
+		type: bet_type,
+		total_cuts: number,
+		contestatns: ContestantData[]
+	) {
+		const MAX_ODDS_PRECISION = Number(process.env.MAX_ODDS_PECISION || 100);
+		let missing_contestans = contestatns.filter(
+			(c) => pool.findIndex((b) => b.contestant.id == c.id) == undefined
+		);
+
+		let total_pool_amount = sum(pool, ({ amount }) => amount);
+		let total_reward_amount = (total_pool_amount * (100 - total_cuts)) / 100;
+		if (total_reward_amount < 0) total_reward_amount = 0;
+
+		let updates = this.#get_pool_contestants_odds_updates(
+			pool,
+			total_reward_amount,
+			type as bet_type,
+			MAX_ODDS_PRECISION
+		);
+
+		updates = updates.concat(
+			missing_contestans.map(({ id }) => ({
+				id,
+				type,
+				numerator: MAX_ODDS_PRECISION,
+				denominator: 1,
+			}))
+		);
+
+		return updates;
+	}
+
 	#get_pool_contestants_odds_updates(
 		pool: BetData[],
 		total_amount: number,
-		type: bet_type
+		type: bet_type,
+		MAX_ODDS_PRECISION: number
 	): ContestantOddsUpdate[] {
-		const MAX_ODDS_PRECISION = Number(process.env.MAX_ODDS_PECISION || 100);
 		let contestants_bet_amounts = this.#get_contestnant_bets_amount(pool);
 
 		let updates: ContestantOddsUpdate[] = [];
 		for (let [contestant, amount] of contestants_bet_amounts) {
-			if (amount == 0) amount = 1;
 			let part_in_contestant = amount / total_amount;
 			// round to precision
 			part_in_contestant =
