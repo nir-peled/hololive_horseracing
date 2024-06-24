@@ -3,8 +3,6 @@ Make notfound & error pages
 change /bank to fetch dynamically?
 Add something for odds at the start?
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Display Odds
-
 Testing:
 bank V
 management
