@@ -17,10 +17,12 @@ export default async function RaceRowRacer({ user, horse }: Props) {
 	return (
 		<>
 			<div>
-				<IconImage icon={user_image} size="small" />
+				<IconImage icon={user_image} />
+				<b>{user.display_name}</b>
 			</div>
 			<div>
-				<IconImage icon={horse_image} size="small" />
+				<IconImage icon={horse_image} />
+				<b>{horse.name}</b>
 			</div>
 		</>
 	);

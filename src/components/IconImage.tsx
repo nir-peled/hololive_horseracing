@@ -28,7 +28,7 @@ export default function IconImage({ icon, size, className, shape = "square" }: P
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [icon]);
 
-	if (typeof icon == "string" && !icon.startsWith("data")) return icon;
+	if (typeof icon == "string" && !icon.startsWith("data")) return <div>{icon}</div>;
 	// icon is just a string
 
 	let shape_style: string = "";

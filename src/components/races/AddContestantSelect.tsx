@@ -55,17 +55,17 @@ export default function AddContestantSelect({ contestants, add_contestant }: Pro
 				error={
 					is_failed ? t("race-add-contestant-missing", { ns: "management" }) : undefined
 				}>
-				<HorseSelector
-					field_name="horse_selector"
-					value={horse}
-					set_horse={set_horse}
-					disabled_options={disabled_horses}
-				/>
 				<UserSelector
 					field_name="user_selector"
 					value={jockey}
 					set_user={set_jockey}
 					disabled_options={disabled_users}
+				/>
+				<HorseSelector
+					field_name="horse_selector"
+					value={horse}
+					set_horse={set_horse}
+					disabled_options={disabled_horses}
 				/>
 				<Button onClick={try_add}>
 					{t("race-add-contestant-button", { ns: "management" })}

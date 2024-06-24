@@ -10,14 +10,14 @@ management
 		new V
 		edit V
 	races
-		new
+		new V
 		edit 
 		close
 		results
 		bets
 	settings
 races 
-	list
+	list V
 	details (unify?)
 	results (unify?)
 bets

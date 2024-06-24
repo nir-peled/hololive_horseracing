@@ -59,8 +59,8 @@ export default function RaceCutsInput<T extends base_t>({
 										: (default_values && default_values[field_name]) || undefined
 								}
 								disabled={!enabled}
+								marker_after={<span className="badge">%</span>}
 							/>
-							<span className="badge">%</span>
 						</div>
 						// </label>
 					);

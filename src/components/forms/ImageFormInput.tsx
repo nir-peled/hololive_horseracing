@@ -44,7 +44,7 @@ export default function ImageFormInput({
 			<div className="flex gap-2">
 				<input
 					type="file"
-					accept="image/*"
+					accept={process.env.NEXT_PUBLIC_USER_ICON_TYPES}
 					className="file-input file-input-bordered w-full max-w-xs"
 					{...get_attr()}
 				/>

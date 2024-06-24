@@ -195,7 +195,7 @@ function create_user_schema(t: TFunction, is_edit: boolean = false) {
 			username: z
 				.string()
 				.min(3, { message: t("username-too-short") })
-				.regex(new RegExp("[wd_]+"), t("username-illegal-characters")),
+				.regex(new RegExp("[\\w\\d_]+"), t("username-illegal-characters")),
 			password: is_edit ? password_schema.or(z.enum([""])) : password_schema,
 			confirm_password: z.string(),
 			role: z.enum(userRoles, {

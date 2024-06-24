@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { ReactNode, useContext } from "react";
 import { UseFormRegister } from "react-hook-form";
 import FormInput from "./FormInput";
 
@@ -17,6 +17,8 @@ interface Props<T extends value_t> {
 	step?: string;
 	className?: string;
 	// clear?: () => void;
+	marker_before?: ReactNode;
+	marker_after?: ReactNode;
 }
 
 export default function TextFormInput<T extends value_t = "text">({
@@ -30,6 +32,8 @@ export default function TextFormInput<T extends value_t = "text">({
 	disabled,
 	step,
 	className,
+	marker_before,
+	marker_after,
 }: Props<T>) {
 	// const context_disabled = !useContext(EnableInputContext);
 
@@ -42,6 +46,7 @@ export default function TextFormInput<T extends value_t = "text">({
 
 	return (
 		<FormInput label={label} error={error}>
+			{marker_before}
 			<input
 				{...get_attrs()}
 				type={type || "text"}
@@ -52,6 +57,7 @@ export default function TextFormInput<T extends value_t = "text">({
 				defaultValue={default_value}
 				step={step}
 			/>
+			{marker_after}
 		</FormInput>
 	);
 }
