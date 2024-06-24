@@ -28,18 +28,16 @@ export default function UserSelector({
 	const { data, loading } = useUsersList();
 
 	return (
-		<div>
-			<SelectOption
-				name={field_name}
-				loading={loading}
-				onChange={set_user}
-				options={data.map((user) => user.name)}
-				labels={data.map((user) => user.display_name)}
-				placeholder={t("user-selector-placeholder")}
-				value={value}
-				filter={true}
-				disabled_options={disabled_options}
-			/>
-		</div>
+		<SelectOption
+			name={field_name}
+			loading={loading}
+			onChange={set_user}
+			options={data.map((user) => user.name)}
+			labels={data.map((user) => user.display_name)}
+			placeholder={t("user-selector-placeholder")}
+			value={value}
+			filter={true}
+			disabled_options={disabled_options}
+		/>
 	);
 }

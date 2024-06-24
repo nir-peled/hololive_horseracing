@@ -168,7 +168,12 @@ export class PrismaDatabase
 			select: user_data_select,
 		});
 
-		return result as UserData[];
+		let users = result.map(async (user) => ({
+			...user,
+			image: await this.get_user_image_as_str(user as UserData),
+		}));
+
+		return (await Promise.all(users)) as UserData[];
 	}
 
 	async get_user_image(name: string): Promise<Buffer | null> {

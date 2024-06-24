@@ -60,9 +60,12 @@ export function useHorsesList(images: boolean = false): UseListReturnType<UseHor
 }
 
 export function useFetchList<TValue>(url: string): UseListReturnType<TValue> {
-	const { data, error, isLoading, mutate } = useSWR<TValue[]>(url, json_fetcher);
+	const { data, error, isLoading, mutate } = useSWR<TValue[]>(url, json_fetcher, {
+		revalidateOnFocus: false,
+		refreshInterval: 0,
+	});
 
-	return { data: data ? data : [], loading: isLoading, error, mutate };
+	return { data: data || [], loading: isLoading, error, mutate };
 }
 
 interface UseSubmitterParams<

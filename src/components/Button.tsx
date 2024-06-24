@@ -6,16 +6,22 @@ interface Props {
 	className?: string;
 	children?: ReactNode;
 	disabled?: boolean;
-	onClick?: () => void;
+	onClick?: () => void | Promise<void>;
 }
 
 function Button({ type, className, children, disabled, onClick }: Props) {
+	function on_click(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+		if (onClick) {
+			e.preventDefault();
+			onClick();
+		}
+	}
 	return (
 		<button
 			className={`btn ${className ? className : ""}`}
 			type={type}
 			disabled={disabled}
-			onClick={onClick}>
+			onClick={on_click}>
 			{children}
 		</button>
 	);

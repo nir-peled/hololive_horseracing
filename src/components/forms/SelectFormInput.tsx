@@ -40,6 +40,7 @@ export default function SelectFormInput<
 	const make_select = (fields?: Record<string, any>) => (
 		<Select
 			{...fields}
+			menuPortalTarget={document.body}
 			components={render_option && { Option: option_factory<T>(render_option) }}
 			options={options}
 			isOptionDisabled={(option) =>

@@ -15,6 +15,7 @@ interface Props<T extends value_t> {
 	readonly?: boolean;
 	disabled?: boolean;
 	step?: string;
+	className?: string;
 	// clear?: () => void;
 }
 
@@ -28,6 +29,7 @@ export default function TextFormInput<T extends value_t = "text">({
 	readonly,
 	disabled,
 	step,
+	className,
 }: Props<T>) {
 	// const context_disabled = !useContext(EnableInputContext);
 
@@ -43,7 +45,7 @@ export default function TextFormInput<T extends value_t = "text">({
 			<input
 				{...get_attrs()}
 				type={type || "text"}
-				className="input input-bordered w-full max-w-xs"
+				className={`input input-bordered w-full max-w-xs ${className}`}
 				readOnly={readonly}
 				// disabled={disabled || context_disabled}
 				disabled={disabled}

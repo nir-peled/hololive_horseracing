@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ContestantFormType } from "@/src/lib/types";
 import Button from "../Button";
@@ -25,7 +25,17 @@ export default function AddContestantSelect({ contestants, add_contestant }: Pro
 	const [horse, set_horse] = useState<string | null>(null);
 	const [is_failed, set_is_failed] = useState<boolean>(false);
 
+	const disabled_users = useMemo<string[]>(
+		() => contestants.map((con) => con.jockey),
+		[contestants]
+	);
+	const disabled_horses = useMemo<string[]>(
+		() => contestants.map((con) => con.horse),
+		[contestants]
+	);
+
 	function try_add() {
+		console.log("try add");
 		if (!jockey || !horse) {
 			set_is_failed(true);
 			return;
@@ -38,21 +48,24 @@ export default function AddContestantSelect({ contestants, add_contestant }: Pro
 	}
 
 	return (
-		<div className="columns-1 lg:columns-3">
+		<div>
 			<FormInput
+				className="grid grid-cols-3 gap-4"
 				label={t("race-add-contestant", { ns: "management" })}
 				error={
 					is_failed ? t("race-add-contestant-missing", { ns: "management" }) : undefined
 				}>
 				<HorseSelector
+					field_name="horse_selector"
 					value={horse}
 					set_horse={set_horse}
-					disabled_options={contestants.map((con) => con.horse)}
+					disabled_options={disabled_horses}
 				/>
 				<UserSelector
+					field_name="user_selector"
 					value={jockey}
 					set_user={set_jockey}
-					disabled_options={contestants.map((con) => con.jockey)}
+					disabled_options={disabled_users}
 				/>
 				<Button onClick={try_add}>
 					{t("race-add-contestant-button", { ns: "management" })}

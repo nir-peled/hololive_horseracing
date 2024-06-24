@@ -13,18 +13,17 @@ export async function GET(request: NextRequest) {
 		.get_horses(from ? Number(from) : undefined, to ? Number(to) : undefined);
 
 	if (!is_with_image)
-		return NextResponse.json(results.map(({ id, name }) => ({ id, name })));
-	else {
-		const results_with_images = Promise.all(
-			results.map(async (horse) => ({
-				id: horse.id,
-				name: horse.name,
-				image: await database_factory.horse_database().get_horse_image_as_str(horse),
-			}))
-		);
+		return NextResponse.json(results.map(({ id, name }) => ({ id: Number(id), name })));
 
-		return NextResponse.json(results_with_images);
-	}
+	const results_with_images = Promise.all(
+		results.map(async (horse) => ({
+			id: Number(horse.id),
+			name: horse.name,
+			image: await database_factory.horse_database().get_horse_image_as_str(horse),
+		}))
+	);
+
+	return NextResponse.json(results_with_images);
 }
 
 // don't allow POST to this path

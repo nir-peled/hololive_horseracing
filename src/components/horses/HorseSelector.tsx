@@ -25,18 +25,16 @@ export default function HorseSelector({
 	const horses = data.map(({ name }) => name);
 
 	return (
-		<div>
-			<SelectOption
-				name={field_name}
-				loading={loading}
-				onChange={set_horse}
-				options={horses}
-				labels={horses}
-				placeholder={t("horse-selector-placeholder")}
-				value={value}
-				filter={true}
-				disabled_options={disabled_options}
-			/>
-		</div>
+		<SelectOption
+			name={field_name}
+			loading={loading}
+			onChange={set_horse}
+			options={horses}
+			labels={horses}
+			placeholder={t("horse-selector-placeholder")}
+			value={value}
+			filter={true}
+			disabled_options={disabled_options}
+		/>
 	);
 }

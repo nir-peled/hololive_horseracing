@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { TFunction } from "i18next";
@@ -26,12 +26,16 @@ const namespaces = ["management"];
 export default function EditRaceForm({ id, default_values }: Props) {
 	const { t } = useTranslation(namespaces);
 	const race_schema = create_race_schema(t);
+	const endpoint = useMemo<string>(() => {
+		if (id) return "/api/management/races/id?" + new URLSearchParams({ id: String(id) });
+		return "/api/management/races/new";
+	}, [id]);
 
 	const {
 		control,
 		register,
 		handleSubmit,
-		formState: { errors, isSubmitted, isSubmitSuccessful, isValid },
+		formState: { errors, isSubmitSuccessful, isLoading },
 		reset,
 		resetField,
 		setValue,
@@ -51,8 +55,6 @@ export default function EditRaceForm({ id, default_values }: Props) {
 
 	const [is_failed, set_is_failed] = useState<boolean>(false);
 
-	let endpoint = `/api/management/races/${id ? "edit" : "new"}`;
-	if (id) endpoint += "?" + new URLSearchParams({ id: String(id) });
 	const submit_form = useSubmitter<RaceFormData>(endpoint, {
 		is_failed,
 		set_is_failed,
@@ -86,8 +88,6 @@ export default function EditRaceForm({ id, default_values }: Props) {
 					error={errors?.deadline?.message}
 					default_checked={!!default_values?.deadline}
 					render={(enabled) => {
-						if (!enabled) resetField("deadline", { defaultValue: null });
-
 						return (
 							<TextFormInput
 								label=""
@@ -103,6 +103,9 @@ export default function EditRaceForm({ id, default_values }: Props) {
 								step={process.env.NEXT_PUBLIC_DATETIME_STEP}
 							/>
 						);
+					}}
+					onChange={(enabled) => {
+						if (!enabled) resetField("deadline", { defaultValue: null });
 					}}
 				/>
 				<br />
@@ -122,7 +125,7 @@ export default function EditRaceForm({ id, default_values }: Props) {
 					remove_contestant={remove_contestant}
 				/>
 				<br />
-				<Button type="submit" disabled={isValid && isSubmitted} className="m-2">
+				<Button type="submit" disabled={isLoading} className="m-2">
 					{t("new-race-submit")}
 				</Button>
 			</label>
@@ -139,11 +142,11 @@ function create_race_schema(t: TFunction) {
 	return z
 		.object({
 			name: z.string().min(3, t("race-name-too-short")),
-			deadline: z.string().nullable(),
-			house_cut: z.number().min(0, t("race-cut-negative-error")).nullable(),
-			win_cut: z.number().min(0, t("race-cut-negative-error")).nullable(),
-			place_cut: z.number().min(0, t("race-cut-negative-error")).nullable(),
-			show_cut: z.number().min(0, t("race-cut-negative-error")).nullable(),
+			deadline: z.string().optional(),
+			house_cut: z.number().min(0, t("race-cut-negative-error")).optional(),
+			win_cut: z.number().min(0, t("race-cut-negative-error")).optional(),
+			place_cut: z.number().min(0, t("race-cut-negative-error")).optional(),
+			show_cut: z.number().min(0, t("race-cut-negative-error")).optional(),
 			contestants: contestant_schema.array(),
 		})
 		.refine(
@@ -156,7 +159,9 @@ function create_race_schema(t: TFunction) {
 		.refine(
 			(data) =>
 				data.house_cut === undefined ||
-				![data.house_cut, data.win_cut, data.place_cut, data.show_cut].includes(null),
+				![data.house_cut, data.win_cut, data.place_cut, data.show_cut].includes(
+					undefined
+				),
 			{
 				message: t("race-cuts-one-or-all"),
 				path: ["house_cut"],
@@ -167,7 +172,7 @@ function create_race_schema(t: TFunction) {
 				data.house_cut == null ||
 				sum(
 					[data.house_cut, data.win_cut, data.place_cut, data.show_cut],
-					(n: number | null) => n || 0
+					(n: number | undefined) => n || 0
 				) < 100,
 			{
 				message: t("race-cuts-exceed-100"),

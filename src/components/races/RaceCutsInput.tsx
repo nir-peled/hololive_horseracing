@@ -15,7 +15,7 @@ type cut_name_t = Concat<[(typeof cuts_names)[number], "_cut"]>;
 type base_t = { [K in cut_name_t]?: number | null | undefined };
 
 interface Props<T extends base_t> {
-	default_values?: Partial<base_t>;
+	default_values?: base_t;
 	set_field: (name: cut_name_t, new_val: number | undefined) => void;
 	register?: UseFormRegister<T>;
 	errors: Partial<Record<cut_name_t, { message?: string }>>;
@@ -32,20 +32,21 @@ export default function RaceCutsInput<T extends base_t>({
 		<EnabledFormInput
 			label={t("race-cuts-input")}
 			checkbox_label={t("race-cuts-checkbox-label")}
-			default_checked={!default_values || default_values.house_cut === undefined}
-			render={(checked) => {
+			default_checked={!!default_values}
+			onChange={(enabled) => {
+				if (!enabled) cuts_names.forEach((taker) => set_field(as_cut(taker), undefined));
+			}}
+			render={(enabled) => {
 				let text_style = "text-slate-300";
-				if (!checked) {
-					cuts_names.forEach((taker) => set_field(as_cut(taker), undefined));
-					text_style = "text-black";
-				}
+				if (!enabled) text_style = "text-black";
 
 				return cuts_names.map((taker, i) => {
 					let field_name = as_cut(taker);
 					return (
-						<label
-							className={`input input-bordered flex items-center gap-2 ${text_style}`}
-							key={i}>
+						// <label
+						// 	className={`input input-bordered flex items-center gap-2 ${text_style}`}
+						// 	key={i}>
+						<div key={i}>
 							<TextFormInput
 								label={t(`${taker}-cut-label`)}
 								field_name={field_name}
@@ -53,14 +54,15 @@ export default function RaceCutsInput<T extends base_t>({
 								register={register}
 								error={errors[field_name]?.message}
 								default_value={
-									checked
+									enabled
 										? undefined
 										: (default_values && default_values[field_name]) || undefined
 								}
-								disabled={checked}
+								disabled={!enabled}
 							/>
 							<span className="badge">%</span>
-						</label>
+						</div>
+						// </label>
 					);
 				});
 			}}

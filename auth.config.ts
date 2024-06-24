@@ -49,11 +49,14 @@ export const authConfig: NextAuthConfig = {
 			// if (!user) user = token;
 			let username = user ? user.name : token.name;
 			if (!username) return token; // should never happen
+			let user_data = await database_factory
+				.user_database()
+				.get_user_data({ user: username, to_token: true });
+			if (user_data && "image" in Object.keys(user_data)) delete user_data.image;
+
 			return {
 				...token,
-				user_data: await database_factory
-					.user_database()
-					.get_user_data({ user: username, to_token: true }),
+				user_data,
 			};
 		},
 

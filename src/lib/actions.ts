@@ -13,6 +13,7 @@ import {
 } from "./types";
 import { database_factory } from "./database";
 import { bet_manager } from "./bet_manager";
+import { get_image_buffer_as_str } from "./images";
 
 export async function authenticate(prevState: string | undefined, form_data: FormData) {
 	try {
@@ -86,13 +87,22 @@ export async function fetch_user_data(username: string, select?: (keyof UserData
 		? select.reduce((obj, key) => ((obj[key] = true), obj), {} as UserDataSelect)
 		: undefined;
 
-	return await database_factory
+	let result = await database_factory
 		.user_database()
 		.get_user_data({ user: username, select: select_fields });
+	return (
+		result && {
+			...result,
+			image: result.image && get_image_buffer_as_str(result.image),
+		}
+	);
 }
 
-export async function fetch_horse_image(horse: string): Promise<Buffer | null> {
-	return await database_factory.horse_database().get_horse_image(horse);
+export async function fetch_horse_image(
+	horse: string
+): Promise<string | null | undefined> {
+	let result = await database_factory.horse_database().get_horse_image(horse);
+	return result && get_image_buffer_as_str(result);
 }
 
 /*
@@ -167,5 +177,6 @@ export async function withdraw_from_user(user: string, amount: number): Promise<
 }
 
 export async function echo(param: any): Promise<any> {
+	console.log(JSON.stringify(param));
 	return param;
 }
