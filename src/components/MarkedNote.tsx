@@ -5,5 +5,5 @@ interface Props {
 }
 
 export default function MarkedNote({ children }: Props) {
-	return <span className="block text-base">{children}</span>;
+	return <span className="block text-base text-center">{children}</span>;
 }

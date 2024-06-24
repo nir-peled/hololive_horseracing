@@ -26,20 +26,20 @@ export default async function RaceDetailsRacer({
 	}
 
 	return (
-		<div className={`${border_style} table-row`}>
-			<div className="table-cell">
-				<div className="flex flex-col">
-					<h3>{jockey.name}</h3>
+		<div className={`${border_style} table-row m-4`}>
+			<div className="table-cell m-4">
+				<div className="flex flex-col m-4">
+					<b>{jockey.name}</b>
 					<IconImage icon={jockey.image} />
 				</div>
 			</div>
-			<div className="table-cell">
-				<div className="flex flex-col">
-					<h3>{horse.name}</h3>
+			<div className="table-cell m-4">
+				<div className="flex flex-col m-4">
+					<b>{horse.name}</b>
 					<IconImage icon={horse.image} />
 				</div>
 			</div>
-			<div className="table-cell">
+			<div className="table-cell m-4">
 				<OddsDisplay odds={odds} />
 			</div>
 		</div>

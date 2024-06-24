@@ -10,6 +10,7 @@ import RaceOpenBetsButton from "./RaceOpenBetsButton";
 import RaceDetailsRacer from "./RaceDetailsRacer";
 import ProtectedLink from "../ProtectedLink";
 import RaceEndButton from "./RaceEndButton";
+import MarkedNote from "../MarkedNote";
 
 interface Props {
 	id: bigint;
@@ -46,7 +47,7 @@ export default async function RaceDetails({ id, race_data, locale }: Props) {
 		);
 
 	return (
-		<div>
+		<div className="flex flex-col gap-y-2">
 			<ProtectedLink href={`/management/races/${id}/edit`} className="btn">
 				{t("race-edit-button")}
 			</ProtectedLink>
@@ -59,17 +60,19 @@ export default async function RaceDetails({ id, race_data, locale }: Props) {
 			{isEnded ? (
 				<h3>{t("race-ended")}</h3>
 			) : (
-				<SessionProvider session={session}>
-					<span>
+				<>
+					<div className="grid grid-cols-2 justify-content-between pad-2">
 						{isOpenBets ? t("race-bets-open") : t("race-bets-closed")}
 						<RaceOpenBetsButton id={id} isOpenBets={isOpenBets} />
-					</span>
+					</div>
 					<br />
 					<RaceEndButton locale={locale} id={id} />
-				</SessionProvider>
+				</>
 			)}
 			<hr />
 			<br />
+			<MarkedNote>{t("bets-odds-change")}</MarkedNote>
+
 			<br />
 			<div className="rounded-box table lg:block lg:carousel">
 				{contestants?.map((contestant, i) => (

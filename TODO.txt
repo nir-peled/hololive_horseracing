@@ -3,6 +3,8 @@ Make notfound & error pages
 change /bank to fetch dynamically?
 Add something for odds at the start?
 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Display Odds
+
 Testing:
 bank V
 management
@@ -11,14 +13,14 @@ management
 		edit V
 	races
 		new V
-		edit 
-		close
+		edit V
+		close V
 		results
 		bets
 	settings
 races 
 	list V
-	details (unify?)
+	details (unify?) V
 	results (unify?)
 bets
 	list

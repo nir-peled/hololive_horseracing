@@ -180,3 +180,13 @@ export async function echo(param: any): Promise<any> {
 	console.log(JSON.stringify(param));
 	return param;
 }
+
+export async function set_race_bets_open(
+	id: bigint,
+	isOpenBets: boolean
+): Promise<boolean> {
+	let result = await database_factory
+		.race_database()
+		.set_race_parameters(id, { isOpenBets });
+	return result;
+}
