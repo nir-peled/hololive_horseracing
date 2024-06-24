@@ -45,16 +45,24 @@ class DatabaseBetManager implements BetManager {
 		pool: BetData[],
 		type: bet_type,
 		total_cuts: number,
-		contestatns: ContestantData[]
-	) {
+		contestants: ContestantData[]
+	): ContestantOddsUpdate[] {
 		const MAX_ODDS_PRECISION = Number(process.env.MAX_ODDS_PECISION || 100);
-		let missing_contestans = contestatns.filter(
+		let missing_contestans = contestants.filter(
 			(c) => pool.findIndex((b) => b.contestant.id == c.id) == undefined
 		);
 
 		let total_pool_amount = sum(pool, ({ amount }) => amount);
+		if (total_pool_amount == 0)
+			return contestants.map(({ id }) => ({
+				id,
+				type,
+				numerator: 1,
+				denominator: 1,
+			}));
+
 		let total_reward_amount = (total_pool_amount * (100 - total_cuts)) / 100;
-		if (total_reward_amount < 0) total_reward_amount = 0;
+		if (total_reward_amount <= 0) total_reward_amount = 0;
 
 		let updates = this.#get_pool_contestants_odds_updates(
 			pool,
