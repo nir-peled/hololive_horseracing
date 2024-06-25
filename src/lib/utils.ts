@@ -46,7 +46,8 @@ export function date_to_datetime_local(date: Date) {
 }
 
 export function validate_race_form_data(
-	data: FormData
+	data: FormData,
+	is_edit?: boolean
 ): Partial<RaceFormData> | undefined {
 	let name = data.get("name");
 	let contestants_raw = data.get("contestants");
@@ -58,12 +59,12 @@ export function validate_race_form_data(
 		show_cut: data.get("show_cut"),
 	};
 
-	if (!name || !contestants_raw) return undefined;
-	if (typeof name != "string" || typeof contestants_raw != "string" || name == "")
-		return undefined;
+	if (!is_edit) if (!contestants_raw || !name) return undefined;
+	if (contestants_raw !== null && typeof contestants_raw != "string") return undefined;
+	if (name !== null && typeof name != "string") return undefined;
 
 	try {
-		contestants = JSON.parse(contestants_raw);
+		contestants = contestants_raw ? JSON.parse(contestants_raw) : undefined;
 	} catch (e) {
 		console.log(e); // debug
 		return undefined;
@@ -73,7 +74,7 @@ export function validate_race_form_data(
 	if (cuts === undefined) return undefined;
 
 	return {
-		name,
+		name: name || undefined,
 		deadline: data.get("deadline"),
 		contestants,
 		...cuts,
@@ -102,12 +103,21 @@ export function sum<T>(
 		? [transform?: (data: T) => number]
 		: [transform: (data: T) => number]
 ) {
-	let a = transform[0];
+	let trans = transform[0];
 	return arr.reduce(
-		(total, elem) =>
-			transform[0] ? total + transform[0](elem) : total + (elem as number),
+		(total, elem) => (trans ? total + trans(elem) : total + (elem as number)),
 		0
 	);
+}
+
+export function init_object<TKey extends string, TValue>(
+	keys: readonly TKey[],
+	value: (key: TKey) => TValue
+): Record<TKey, TValue> {
+	return keys.reduce((obj, key) => ({ ...obj, [key]: value(key) }), {}) as Record<
+		TKey,
+		TValue
+	>;
 }
 
 interface form_cuts_t {
@@ -128,7 +138,7 @@ function check_cuts(cuts: form_cuts_t): cuts_t | undefined {
 	let result: cuts_t = {};
 	for (let [key, value] of Object.entries(cuts)) {
 		if (value instanceof File) return undefined;
-		if (value === null) continue;
+		if (value === null || value === undefined) continue;
 
 		let num = Number(value);
 		if (Number.isNaN(num)) return undefined;

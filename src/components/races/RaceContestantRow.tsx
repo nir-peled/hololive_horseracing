@@ -27,7 +27,9 @@ export default function RaceContestantRow({ jockey, horse, remove }: Props) {
 	if (user_data === null || horse_image == null)
 		return (
 			<tr>
-				<LoadingMarker />
+				<td>
+					<LoadingMarker />
+				</td>
 			</tr>
 		);
 

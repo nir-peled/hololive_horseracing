@@ -194,7 +194,7 @@ export interface RaceDatabase {
 
 	get_race_contestants(id: bigint): Promise<ContestantData[] | null>;
 
-	create_race(race_data: RaceFormData): Promise<boolean>;
+	create_race(race_data: RaceFormData): Promise<bigint | null>;
 
 	try_delete_race(id: bigint): Promise<boolean>;
 

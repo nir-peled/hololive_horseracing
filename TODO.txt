@@ -1,6 +1,7 @@
 Add way to display different image sizes
 Make notfound & error pages
 change /bank to fetch dynamically?
+Change race details to fetch odds dynamically?
 
 Testing:
 bank V
@@ -10,7 +11,7 @@ management
 		edit V
 	races
 		new V
-		edit V
+		edit
 		close V
 		results
 		bets

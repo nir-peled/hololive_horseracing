@@ -1,12 +1,19 @@
 import { database_factory } from "../database";
-import { ContestantData, ContestantOddsUpdate } from "../types";
-import { bet_type, BetData, ContestantPlacementData, FullBetFormData } from "../types";
+import {
+	BetData,
+	bet_type,
+	ContestantData,
+	FullBetFormData,
+	ContestantOddsUpdate,
+	ContestantPlacementData,
+} from "../types";
 import { sum } from "../utils";
 import { BetsCloser } from "./bets_closer";
 
 interface BetManager {
 	close_race_bets(race: bigint, placements: ContestantPlacementData): Promise<void>;
 	make_full_bet(user: string, race: bigint, bets: FullBetFormData): Promise<void>;
+	update_race_odds(race: bigint): Promise<void>;
 }
 
 class DatabaseBetManager implements BetManager {
@@ -75,7 +82,7 @@ class DatabaseBetManager implements BetManager {
 			missing_contestans.map(({ id }) => ({
 				id,
 				type,
-				numerator: MAX_ODDS_PRECISION,
+				numerator: Math.min(MAX_ODDS_PRECISION, total_reward_amount),
 				denominator: 1,
 			}))
 		);
@@ -149,4 +156,4 @@ class DatabaseBetManager implements BetManager {
 	}
 }
 
-export const bet_manager = new DatabaseBetManager();
+export const bet_manager: BetManager = new DatabaseBetManager();

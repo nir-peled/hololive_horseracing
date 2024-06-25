@@ -4,6 +4,7 @@ import { validate_race_form_data } from "@/src/lib/utils";
 import { RaceFormData } from "@/src/lib/types";
 import { database_factory } from "@/src/lib/database";
 import { HTTPResponseCodes } from "@/src/lib/http";
+import { bet_manager } from "@/src/lib/bet_manager";
 
 export async function POST(request: NextRequest) {
 	let res = await check_api_authorized(request);
@@ -17,11 +18,13 @@ export async function POST(request: NextRequest) {
 	if (!race_data) return HTTPResponseCodes.bad_request();
 	if (!race_data.name || !race_data.contestants) return HTTPResponseCodes.bad_request();
 
-	let success = await database_factory
+	let race_id = await database_factory
 		.race_database()
 		.create_race(race_data as RaceFormData);
-	if (success) return HTTPResponseCodes.success();
-	return HTTPResponseCodes.server_error();
+	if (race_id === null) return HTTPResponseCodes.server_error();
+
+	await bet_manager.update_race_odds(race_id);
+	return HTTPResponseCodes.success();
 }
 
 // don't allow GET to this path

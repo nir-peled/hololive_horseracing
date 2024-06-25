@@ -45,7 +45,7 @@ import { Encryptor } from "../encryptor";
 import { default_user_image, get_image_buffer_as_str, image_as_buffer } from "../images";
 import { auth } from "../auth";
 import { or_undefined, race_result_to_race_data } from "./db_utils";
-import { sum, to_lowercase, to_uppercase } from "../utils";
+import { init_object, sum, to_lowercase, to_uppercase } from "../utils";
 
 // export interface PrismaOptions extends Prisma.PrismaClientOptions {
 // 	accelerate?: boolean;
@@ -345,6 +345,7 @@ export class PrismaDatabase
 			where: { id },
 			select: race_form_data_select,
 		});
+		console.log(result);
 
 		if (!result) return null;
 
@@ -418,7 +419,7 @@ export class PrismaDatabase
 		};
 	}
 
-	async create_race(race_data: RaceFormData): Promise<boolean> {
+	async create_race(race_data: RaceFormData): Promise<bigint | null> {
 		try {
 			let contestants_ids = await this.#get_contestant_members_ids(race_data.contestants);
 			let data: Prisma.RaceCreateInput = {
@@ -439,10 +440,10 @@ export class PrismaDatabase
 			};
 
 			let race = await this.prisma.race.create({ data });
-			return !!race;
+			return race?.id;
 		} catch (e) {
 			console.log(e);
-			return false;
+			return null;
 		}
 	}
 
@@ -725,7 +726,10 @@ export class PrismaDatabase
 
 	async get_race_bets_by_pools(race: bigint): Promise<Record<bet_type, BetData[]>> {
 		let bets = await this.get_race_bets(race);
-		let grouped_bets = Object.groupBy(bets, (bet) => bet.type);
+		let grouped_bets = init_object(BETS_TYPES, (type) =>
+			bets.filter((bet) => bet.type == type)
+		);
+
 		for (let type of BETS_TYPES)
 			if (grouped_bets[type] === undefined) grouped_bets[type] = [];
 

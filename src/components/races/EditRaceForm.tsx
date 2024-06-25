@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { TFunction } from "i18next";
@@ -27,7 +27,8 @@ export default function EditRaceForm({ id, default_values }: Props) {
 	const { t } = useTranslation(namespaces);
 	const race_schema = create_race_schema(t);
 	const endpoint = useMemo<string>(() => {
-		if (id) return "/api/management/races/id?" + new URLSearchParams({ id: String(id) });
+		if (id)
+			return "/api/management/races/edit?" + new URLSearchParams({ id: String(id) });
 		return "/api/management/races/new";
 	}, [id]);
 
@@ -41,6 +42,11 @@ export default function EditRaceForm({ id, default_values }: Props) {
 		setValue,
 	} = useForm<RaceFormData>({
 		resolver: zodResolver(race_schema),
+		defaultValues: {
+			...default_values,
+			deadline: default_values?.deadline || undefined,
+			contestants: [],
+		},
 	});
 
 	const {
@@ -52,6 +58,12 @@ export default function EditRaceForm({ id, default_values }: Props) {
 		name: "contestants",
 		shouldUnregister: true,
 	});
+
+	useEffect(() => {
+		if (!default_values || contestants.length == default_values.contestants.length)
+			return;
+		new_contestant(default_values.contestants);
+	}, [id]);
 
 	const [is_failed, set_is_failed] = useState<boolean>(false);
 
@@ -77,7 +89,6 @@ export default function EditRaceForm({ id, default_values }: Props) {
 					field_name="name"
 					register={register}
 					error={errors?.name?.message}
-					default_value={default_values?.name}
 				/>
 				<br />
 				{/* input race deadline, if it has */}
@@ -142,7 +153,7 @@ function create_race_schema(t: TFunction) {
 	return z
 		.object({
 			name: z.string().min(3, t("race-name-too-short")),
-			deadline: z.string().optional(),
+			deadline: z.string().optional().nullable(),
 			house_cut: z.number().min(0, t("race-cut-negative-error")).optional(),
 			win_cut: z.number().min(0, t("race-cut-negative-error")).optional(),
 			place_cut: z.number().min(0, t("race-cut-negative-error")).optional(),

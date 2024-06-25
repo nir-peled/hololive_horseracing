@@ -8,7 +8,7 @@ import {
 	ContestantPlacementData,
 	Cuts,
 } from "../types";
-import { sum } from "../utils";
+import { init_object, sum } from "../utils";
 
 interface CutsDetails {
 	cuts: Cuts;
@@ -28,10 +28,7 @@ export class BetsCloser {
 	constructor(race: bigint, placements: ContestantPlacementData) {
 		this.race = race;
 		this.placements = placements;
-		this.bet_pools = BETS_TYPES.reduce(
-			(pools, type) => ((pools[type] = []), pools),
-			{} as Record<bet_type, BetData[]>
-		);
+		this.bet_pools = init_object(BETS_TYPES, () => [] as BetData[]);
 
 		this.cuts_details = { cuts: { house: 0, jockeys: [] }, house: null };
 		this.rewards = [];

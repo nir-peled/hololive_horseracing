@@ -1,10 +1,9 @@
 import React from "react";
-import { SessionProvider } from "next-auth/react";
 import { notFound } from "next/navigation";
-import { auth } from "@/src/lib/auth";
 import initTranslations from "@/src/lib/i18n";
 import { database_factory } from "@/src/lib/database";
 import { Locale, RaceParameters } from "@/src/lib/types";
+import { auth, is_path_authorized } from "@/src/lib/auth";
 // import TranslationsProvider from "../TranslationProvider";
 import RaceOpenBetsButton from "./RaceOpenBetsButton";
 import RaceDetailsRacer from "./RaceDetailsRacer";
@@ -26,6 +25,10 @@ export default async function RaceDetails({ id, race_data, locale }: Props) {
 		.race_database()
 		.get_contestants_display_data(id);
 	const session = await auth();
+	const is_manager = is_path_authorized(
+		`/management/races/${id}/edit`,
+		session?.user?.role
+	);
 
 	if (!race_data) {
 		race_data = await database_factory.race_database().get_race_parameters(id);
@@ -60,19 +63,20 @@ export default async function RaceDetails({ id, race_data, locale }: Props) {
 			{isEnded ? (
 				<h3>{t("race-ended")}</h3>
 			) : (
-				<>
-					<div className="grid grid-cols-2 justify-content-between pad-2">
-						{isOpenBets ? t("race-bets-open") : t("race-bets-closed")}
-						<RaceOpenBetsButton id={id} isOpenBets={isOpenBets} />
-					</div>
-					<br />
-					<RaceEndButton locale={locale} id={id} />
-				</>
+				is_manager && (
+					<>
+						<div className="grid grid-cols-2 justify-content-between pad-2">
+							{isOpenBets ? t("race-bets-open") : t("race-bets-closed")}
+							<RaceOpenBetsButton id={id} isOpenBets={isOpenBets} />
+						</div>
+						<br />
+						<RaceEndButton locale={locale} id={id} />
+					</>
+				)
 			)}
 			<hr />
 			<br />
 			<MarkedNote>{t("bets-odds-change")}</MarkedNote>
-
 			<br />
 			<div className="rounded-box table lg:block lg:carousel">
 				{contestants?.map((contestant, i) => (

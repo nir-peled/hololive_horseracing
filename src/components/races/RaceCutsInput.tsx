@@ -32,7 +32,10 @@ export default function RaceCutsInput<T extends base_t>({
 		<EnabledFormInput
 			label={t("race-cuts-input")}
 			checkbox_label={t("race-cuts-checkbox-label")}
-			default_checked={!!default_values}
+			default_checked={
+				!!default_values &&
+				!cuts_names.map((cut) => default_values[as_cut(cut)]).includes(undefined)
+			}
 			onChange={(enabled) => {
 				if (!enabled) cuts_names.forEach((taker) => set_field(as_cut(taker), undefined));
 			}}
