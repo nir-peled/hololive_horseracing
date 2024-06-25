@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import initTranslations from "@/src/lib/i18n";
 import { database_factory } from "@/src/lib/database";
@@ -77,6 +78,7 @@ export default async function RaceDetails({ id, race_data, locale }: Props) {
 			<hr />
 			<br />
 			<MarkedNote>{t("bets-odds-change")}</MarkedNote>
+			<Link href={`/bets/${id}`}>{t("race-bet-link")}</Link>
 			<br />
 			<div className="rounded-box table lg:block lg:carousel">
 				{contestants?.map((contestant, i) => (

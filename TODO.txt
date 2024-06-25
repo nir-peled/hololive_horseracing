@@ -11,11 +11,11 @@ management
 		edit V
 	races
 		new V
-		edit
+		edit V
 		close V
 		results
 		bets
-	settings
+	settings V
 races 
 	list V
 	details (unify?) V

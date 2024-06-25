@@ -1,9 +1,11 @@
 import React from "react";
+import Link from "next/link";
+import initTranslations from "@/src/lib/i18n";
 import type { Locale, RaceData } from "@/src/lib/types";
-import RaceRowRacer from "./RaceRowRacer";
-import ProtectedLink from "../ProtectedLink";
-import DeadlineCounter from "./DeadlineCounter";
 import RaceListEditControls from "./RaceListEditControls";
+import DeadlineCounter from "./DeadlineCounter";
+import ProtectedLink from "../ProtectedLink";
+import RaceRowRacer from "./RaceRowRacer";
 
 interface Props {
 	locale: Locale;
@@ -11,13 +13,15 @@ interface Props {
 	is_management?: boolean;
 }
 
-// const namespaces = ["races"];
+const namespaces = ["races"];
 
 export default async function RacesListRow({
 	locale,
 	race: { id, name, contestants, deadline, isEnded, isOpenBets },
 	is_management,
 }: Props) {
+	const { t } = await initTranslations(locale, namespaces);
+
 	return (
 		<tr className="min-h-12">
 			{/* make page /races/[id] */}
@@ -32,6 +36,9 @@ export default async function RacesListRow({
 				))}
 			</td>
 			<td>{deadline && <DeadlineCounter deadline={deadline} />}</td>
+			<td>
+				<Link href={`/bets/${id}`}>{t("race-bet-link")}</Link>
+			</td>
 			{is_management && (
 				<RaceListEditControls
 					id={id}

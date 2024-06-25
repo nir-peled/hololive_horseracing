@@ -22,6 +22,7 @@ export default async function RacesList({ locale, is_management }: Props) {
 						<th>{t("races-list-header-name")}</th>
 						<th>{t("races-list-header-competitiors")}</th>
 						<th>{t("races-list-header-deadline")}</th>
+						<th></th>
 						{is_management && (
 							<>
 								<th></th>
