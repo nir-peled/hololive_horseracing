@@ -6,8 +6,8 @@ import { database_factory } from "@/src/lib/database";
 import { Locale, RaceParameters } from "@/src/lib/types";
 import { auth, is_path_authorized } from "@/src/lib/auth";
 // import TranslationsProvider from "../TranslationProvider";
+import RaceDetailsContestants from "./RaceDetailsContestants";
 import RaceOpenBetsButton from "./RaceOpenBetsButton";
-import RaceDetailsRacer from "./RaceDetailsRacer";
 import ProtectedLink from "../ProtectedLink";
 import RaceEndButton from "./RaceEndButton";
 import MarkedNote from "../MarkedNote";
@@ -78,13 +78,11 @@ export default async function RaceDetails({ id, race_data, locale }: Props) {
 			<hr />
 			<br />
 			<MarkedNote>{t("bets-odds-change")}</MarkedNote>
-			<Link href={`/bets/${id}`}>{t("race-bet-link")}</Link>
+			<Link href={`/bets/${id}`} className="btn">
+				{t("race-bet-link")}
+			</Link>
 			<br />
-			<div className="rounded-box table lg:block lg:carousel">
-				{contestants?.map((contestant, i) => (
-					<RaceDetailsRacer key={i} contestant={contestant} />
-				))}
-			</div>
+			<RaceDetailsContestants contestants={contestants} />
 		</div>
 	);
 }

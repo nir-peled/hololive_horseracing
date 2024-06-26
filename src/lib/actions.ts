@@ -126,6 +126,8 @@ export async function make_full_bet(
 	race: bigint,
 	bet: FullBetFormData
 ): Promise<boolean> {
+	console.log(`make bet for ${user} on race ${race}`);
+	console.log(bet);
 	const logged_user = (await auth())?.user?.name;
 	if (logged_user != user) throw Error("unauthorized");
 
@@ -163,7 +165,15 @@ export async function set_house_reward_target(user: string | null): Promise<bool
 }
 
 export async function set_global_cuts(cuts: Cuts): Promise<boolean> {
-	return await database_factory.cache_database().set_cuts(cuts);
+	let result = await database_factory.cache_database().set_cuts(cuts);
+	if (!result) return false;
+	try {
+		await bet_manager.update_race_odds_all();
+		return true;
+	} catch (e) {
+		console.log(e); // debug
+		return false;
+	}
 }
 
 export async function deposit_to_user(user: string, amount: number): Promise<boolean> {

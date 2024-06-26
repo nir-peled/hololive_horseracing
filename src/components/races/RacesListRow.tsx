@@ -37,7 +37,9 @@ export default async function RacesListRow({
 			</td>
 			<td>{deadline && <DeadlineCounter deadline={deadline} />}</td>
 			<td>
-				<Link href={`/bets/${id}`}>{t("race-bet-link")}</Link>
+				<Link href={`/bets/${id}`} className="btn">
+					{t("race-bet-link")}
+				</Link>
 			</td>
 			{is_management && (
 				<RaceListEditControls

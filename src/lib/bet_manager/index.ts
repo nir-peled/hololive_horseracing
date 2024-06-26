@@ -14,6 +14,7 @@ interface BetManager {
 	close_race_bets(race: bigint, placements: ContestantPlacementData): Promise<void>;
 	make_full_bet(user: string, race: bigint, bets: FullBetFormData): Promise<void>;
 	update_race_odds(race: bigint): Promise<void>;
+	update_race_odds_all(): Promise<void>;
 }
 
 class DatabaseBetManager implements BetManager {
@@ -27,6 +28,7 @@ class DatabaseBetManager implements BetManager {
 	}
 
 	async update_race_odds(race: bigint) {
+		console.log(`updating odds in race ${race}`); // debug
 		let contestants = await database_factory.race_database().get_race_contestants(race);
 		if (contestants == null) return;
 
@@ -48,6 +50,13 @@ class DatabaseBetManager implements BetManager {
 		await database_factory.race_database().update_race_odds(updates);
 	}
 
+	async update_race_odds_all() {
+		let races = await database_factory.race_database().get_active_races();
+		for (let race of races) {
+			this.update_race_odds(race.id);
+		}
+	}
+
 	#calc_pool_updates(
 		pool: BetData[],
 		type: bet_type,
@@ -55,9 +64,6 @@ class DatabaseBetManager implements BetManager {
 		contestants: ContestantData[]
 	): ContestantOddsUpdate[] {
 		const MAX_ODDS_PRECISION = Number(process.env.MAX_ODDS_PECISION || 100);
-		let missing_contestans = contestants.filter(
-			(c) => pool.findIndex((b) => b.contestant.id == c.id) == undefined
-		);
 
 		let total_pool_amount = sum(pool, ({ amount }) => amount);
 		if (total_pool_amount == 0)
@@ -68,13 +74,17 @@ class DatabaseBetManager implements BetManager {
 				denominator: 1,
 			}));
 
+		let missing_contestans = contestants.filter(
+			(c) => pool.findIndex((b) => b.contestant.id == c.id) == -1
+		);
+
 		let total_reward_amount = (total_pool_amount * (100 - total_cuts)) / 100;
 		if (total_reward_amount <= 0) total_reward_amount = 0;
 
 		let updates = this.#get_pool_contestants_odds_updates(
 			pool,
 			total_reward_amount,
-			type as bet_type,
+			type,
 			MAX_ODDS_PRECISION
 		);
 
@@ -101,9 +111,6 @@ class DatabaseBetManager implements BetManager {
 		let updates: ContestantOddsUpdate[] = [];
 		for (let [contestant, amount] of contestants_bet_amounts) {
 			let part_in_contestant = amount / total_amount;
-			// round to precision
-			part_in_contestant =
-				Math.floor(part_in_contestant * MAX_ODDS_PRECISION) / MAX_ODDS_PRECISION;
 
 			updates.push({
 				id: contestant,
@@ -133,26 +140,27 @@ class DatabaseBetManager implements BetManager {
 		part: number,
 		precision: number
 	): { numerator: number; denominator: number } {
-		const fraction = (part * precision) % precision;
-		const whole = part * precision - fraction;
-		for (let i = precision; i >= 2; --i) {
-			let fraction_div = fraction / i;
-			let precision_div = precision / i;
-
-			if (
-				Math.floor(fraction_div) == fraction_div &&
-				Math.floor(precision_div) == precision_div
-			)
-				return {
-					numerator: whole * precision_div + fraction_div,
-					denominator: precision_div,
-				};
-		}
+		// you receive what wasn't bet on this competitor
+		let denominator = Math.floor(precision - part * precision);
+		let gcd = this.#find_gcd(precision, denominator);
 
 		return {
-			numerator: whole + fraction,
-			denominator: precision,
+			numerator: precision / gcd,
+			denominator: denominator / gcd,
 		};
+	}
+
+	#find_gcd(numerator: number, denominator: number): number {
+		let a = denominator,
+			b = numerator;
+
+		while (b !== 0) {
+			let tmp = a % b;
+			a = b;
+			b = tmp;
+		}
+
+		return a;
 	}
 }
 

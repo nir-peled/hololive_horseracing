@@ -21,8 +21,8 @@ races
 	details (unify?) V
 	results (unify?)
 bets
-	list
-	make
-	edit
-odds calculation
+	list V
+	make V
+	edit V
+odds calculation V
 reward distribution

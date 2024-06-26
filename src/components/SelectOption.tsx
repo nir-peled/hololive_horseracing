@@ -37,7 +37,7 @@ export default function SelectOption({
 }: Props) {
 	const using_options = useMemo(
 		() => options.map((value, i) => ({ value, label: labels[i] })),
-		[options]
+		[options, labels]
 	);
 
 	if (loading) return <LoadingMarker />;
