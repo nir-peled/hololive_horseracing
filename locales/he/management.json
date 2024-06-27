@@ -73,7 +73,7 @@
 	"user-selector-placeholder": "משתמש...",
 	"user-deleted-message": "נמחק משתמש {{name}}",
 	"username-label": "שם משתמש",
-	"image-too-large": "תמונה חייבת להיות עד {{max_file_size, number}} KB",
+	"image-too-large": "תמונה חייבת להיות עד {{max_file_size, number(style:unit, unit:kilobyte, unitDisplay:short)}}",
 	"image-type-not-allowed": "סוג תמונה לא חוקי",
 	"management-settings-title": "הגדרות גלובליות",
 	"house-reward-target-submit": "שמירה",

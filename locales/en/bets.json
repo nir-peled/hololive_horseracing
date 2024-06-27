@@ -1,0 +1,22 @@
+{
+	"bet-edit-page-title": "Bet on Race {{name}}",
+	"bets-rounded-down-note": "※ All winnings are rounded down",
+	"bets-page-title": "My Bets",
+	"edit-bet-button": "Edit",
+	"edit-bet-submit": "Make Bet",
+	"bet-must-be-integer": "Bet Amount must be an integer",
+	"bet-must-be-positive": "Bet Amount must be positive",
+	"bet-edit-contestant-duplicate": "Cannot bet on the same contestant multiple times",
+	"bet-amount-exceeds-max": "Bet Amount is higher than your balance",
+	"bet-race-name-header": "Race",
+	"bet-contestants-header": "Contestant",
+	"bet-amount-header": "Amount",
+	"bet-odds-header": "Odds",
+	"bet-win": "Win",
+	"bet-place": "Place",
+	"bet-show": "Show",
+	"bet-select-contestant-placeholder": "Choose Contestant...",
+	"explain-odds-win": "Win - Bet that the contestant will arrive first",
+	"explain-odds-place": "Place - Bet that the contestant will arrive first or second",
+	"explain-odds-show": "Show - Bet that the contestant will arrive first, second or third"
+}

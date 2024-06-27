@@ -15,5 +15,8 @@
 	"bet-win": "זוכה",
 	"bet-place": "מגיע",
 	"bet-show": "מופיע",
-	"bet-select-contestant-placeholder": "בחר/י מתחרה..."
+	"bet-select-contestant-placeholder": "בחר/י מתחרה...",
+	"explain-odds-win": "W\\מנצח - הימור שהמתחרה יגיע מקום ראשון",
+	"explain-odds-place": "P\\מופיע - הימור שהמתחרה יגיע מקום ראשון או שני",
+	"explain-odds-show": "S\\מגיע - הימור שהמתחרה יגיע מקום ראשון, שני או שלישי"
 }

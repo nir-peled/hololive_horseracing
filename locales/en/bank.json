@@ -1,0 +1,15 @@
+{
+	"bank-page-title": "Bank - Deposing/Withdrawal",
+	"bank-user-select-paceholder": "Choose User...",
+	"bank-balance-update-success": "Balance Updated Successfully",
+	"bank-balance-update-fail": "Error trying to update balance",
+	"bank-user-balance": "Balance",
+	"bank-action-deposit-label": "Deposit",
+	"bank-deposit-amount-label": "Amount",
+	"bank-action-withdrawal-label": "Withdrawal",
+	"bank-new-balance": "Account Balance after action:",
+	"bank-deposit-submit": "Execute",
+	"deposit-must-be-int": "Amount must be an integer",
+	"deposit-must-be-positive": "Amount must be positive",
+	"withdrawal-capped-at-balanced": "Withdrawal cannot be more than the current balance"
+}
