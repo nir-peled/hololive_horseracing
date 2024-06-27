@@ -1,0 +1,19 @@
+{
+	"bet-edit-page-title": "الرهان على السباق {{name}}",
+	"bets-rounded-down-note": "※ كل الأرباح يصححون للاسفل",
+	"bets-page-title": "الرهانات الخاصات بي",
+	"edit-bet-button": "تعديل",
+	"edit-bet-submit": "حفظ الرهان",
+	"bet-must-be-integer": "مبلغ الرهان يجب ان يكون رقما صحيحا",
+	"bet-must-be-positive": "مبلغ الرهان يجب ان يكون موجبا",
+	"bet-edit-contestant-duplicate": "الرهانات يجب ان تكون مع اشخاص مختلفين",
+	"bet-amount-exceeds-max": "مبلغ الرهان اكبر من قيمة حسابك",
+	"bet-race-name-header": "سباق",
+	"bet-contestants-header": "خصم",
+	"bet-amount-header": "مبلغ",
+	"bet-odds-header": "الامكانيات",
+	"bet-win": "رابح",
+	"bet-place": "مستحق",
+	"bet-show": "موجود",
+	"bet-select-contestant-placeholder": "اختار/ي خصم..."
+}

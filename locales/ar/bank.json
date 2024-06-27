@@ -1,0 +1,15 @@
+{
+	"bank-page-title": "بنك إيداع و سحب ",
+	"bank-user-select-paceholder": "اختيار مستخدم ",
+	"bank-balance-update-success": "تم تعديل الحساب بنجاح ",
+	"bank-balance-update-fail": "هناك خطأ بتعديل المبلغ",
+	"bank-user-balance": "رصيد الحساب",
+	"bank-action-deposit-label": "ايداع",
+	"bank-deposit-amount-label": "مبلغ",
+	"bank-action-withdrawal-label": "سحب",
+	"bank-new-balance": "المبلغ المتبفي بعدرالعملية",
+	"bank-deposit-submit": "انجز/ي عملا",
+	"deposit-must-be-int": "المبلغ يجب ان يكون عددا صحيحا",
+	"deposit-must-be-positive": "المبلغ يجب ان يكون موجبا",
+	"withdrawal-capped-at-balanced": "لا يمكنك سحب المبلغ"
+}
