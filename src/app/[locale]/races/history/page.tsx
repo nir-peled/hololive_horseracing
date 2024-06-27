@@ -21,15 +21,15 @@ export async function generateStaticParams() {
 	return generate_locale_params();
 }
 
-export default async function RacesPage({ params: { locale } }: Props) {
+export default async function RacesHistoryPage({ params: { locale } }: Props) {
 	const { t, resources } = await initTranslations(locale, namespaces);
 	return (
 		<TranslationsProvider namespaces={namespaces} locale={locale} resources={resources}>
-			<PageTitle size="large">{t("races-list-title")}</PageTitle>
+			<PageTitle size="large">{t("races-history-title")}</PageTitle>
 			<ProtectedLink href="/races/history" locale={locale}>
 				{t("races-history-label")}
 			</ProtectedLink>
-			<RacesList locale={locale} active={true} />
+			<RacesList locale={locale} />
 		</TranslationsProvider>
 	);
 }

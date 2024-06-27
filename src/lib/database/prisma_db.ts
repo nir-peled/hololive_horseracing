@@ -302,9 +302,10 @@ export class PrismaDatabase
 		return this.#get_image_as_str("horse", horse);
 	}
 
-	async get_active_races(): Promise<RaceData[]> {
+	async get_all_races(op?: { active?: boolean | undefined }): Promise<RaceData[]> {
+		let active = op?.active;
 		let results = await this.prisma.race.findMany({
-			where: { isEnded: false },
+			where: { isEnded: active === undefined ? undefined : !active },
 			select: race_data_select,
 		});
 

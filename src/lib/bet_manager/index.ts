@@ -51,7 +51,7 @@ class DatabaseBetManager implements BetManager {
 	}
 
 	async update_race_odds_all() {
-		let races = await database_factory.race_database().get_active_races();
+		let races = await database_factory.race_database().get_all_races({ active: true });
 		for (let race of races) {
 			this.update_race_odds(race.id);
 		}

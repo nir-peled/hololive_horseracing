@@ -180,7 +180,7 @@ export interface HorseDatabase {
 }
 
 export interface RaceDatabase {
-	get_active_races(): Promise<RaceData[]>;
+	get_all_races(op?: { active?: boolean | undefined }): Promise<RaceData[]>;
 
 	get_race_parameters(id: bigint): Promise<RaceParameters | null>;
 

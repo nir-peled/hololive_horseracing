@@ -7,13 +7,14 @@ import RacesListRow from "./RacesListRow";
 interface Props {
 	locale: Locale;
 	is_management?: boolean;
+	active?: boolean;
 }
 
 const namespaces = ["races"];
 
-export default async function RacesList({ locale, is_management }: Props) {
+export default async function RacesList({ locale, is_management, active }: Props) {
 	const { t } = await initTranslations(locale, namespaces);
-	const races = await database_factory.race_database().get_active_races();
+	const races = await database_factory.race_database().get_all_races({ active });
 	return (
 		<div className="overflow-x-auto">
 			<table className="table">
