@@ -86,7 +86,11 @@ export default async function RaceDetails({ id, race_data, locale }: Props) {
 				</>
 			)}
 			<br />
-			<RaceDetailsContestants contestants={contestants} with_place={isEnded} />
+			<RaceDetailsContestants
+				contestants={contestants}
+				with_place={isEnded}
+				locale={locale}
+			/>
 		</div>
 	);
 }

@@ -58,7 +58,7 @@ export default async function BetEditPage({ params: { locale, id: id_raw } }: Pr
 						existing_bet={existing_bet}
 						balance={user.balance}
 					/>
-					<RaceDetailsContestants contestants={race_contestants} />
+					<RaceDetailsContestants contestants={race_contestants} locale={locale} />
 				</TranslationsProvider>
 			</>
 		);
