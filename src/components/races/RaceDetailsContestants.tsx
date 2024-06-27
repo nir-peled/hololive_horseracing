@@ -4,14 +4,18 @@ import RaceDetailsRacer from "./RaceDetailsRacer";
 
 interface Props {
 	contestants: ContestantDisplayData[];
+	with_place?: boolean;
 }
 
-export default async function RaceDetailsContestants({ contestants }: Props) {
+export default async function RaceDetailsContestants({
+	contestants,
+	with_place = false,
+}: Props) {
 	return (
-		<div className="rounded-box grid grid-cols-3 justify-items-center lg:block lg:carousel">
+		<table className="table">
 			{contestants?.map((contestant, i) => (
-				<RaceDetailsRacer key={i} contestant={contestant} />
+				<RaceDetailsRacer key={i} contestant={contestant} with_place={with_place} />
 			))}
-		</div>
+		</table>
 	);
 }

@@ -59,6 +59,7 @@ export default function EditRaceForm({ id, default_values }: Props) {
 		shouldUnregister: true,
 	});
 
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(() => {
 		if (!default_values || contestants.length == default_values.contestants.length)
 			return;

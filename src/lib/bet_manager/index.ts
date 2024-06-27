@@ -110,12 +110,13 @@ class DatabaseBetManager implements BetManager {
 
 		let updates: ContestantOddsUpdate[] = [];
 		for (let [contestant, amount] of contestants_bet_amounts) {
-			let part_in_contestant = amount / total_amount;
+			// you receive what wasn't bet on this competitor
+			let reward = total_amount - amount;
 
 			updates.push({
 				id: contestant,
 				type,
-				...this.#calc_odds_from_part(part_in_contestant, MAX_ODDS_PRECISION),
+				...this.#calc_odds_from_part(reward, amount, MAX_ODDS_PRECISION),
 			});
 		}
 
@@ -137,16 +138,23 @@ class DatabaseBetManager implements BetManager {
 	}
 
 	#calc_odds_from_part(
-		part: number,
+		numerator: number,
+		denominator: number,
 		precision: number
 	): { numerator: number; denominator: number } {
-		// you receive what wasn't bet on this competitor
-		let denominator = Math.floor(precision - part * precision);
-		let gcd = this.#find_gcd(precision, denominator);
+		let gcd = this.#find_gcd(numerator, denominator);
+		let reduced_numerator = numerator / gcd;
+		let reduced_denominator = denominator / gcd;
+		let max_val = Math.max(reduced_numerator, reduced_numerator);
+		if (max_val > precision) {
+			let reduce_factor = max_val / precision;
+			reduced_numerator = Math.floor(reduced_numerator / reduce_factor);
+			reduced_denominator = Math.ceil(reduced_denominator / reduce_factor);
+		}
 
 		return {
-			numerator: precision / gcd,
-			denominator: denominator / gcd,
+			numerator: reduced_numerator,
+			denominator: reduced_denominator,
 		};
 	}
 

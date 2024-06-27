@@ -7,6 +7,7 @@ import RaceDetails from "@/src/components/races/RaceDetails";
 import PageTitle from "@/src/components/PageTitle";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 const namespaces = ["races"];
 

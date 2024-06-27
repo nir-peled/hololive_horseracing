@@ -680,14 +680,18 @@ export class PrismaDatabase
 		placements: ContestantPlacementData
 	): Promise<boolean> {
 		try {
-			let result = await this.prisma.$transaction(
-				placements.placements.map((contestant, i) =>
+			let result = await this.prisma.$transaction([
+				...placements.placements.map((contestant, i) =>
 					this.prisma.raceContestant.update({
 						where: { id: contestant.contestant },
 						data: { place: i + 1 },
 					})
-				)
-			);
+				),
+				this.prisma.race.update({
+					where: { id, isEnded: false },
+					data: { isEnded: true, isOpenBets: false },
+				}),
+			]);
 
 			return result.length == placements.placements.length;
 		} catch (e) {

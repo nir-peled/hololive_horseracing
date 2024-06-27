@@ -76,7 +76,7 @@ export default function BetEditForm({
 			is_failed,
 			set_is_failed,
 			reset,
-			// on_success: () => location.assign("/races"),
+			on_success: () => location.assign("/races"),
 		}
 	);
 

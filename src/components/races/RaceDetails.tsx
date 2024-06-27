@@ -77,12 +77,16 @@ export default async function RaceDetails({ id, race_data, locale }: Props) {
 			)}
 			<hr />
 			<br />
-			<MarkedNote>{t("bets-odds-change")}</MarkedNote>
-			<Link href={`/bets/${id}`} className="btn">
-				{t("race-bet-link")}
-			</Link>
+			{isOpenBets && (
+				<>
+					<MarkedNote>{t("bets-odds-change")}</MarkedNote>
+					<Link href={`/bets/${id}`} className="btn">
+						{t("race-bet-link")}
+					</Link>
+				</>
+			)}
 			<br />
-			<RaceDetailsContestants contestants={contestants} />
+			<RaceDetailsContestants contestants={contestants} with_place={isEnded} />
 		</div>
 	);
 }

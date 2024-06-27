@@ -14,7 +14,7 @@ management
 		edit V
 		close V
 		results
-		bets
+		bets V
 	settings V
 races 
 	list V
@@ -25,4 +25,4 @@ bets
 	make V
 	edit V
 odds calculation V
-reward distribution
+reward distribution V
