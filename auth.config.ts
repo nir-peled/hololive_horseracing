@@ -16,13 +16,13 @@ export const authConfig: NextAuthConfig = {
 			let locale = get_locale_from_path(nextUrl.pathname);
 			let user_role: UserRole | undefined;
 			const page = locale ? nextUrl.pathname.replace(`/${locale}`, "") : nextUrl.pathname;
-			console.log(`\n\nnext URL: ${nextUrl.pathname}`); // debug
+			// console.log(`\n\nnext URL: ${nextUrl.pathname}`); // debug
 			// console.log(`is logged in: ${is_logged_in}`); // debug
 			// console.log(`is on login: ${is_on_login}`); // debug
 			// console.log(`page: ${page}`); // debug
 			if (user) {
-				console.log("user:");
-				console.log(user.name);
+				// console.log("user:");
+				// console.log(user.name);
 				user_role = user.role;
 			}
 
@@ -72,7 +72,7 @@ export const authConfig: NextAuthConfig = {
 			// check if credentials are authorized. return user or null
 			async authorize(credentials, request): Promise<User | null> {
 				if (!credentials?.username || !credentials?.password) {
-					console.log(`no username or password`); // debug
+					// console.log(`no username or password`); // debug
 					return null;
 				}
 
