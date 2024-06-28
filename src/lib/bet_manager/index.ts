@@ -199,12 +199,7 @@ class DatabaseBetManager implements BetManager {
 				MAX_ODDS_PRECISION
 			);
 
-			updates = updates.concat(
-				updates_for_the_rest.map((u) => ({
-					...u,
-					type,
-				}))
-			);
+			updates = updates.concat(updates_for_the_rest);
 		}
 
 		return updates;
