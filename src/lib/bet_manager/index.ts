@@ -81,8 +81,9 @@ class DatabaseBetManager implements BetManager {
 		let total_reward_amount = (total_pool_amount * (100 - total_cuts)) / 100;
 		if (total_reward_amount <= 0) total_reward_amount = 0;
 
+		let contestants_bet_amounts = this.#get_contestnant_bets_amount(pool);
 		let updates = this.#get_pool_contestants_odds_updates(
-			pool,
+			contestants_bet_amounts,
 			total_reward_amount,
 			type,
 			MAX_ODDS_PRECISION
@@ -101,26 +102,123 @@ class DatabaseBetManager implements BetManager {
 	}
 
 	#get_pool_contestants_odds_updates(
-		pool: BetData[],
+		contestants_bet_amounts: Map<bigint, number>,
 		total_amount: number,
 		type: bet_type,
 		MAX_ODDS_PRECISION: number
 	): ContestantOddsUpdate[] {
-		let contestants_bet_amounts = this.#get_contestnant_bets_amount(pool);
+		if (contestants_bet_amounts.size == 0) return [];
 
+		let total_reward = this.#total_reward_by_type(total_amount, type);
 		let updates: ContestantOddsUpdate[] = [];
+
 		for (let [contestant, amount] of contestants_bet_amounts) {
 			// you receive what wasn't bet on this competitor
-			let reward = total_amount - amount;
-
 			updates.push({
 				id: contestant,
 				type,
-				...this.#calc_odds_from_part(reward, amount, MAX_ODDS_PRECISION),
+				...this.#calc_odds_from_part(total_reward, amount, MAX_ODDS_PRECISION),
 			});
 		}
 
+		if (
+			total_reward !== total_amount &&
+			updates.find(({ numerator, denominator }) => numerator < denominator) !== undefined
+		) {
+			let new_updates = this.#fix_updates_with_negative_payout(
+				contestants_bet_amounts,
+				total_amount,
+				type,
+				MAX_ODDS_PRECISION
+			);
+
+			if (new_updates !== undefined) updates = new_updates;
+		}
+
+		// if could not fix
+		updates.forEach((u) => {
+			if (u.numerator < u.denominator) {
+				u.numerator = 0;
+				u.denominator = 1;
+			}
+		});
+
 		return updates;
+	}
+
+	#fix_updates_with_negative_payout(
+		contestants_bet_amounts: Map<bigint, number>,
+		total_amount: number,
+		type: bet_type,
+		MAX_ODDS_PRECISION: number
+	): ContestantOddsUpdate[] | undefined {
+		let [max_bets_contestant, max_bets_amount] = [
+			...contestants_bet_amounts.entries(),
+		].reduce((c1, c2) => (c1[1] >= c2[1] ? c1 : c2));
+
+		let min_reward_for_max_bet =
+			(max_bets_amount * (MAX_ODDS_PRECISION + 1)) / MAX_ODDS_PRECISION;
+
+		if (min_reward_for_max_bet > total_amount)
+			// nothing we can do, cuts took too much or not enough other bets
+			return;
+
+		let regular_reward_amount = this.#total_reward_by_type(total_amount, type);
+		if (max_bets_amount < regular_reward_amount)
+			// all is fine
+			return;
+
+		// give this contestant minimum reward ratio
+		let updates: ContestantOddsUpdate[] = [
+			{
+				id: max_bets_contestant,
+				type,
+				numerator: 1,
+				denominator: MAX_ODDS_PRECISION,
+			},
+		];
+		contestants_bet_amounts.delete(max_bets_contestant);
+
+		if (contestants_bet_amounts.size != 0) {
+			// calc other contestants odds recursively, with what's left of the pot
+			let updates_for_the_rest = this.#get_pool_contestants_odds_updates(
+				contestants_bet_amounts,
+				total_amount - min_reward_for_max_bet,
+				this.#type_up(type),
+				MAX_ODDS_PRECISION
+			);
+
+			updates = updates.concat(
+				updates_for_the_rest.map((u) => ({
+					...u,
+					type,
+				}))
+			);
+		}
+
+		return updates;
+	}
+
+	#type_up(type: bet_type): bet_type {
+		switch (type) {
+			case "place":
+				return "win";
+			case "show":
+				return "place";
+			default:
+				throw Error(`cannot up type ${type}`);
+		}
+	}
+
+	#total_reward_by_type(total_amount: number, type: bet_type) {
+		switch (type) {
+			case "win":
+				return total_amount;
+			case "place":
+				return Math.floor(total_amount / 2);
+			case "show":
+				return Math.floor(total_amount / 3);
+		}
 	}
 
 	#get_contestnant_bets_amount(pool: BetData[]): Map<bigint, number> {
@@ -146,6 +244,7 @@ class DatabaseBetManager implements BetManager {
 		let reduced_numerator = numerator / gcd;
 		let reduced_denominator = denominator / gcd;
 		let max_val = Math.max(reduced_numerator, reduced_numerator);
+
 		if (max_val > precision) {
 			let reduce_factor = max_val / precision;
 			reduced_numerator = Math.floor(reduced_numerator / reduce_factor);

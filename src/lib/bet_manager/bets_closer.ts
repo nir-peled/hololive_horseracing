@@ -109,7 +109,7 @@ export class BetsCloser {
 	}
 
 	#calc_reward_for_bet(bet_amount: number, { numerator, denominator }: Odds): number {
-		return Math.floor(bet_amount * (numerator / denominator + 1));
+		return Math.floor(bet_amount * (numerator / denominator));
 	}
 
 	async #get_cuts_details(): Promise<CutsDetails> {
