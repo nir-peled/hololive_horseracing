@@ -147,7 +147,13 @@ class DatabaseBetManager implements BetManager {
 	}
 
 	/*
-	 * Hopefully this will almost never happen
+	 * Hopefully this will almost never happen.
+	 * calulate the minimum reward amount for the problem contestant.
+	 * calculate the delta between this and the current reward amount.
+	 * save the delta for it, and calculate the rest of the contestants
+	 * with the rest of the pot.
+	 * essentially, round the problem contestant up to the minimun, and round
+	 * everyone else down
 	 **/
 	#fix_updates_with_negative_payout(
 		contestants_bet_amounts: Map<bigint, number>,
@@ -189,7 +195,7 @@ class DatabaseBetManager implements BetManager {
 			let updates_for_the_rest = this.#get_pool_contestants_odds_updates(
 				contestants_bet_amounts,
 				total_amount - reward_delta,
-				this.#type_up(type),
+				type,
 				MAX_ODDS_PRECISION
 			);
 
