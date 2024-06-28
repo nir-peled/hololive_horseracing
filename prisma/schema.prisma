@@ -89,6 +89,7 @@ model Bet {
 
   @@unique([user_id, contestant_id])
   @@index([user_id])
+  @@index([contestant_id])
 }
 
 model Cache {
