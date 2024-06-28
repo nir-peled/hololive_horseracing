@@ -122,7 +122,6 @@ class DatabaseBetManager implements BetManager {
 		}
 
 		if (
-			total_reward !== total_amount &&
 			updates.find(({ numerator, denominator }) => numerator < denominator) !== undefined
 		) {
 			let new_updates = this.#fix_updates_with_negative_payout(
