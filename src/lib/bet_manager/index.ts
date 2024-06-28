@@ -173,7 +173,7 @@ class DatabaseBetManager implements BetManager {
 			{
 				id: max_bets_contestant,
 				type,
-				numerator: 1,
+				numerator: MAX_ODDS_PRECISION + 1,
 				denominator: MAX_ODDS_PRECISION,
 			},
 		];
