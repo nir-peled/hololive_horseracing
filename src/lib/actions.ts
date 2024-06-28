@@ -186,10 +186,12 @@ export async function withdraw_from_user(user: string, amount: number): Promise<
 	return await database_factory.user_database().update_user_balance(user, -amount);
 }
 
+/*
 export async function echo(param: any): Promise<any> {
 	console.log(JSON.stringify(param));
 	return param;
 }
+*/
 
 export async function set_race_bets_open(
 	id: bigint,
