@@ -94,7 +94,12 @@ interface UseSubmitterParams<
  * @param default_values the form's default values - submit only values not in here
  * @param reset form reset hook
  * @param method fetch HTTP method - default is POST
- * @returns the submitter function, can use with handleSubmit
+ * @param on_success callback on successful submit
+ * @param transform function to transform the data before checks and submission
+ * @param fetch_options options for `fetch`
+ * @param confirmation if included, use `confirm` with this message, and only move forward if confirmed
+ * @param mutate data mutation hook
+ * @returns the submitter function to use with handleSubmit
  */
 export function useSubmitter<
 	T extends Record<string, any>,

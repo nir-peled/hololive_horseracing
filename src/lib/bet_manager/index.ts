@@ -146,6 +146,9 @@ class DatabaseBetManager implements BetManager {
 		return updates;
 	}
 
+	/*
+	 * Hopefully this will almost never happen
+	 **/
 	#fix_updates_with_negative_payout(
 		contestants_bet_amounts: Map<bigint, number>,
 		total_amount: number,
@@ -164,7 +167,7 @@ class DatabaseBetManager implements BetManager {
 			return;
 
 		let regular_reward_amount = this.#total_reward_by_type(total_amount, type);
-		if (max_bets_amount < regular_reward_amount)
+		if (min_reward_for_max_bet < regular_reward_amount)
 			// all is fine
 			return;
 
@@ -181,9 +184,11 @@ class DatabaseBetManager implements BetManager {
 
 		if (contestants_bet_amounts.size != 0) {
 			// calc other contestants odds recursively, with what's left of the pot
+			let reward_delta = min_reward_for_max_bet - regular_reward_amount;
+
 			let updates_for_the_rest = this.#get_pool_contestants_odds_updates(
 				contestants_bet_amounts,
-				total_amount - min_reward_for_max_bet,
+				total_amount - reward_delta,
 				this.#type_up(type),
 				MAX_ODDS_PRECISION
 			);
