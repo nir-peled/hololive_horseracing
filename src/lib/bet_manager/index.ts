@@ -247,7 +247,7 @@ class DatabaseBetManager implements BetManager {
 
 		if (max_val > precision) {
 			let reduce_factor = max_val / precision;
-			reduced_numerator = Math.floor(reduced_numerator / reduce_factor);
+			reduced_numerator = Math.max(Math.floor(reduced_numerator / reduce_factor), 1);
 			reduced_denominator = Math.ceil(reduced_denominator / reduce_factor);
 		}
 
