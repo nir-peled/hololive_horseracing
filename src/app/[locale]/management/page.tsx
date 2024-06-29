@@ -21,16 +21,16 @@ export default async function ManagementPage({ params: { locale } }: Props) {
 	return (
 		<div className="flex flex-wrap lg:grid lg:grid-cols-2 place-content-between gap-4 mt-5">
 			<ProtectedLink href="/management/users" locale={locale} className="btn">
-				{t("managemen-users-link")}
+				{t("management-users-link")}
 			</ProtectedLink>
 			<ProtectedLink href="/management/races" locale={locale} className="btn">
-				{t("managemen-races-link")}
+				{t("management-races-link")}
 			</ProtectedLink>
 			<ProtectedLink href="/management/horses" locale={locale} className="btn">
-				{t("managemen-horses-link")}
+				{t("management-horses-link")}
 			</ProtectedLink>
 			<ProtectedLink href="/management/settings" locale={locale} className="btn">
-				{t("managemen-settings-link")}
+				{t("management-settings-link")}
 			</ProtectedLink>
 		</div>
 	);
