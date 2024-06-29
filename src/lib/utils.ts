@@ -28,7 +28,8 @@ export function join_with_separator<S extends string>(separator: S) {
  * env.NEXT_PUBLIC_TIMEZONE
  */
 export function datetime_local_to_date(datetime_str: string) {
-	return new Date(datetime_str + process.env.NEXT_PUBLIC_TIMEZONE);
+	let date = new Date(datetime_str + process.env.NEXT_PUBLIC_TIMEZONE);
+	return date;
 }
 
 /** Converts a Date object to a datetime-local string in the
@@ -39,10 +40,12 @@ export function datetime_local_to_date(datetime_str: string) {
  */
 export function date_to_datetime_local(date: Date) {
 	const OFFSET_TO_UTC_OFFSET = 60000; // minutes to milliseconds
-	let epoch_offset = new Date("1907T" + process.env.NEXT_PUBLIC_TIMEZONE);
+	let epoch_offset = new Date("01 Jan 1970 00:00:00" + process.env.NEXT_PUBLIC_TIMEZONE);
+
 	let original_offset = date.getTimezoneOffset() * OFFSET_TO_UTC_OFFSET;
+
 	let fixed_date = new Date(date.getTime() - original_offset + epoch_offset.getTime());
-	return fixed_date.toISOString().slice(0, 16);
+	return fixed_date.toISOString().slice(0, 16).replace("T", " ");
 }
 
 export function validate_race_form_data(
@@ -73,9 +76,13 @@ export function validate_race_form_data(
 	let cuts = check_cuts(cuts_raw);
 	if (cuts === undefined) return undefined;
 
+	let deadline_raw = data.get("deadline");
+	if (typeof deadline_raw !== "string" || deadline_raw.length == 0) return undefined;
+	let deadline = deadline_raw && datetime_local_to_date(deadline_raw);
+
 	return {
 		name: name || undefined,
-		deadline: data.get("deadline"),
+		deadline,
 		contestants,
 		...cuts,
 	} as Partial<RaceFormData>;

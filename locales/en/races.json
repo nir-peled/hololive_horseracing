@@ -26,5 +26,7 @@
 	"races-list-header-status": "Status",
 	"race-status-ended": "Ended",
 	"race-status-bets-closed": "Bets Closed",
-	"race-status-active": "Active"
+	"race-status-active": "Active",
+	"race-bet-link": "Bet!",
+	"bets-odds-change": "※ Bets Odds change dynamically - the final ones might be different"
 }

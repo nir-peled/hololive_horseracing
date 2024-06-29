@@ -9,7 +9,7 @@ interface Props {
 	target: string | null;
 }
 
-const namespaces = ["management"];
+const namespaces = ["management", "common"];
 
 export default function HouseRewardTargetForm({ target }: Props) {
 	const { t } = useTranslation(namespaces);
@@ -25,7 +25,7 @@ export default function HouseRewardTargetForm({ target }: Props) {
 		<div>
 			<UserSelector set_user={set_user} value={user} />
 			<Button onClick={submit} className="bg-primary-content mt-3">
-				{t("house-reward-target-submit")}
+				{t("house-reward-target-submit", { ns: "management" })}
 			</Button>
 		</div>
 	);

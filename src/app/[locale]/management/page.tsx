@@ -24,13 +24,13 @@ export default async function ManagementPage({ params: { locale } }: Props) {
 				{t("management-users-link")}
 			</ProtectedLink>
 			<ProtectedLink href="/management/races" locale={locale} className="btn">
-				{t("management-races-link")}
+				{t("races-link")}
 			</ProtectedLink>
 			<ProtectedLink href="/management/horses" locale={locale} className="btn">
-				{t("management-horses-link")}
+				{t("horses-link")}
 			</ProtectedLink>
 			<ProtectedLink href="/management/settings" locale={locale} className="btn">
-				{t("management-settings-link")}
+				{t("settings-link")}
 			</ProtectedLink>
 		</div>
 	);

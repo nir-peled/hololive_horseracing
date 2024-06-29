@@ -26,5 +26,7 @@
 	"races-list-header-status": "סטטוס",
 	"race-status-ended": "הסתיים",
 	"race-status-bets-closed": "הימורים סגורים",
-	"race-status-active": "פעיל"
+	"race-status-active": "פעיל",
+	"race-bet-link": "המר!",
+	"bets-odds-change": "※ סיכויי ההימורים משתנים באופן דינמי - יכול להיות שהסיכויים הסופיים יהיו שונים"
 }

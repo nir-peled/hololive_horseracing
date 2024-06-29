@@ -12,7 +12,7 @@ interface Props {
 	disabled_options?: string[];
 }
 
-const namespaces = ["management"];
+const namespaces = ["common"];
 
 /*
  * read all usernames from DB, filter which are showed.

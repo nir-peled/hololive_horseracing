@@ -10,7 +10,7 @@ export async function generateStaticParams() {
 	return generate_locale_params();
 }
 
-const namespaces = ["races", "management"];
+const namespaces = ["races", "management", "common"];
 
 interface Props {
 	params: {

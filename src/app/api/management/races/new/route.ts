@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { check_api_authorized } from "@/src/lib/auth";
 import { validate_race_form_data } from "@/src/lib/utils";
 import { RaceFormData } from "@/src/lib/types";

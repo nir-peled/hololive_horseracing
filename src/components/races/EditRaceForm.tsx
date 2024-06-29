@@ -162,7 +162,7 @@ function create_race_schema(t: TFunction) {
 			contestants: contestant_schema.array(),
 		})
 		.refine(
-			(data) => !data.deadline || datetime_local_to_date(data.deadline) < new Date(),
+			(data) => !data.deadline || datetime_local_to_date(data.deadline) > new Date(),
 			{
 				message: t("race-deadline-passed"),
 				path: ["deadline"],

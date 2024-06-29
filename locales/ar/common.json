@@ -4,5 +4,6 @@
 	"bank-link": "بنك ",
 	"management-link": "إدارة",
 	"signout-button": "تسجيل الخروج",
-	"up-link": "الرجوع"
+	"up-link": "الرجوع",
+	"user-selector-placeholder": "مستخدمين..."
 }

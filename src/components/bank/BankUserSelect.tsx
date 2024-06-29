@@ -10,7 +10,7 @@ interface Props {
 	users: UserData[];
 }
 
-const namespaces = ["bank"];
+const namespaces = ["common"];
 
 export default function BankUserSelect({ users }: Props) {
 	const [user_id, set_user_id] = useState<bigint | undefined>();
@@ -25,7 +25,7 @@ export default function BankUserSelect({ users }: Props) {
 		<div>
 			<SelectFormInput
 				name="user_selector"
-				placeholder={t("bank-user-select-paceholder")}
+				placeholder={t("user-selector-placeholder")}
 				options={users.map(({ id }) => ({ id }))}
 				value={user_id !== undefined ? { id: user_id } : undefined}
 				onChange={({ id }) => set_user_id(id)}
@@ -44,6 +44,10 @@ export default function BankUserSelect({ users }: Props) {
 							</div>
 						</div>
 					);
+				}}
+				render_label={(option) => {
+					let option_user = users.find((user_data) => user_data.id == option.id);
+					return option_user?.display_name;
 				}}
 			/>
 			{selected_user !== undefined && <BankUserCard user={selected_user} />}

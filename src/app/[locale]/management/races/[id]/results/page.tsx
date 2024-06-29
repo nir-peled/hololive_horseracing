@@ -32,7 +32,7 @@ export default async function RaceSubmitResultsPage({ params: { locale, id } }: 
 				<PageTitle>
 					{t("race-submit-results-title", {
 						ns: "management",
-						race_name: race_details.name,
+						name: race_details.name,
 					})}
 				</PageTitle>
 				<TranslationsProvider

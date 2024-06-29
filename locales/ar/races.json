@@ -26,5 +26,6 @@
 	"races-list-header-status": "الحالة",
 	"race-status-ended": "انتهى",
 	"race-status-bets-closed": "الرهانات إغلاق",
-	"race-status-active": "نشط"
+	"race-status-active": "نشط",
+	"race-bet-link": "راهن!"
 }

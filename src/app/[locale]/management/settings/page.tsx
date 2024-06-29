@@ -21,7 +21,7 @@ export async function generateStaticParams() {
 	return generate_locale_params();
 }
 
-const namespaces = ["management"];
+const namespaces = ["management", "common"];
 
 export default async function GlobalSettingsPage({ params: { locale } }: Props) {
 	const { t, resources } = await initTranslations(locale, namespaces);
@@ -30,13 +30,15 @@ export default async function GlobalSettingsPage({ params: { locale } }: Props) 
 
 	return (
 		<TranslationsProvider namespaces={namespaces} locale={locale} resources={resources}>
-			<PageTitle>{t("management-settings-title")}</PageTitle>
-			<MenuCard title={t("set-global-cuts-title")} default_open={true}>
-				<p>{t("global-cuts-explanation")}</p>
+			<PageTitle>{t("management-settings-title", { ns: "management" })}</PageTitle>
+			<MenuCard
+				title={t("set-global-cuts-title", { ns: "management" })}
+				default_open={true}>
+				<p>{t("global-cuts-explanation", { ns: "management" })}</p>
 				<SetGlobalCutsForm cuts={cuts} />
 			</MenuCard>
-			<MenuCard title={t("set-house-reward-target-title")}>
-				<p>{t("house-reward-target-explanation")}</p>
+			<MenuCard title={t("set-house-reward-target-title", { ns: "management" })}>
+				<p>{t("house-reward-target-explanation", { ns: "management" })}</p>
 				<HouseRewardTargetForm target={house_target} />
 			</MenuCard>
 		</TranslationsProvider>

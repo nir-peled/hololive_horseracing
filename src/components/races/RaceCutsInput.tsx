@@ -33,15 +33,16 @@ export default function RaceCutsInput<T extends base_t>({
 			label={t("race-cuts-input")}
 			checkbox_label={t("race-cuts-checkbox-label")}
 			default_checked={
-				!!default_values &&
-				!cuts_names.map((cut) => default_values[as_cut(cut)]).includes(undefined)
+				!default_values ||
+				cuts_names.findIndex((cut) => typeof default_values[as_cut(cut)] == "number") ==
+					-1
 			}
-			onChange={(enabled) => {
-				if (!enabled) cuts_names.forEach((taker) => set_field(as_cut(taker), undefined));
+			onChange={(use_default) => {
+				if (use_default)
+					cuts_names.forEach((taker) => set_field(as_cut(taker), undefined));
 			}}
-			render={(enabled) => {
-				let text_style = "text-slate-300";
-				if (!enabled) text_style = "text-black";
+			render={(use_default) => {
+				let text_style = use_default ? "text-slate-300" : "text-black";
 
 				return cuts_names.map((taker, i) => {
 					let field_name = as_cut(taker);
@@ -57,12 +58,13 @@ export default function RaceCutsInput<T extends base_t>({
 								register={register}
 								error={errors[field_name]?.message}
 								default_value={
-									enabled
+									use_default
 										? undefined
 										: (default_values && default_values[field_name]) || undefined
 								}
-								disabled={!enabled}
+								disabled={use_default}
 								marker_after={<span className="badge">%</span>}
+								className={text_style}
 							/>
 						</div>
 						// </label>

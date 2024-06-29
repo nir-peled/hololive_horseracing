@@ -5,10 +5,11 @@ import { get_image_buffer_as_str } from "@/src/lib/images";
 import PageTitle from "@/src/components/PageTitle";
 import { database_factory } from "@/src/lib/database";
 import BankUserSelect from "@/src/components/bank/BankUserSelect";
+import TranslationsProvider from "@/src/components/TranslationProvider";
 
 export const dynamic = "force-dynamic";
 
-const namespaces = ["bank"];
+const namespaces = ["bank", "common"];
 
 interface Props {
 	params: {
@@ -17,7 +18,7 @@ interface Props {
 }
 
 export default async function BankPage({ params: { locale } }: Props) {
-	const { t } = await initTranslations(locale, namespaces);
+	const { t, resources } = await initTranslations(locale, namespaces);
 
 	const users = await database_factory.user_database().get_user_data_all();
 	users.forEach((user) => {
@@ -27,8 +28,10 @@ export default async function BankPage({ params: { locale } }: Props) {
 
 	return (
 		<>
-			<PageTitle>{t("bank-page-title")}</PageTitle>
-			<BankUserSelect users={users} />
+			<PageTitle>{t("bank-page-title", { ns: "bank" })}</PageTitle>
+			<TranslationsProvider locale={locale} namespaces={namespaces} resources={resources}>
+				<BankUserSelect users={users} />
+			</TranslationsProvider>
 		</>
 	);
 }

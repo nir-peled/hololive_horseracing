@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import initTranslations from "@/src/lib/i18n";
 import { database_factory } from "@/src/lib/database";
 import { Locale, RaceParameters } from "@/src/lib/types";
+import { date_to_datetime_local } from "@/src/lib/utils";
 import { auth, is_path_authorized } from "@/src/lib/auth";
 // import TranslationsProvider from "../TranslationProvider";
 import RaceDetailsContestants from "./RaceDetailsContestants";
@@ -57,7 +58,7 @@ export default async function RaceDetails({ id, race_data, locale }: Props) {
 			</ProtectedLink>
 			{deadline &&
 				t("race-deadline", {
-					deadline,
+					deadline: date_to_datetime_local(deadline),
 					timezone: process.env.NEXT_PUBLIC_DEADLINE_TIMEZONE,
 				})}
 			<br />
@@ -79,10 +80,10 @@ export default async function RaceDetails({ id, race_data, locale }: Props) {
 			<br />
 			{isOpenBets && (
 				<>
-					<MarkedNote>{t("bets-odds-change")}</MarkedNote>
-					<Link href={`/bets/${id}`} className="btn">
+					<Link href={`/bets/${id}`} className="btn btn-success">
 						{t("race-bet-link")}
 					</Link>
+					<MarkedNote>{t("bets-odds-change")}</MarkedNote>
 				</>
 			)}
 			<br />

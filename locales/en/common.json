@@ -4,5 +4,6 @@
 	"bank-link": "Bank",
 	"management-link": "Management",
 	"signout-button": "Log Out",
-	"up-link": "Backwards"
+	"up-link": "Backwards",
+	"user-selector-placeholder": "User..."
 }

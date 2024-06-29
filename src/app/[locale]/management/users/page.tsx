@@ -28,7 +28,7 @@ export default async function UsersPage({ params: { locale } }: Props) {
 				href="/management/users/new"
 				locale={locale}
 				className="btn self-start mb-2">
-				{t("new-user-button")}
+				{t("new-user-button", { ns: "management" })}
 			</ProtectedLink>
 			<UsersList />
 		</TranslationsProvider>

@@ -3,7 +3,7 @@ import { Locale } from "@/src/lib/types";
 import initTranslations from "@/src/lib/i18n";
 import ProtectedLink from "../ProtectedLink";
 
-const namespaces = ["management"];
+const namespaces = ["races"];
 
 interface Props {
 	id: bigint;

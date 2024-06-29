@@ -70,7 +70,6 @@
 	"user-delete-confirm": "למחוק משתמש {{name}}?",
 	"user-delete-button": "מחיקה",
 	"edit-user-button": "עריכה",
-	"user-selector-placeholder": "משתמש...",
 	"user-deleted-message": "נמחק משתמש {{name}}",
 	"username-label": "שם משתמש",
 	"image-too-large": "תמונה חייבת להיות עד {{max_file_size, number(style:unit, unit:kilobyte, unitDisplay:short)}}",

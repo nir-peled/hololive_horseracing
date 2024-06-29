@@ -13,7 +13,7 @@ export default function OddsExplanationTooltip() {
 			</div>
 			<ul
 				tabIndex={0}
-				className="dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow fixed">
+				className="dropdown-content bg-base-100 rounded-box z-50 w-max p-2 shadow fixed">
 				<li>{t("explain-odds-win")}</li>
 				<li>{t("explain-odds-place")}</li>
 				<li>{t("explain-odds-show")}</li>

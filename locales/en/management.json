@@ -71,7 +71,6 @@
 	"user-delete-confirm": "Delete User {{name}}?",
 	"user-delete-button": "Delete",
 	"edit-user-button": "Edit",
-	"user-selector-placeholder": "User...",
 	"user-deleted-message": "User Deleted {{name}}",
 	"username-label": "Username",
 	"image-type-not-allowed": "Image type not allowed",

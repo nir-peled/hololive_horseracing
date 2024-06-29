@@ -44,7 +44,7 @@ export default async function RacesListRow({
 			</td>
 			<td>{deadline && <DeadlineCounter deadline={deadline} />}</td>
 			<td>
-				<Link href={`/bets/${id}`} className="btn">
+				<Link href={`/bets/${id}`} className="btn btn-success">
 					{t("race-bet-link")}
 				</Link>
 			</td>

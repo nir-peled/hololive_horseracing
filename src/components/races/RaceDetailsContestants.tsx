@@ -27,7 +27,7 @@ export default async function RaceDetailsContestants({
 					{with_place && <td></td>}
 					<td></td>
 					<td></td>
-					<td className="flex flex-row justify-center">
+					<td>
 						<TranslationsProvider
 							namespaces={namespaces}
 							resources={resources}

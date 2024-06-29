@@ -70,7 +70,6 @@
 	"user-delete-confirm": "محو المستخدم {{name}}?",
 	"user-delete-button": "محو",
 	"edit-user-button": "تغيير",
-	"user-selector-placeholder": "مستخدمين...",
 	"user-deleted-message": "محو المستخدم {{name}}",
 	"username-label": "اسم المستخدم",
 	"image-too-large": "يجب أن يكون حجم الصورة على الأكثر {{max_file_size, number(style:unit, unit:kilobyte, unitDisplay:short)}}",
