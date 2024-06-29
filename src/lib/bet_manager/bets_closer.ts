@@ -109,6 +109,7 @@ export class BetsCloser {
 	}
 
 	#calc_reward_for_bet(bet_amount: number, { numerator, denominator }: Odds): number {
+		if (numerator == 0 || denominator == 0) return 0;
 		return Math.floor(bet_amount * (numerator / denominator));
 	}
 
