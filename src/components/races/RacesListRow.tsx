@@ -35,6 +35,13 @@ export default async function RacesListRow({
 					<RaceRowRacer key={i} user={racer.jockey} horse={racer.horse} />
 				))}
 			</td>
+			<td>
+				{isEnded
+					? t("race-status-ended")
+					: !isOpenBets
+					? t("race-status-bets-closed")
+					: t("race-status-active")}
+			</td>
 			<td>{deadline && <DeadlineCounter deadline={deadline} />}</td>
 			<td>
 				<Link href={`/bets/${id}`} className="btn">

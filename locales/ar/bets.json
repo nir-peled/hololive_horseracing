@@ -15,5 +15,8 @@
 	"bet-win": "رابح",
 	"bet-place": "مستحق",
 	"bet-show": "موجود",
-	"bet-select-contestant-placeholder": "اختار/ي خصم..."
+	"bet-select-contestant-placeholder": "اختار/ي خصم...",
+	"explain-odds-win": "W\\الفوز - راهن على أن المتسابق سيصل أولاً",
+	"explain-odds-place": "P\\المركز - الرهان على وصول المتسابق إلى المركز الأول أو الثاني",
+	"explain-odds-show": "S\\العرض - راهن على أن المتسابق سيصل أولاً أو ثانياً أو ثالثاً"
 }

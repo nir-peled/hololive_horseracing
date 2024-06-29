@@ -22,5 +22,9 @@
 	"races-list-header-name": "Race",
 	"races-list-header-competitiors": "Contestants",
 	"races-list-header-deadline": "Bet Deadline",
-	"race-results-title": "Results of race {{name}}"
+	"race-results-title": "Results of race {{name}}",
+	"races-list-header-status": "Status",
+	"race-status-ended": "Ended",
+	"race-status-bets-closed": "Bets Closed",
+	"race-status-active": "Active"
 }

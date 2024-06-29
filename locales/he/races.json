@@ -22,5 +22,9 @@
 	"races-list-header-name": "מירוץ",
 	"races-list-header-competitiors": "מתחרים",
 	"races-list-header-deadline": "נסגר ב",
-	"race-results-title": "תוצאות מירוץ {{name}}"
+	"race-results-title": "תוצאות מירוץ {{name}}",
+	"races-list-header-status": "סטטוס",
+	"race-status-ended": "הסתיים",
+	"race-status-bets-closed": "הימורים סגורים",
+	"race-status-active": "פעיל"
 }

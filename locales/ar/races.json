@@ -22,5 +22,9 @@
 	"races-list-header-name": "السباق",
 	"races-list-header-competitiors": "متسابقين",
 	"races-list-header-deadline": "انتهى في",
-	"race-results-title": "نتائج السباق {{name}}"
+	"race-results-title": "نتائج السباق {{name}}",
+	"races-list-header-status": "الحالة",
+	"race-status-ended": "انتهى",
+	"race-status-bets-closed": "الرهانات إغلاق",
+	"race-status-active": "نشط"
 }
