@@ -1,4 +1,4 @@
-const locales = ["en", "ja", "he"] as const;
+const locales = ["en", "ja", "he", "ar"] as const;
 
 const locale_direction: { [locale: string]: "lrt" | "rtl" | "auto" } = {
 	en: "lrt",
