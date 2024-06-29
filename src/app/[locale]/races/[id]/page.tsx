@@ -1,8 +1,9 @@
 import React from "react";
 import { notFound } from "next/navigation";
-import { database_factory } from "@/src/lib/database";
 import initTranslations from "@/src/lib/i18n";
 import type { Locale } from "@/src/lib/types";
+import { database_factory } from "@/src/lib/database";
+import TranslationsProvider from "@/src/components/TranslationProvider";
 import RaceDetails from "@/src/components/races/RaceDetails";
 import PageTitle from "@/src/components/PageTitle";
 
@@ -19,7 +20,7 @@ interface Props {
 }
 
 export default async function RacePage({ params: { locale, id } }: Props) {
-	const { t /*, resources*/ } = await initTranslations(locale, namespaces);
+	const { t, resources } = await initTranslations(locale, namespaces);
 	let id_num: bigint;
 	try {
 		id_num = BigInt(id);
@@ -31,11 +32,9 @@ export default async function RacePage({ params: { locale, id } }: Props) {
 	if (!race_data) notFound();
 
 	return (
-		// <TranslationsProvider namespaces={namespaces} locale={locale} resources={resources}>
-		<>
+		<TranslationsProvider namespaces={namespaces} locale={locale} resources={resources}>
 			<PageTitle size="large">{t("race-page-title", { name: race_data.name })}</PageTitle>
 			<RaceDetails id={id_num} locale={locale} />
-		</>
-		// </TranslationsProvider>
+		</TranslationsProvider>
 	);
 }
