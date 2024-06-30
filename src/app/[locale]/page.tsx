@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Locale } from "@/src/lib/types";
 import TranslationsProvider from "@/src/components/TranslationProvider";
 import { generate_locale_params } from "@/src/lib/utils";
@@ -29,6 +30,7 @@ export default async function Home({ params: { locale } }: Props) {
 			{user && (
 				<h2 className="text-xl p-2">{t("home-greeting", { name: user.display_name })}</h2>
 			)}
+			<Image src="/logo.svg" alt="HoloRacing Logo" height={100} width={100} />
 		</TranslationsProvider>
 	);
 }
