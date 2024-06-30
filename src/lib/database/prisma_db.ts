@@ -52,6 +52,7 @@ import {
 	to_lowercase,
 	to_uppercase,
 } from "../utils";
+import { bet_manager } from "../bet_manager";
 
 // export interface PrismaOptions extends Prisma.PrismaClientOptions {
 // 	accelerate?: boolean;
@@ -913,6 +914,7 @@ export class PrismaDatabase
 	async #bet_data_from_query(
 		bet: Prisma.BetGetPayload<{ select: typeof bet_data_select }>
 	): Promise<BetData> {
+		let placement = bet.contestant.place;
 		return {
 			id: bet.id,
 			race: bet.contestant.race.id,
@@ -922,6 +924,12 @@ export class PrismaDatabase
 			contestant: await this.#contestant_display_data_from_query(bet.contestant),
 			amount: bet.amount,
 			type: to_lowercase(bet.type),
+			isActive: !bet.contestant.race.isEnded,
+			isEditable: bet.contestant.race.isOpenBets,
+			isWon:
+				placement === null
+					? undefined
+					: bet_manager.is_bet_winning(to_lowercase(bet.type), placement),
 		};
 	}
 

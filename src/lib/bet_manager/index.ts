@@ -15,9 +15,18 @@ interface BetManager {
 	make_full_bet(user: string, race: bigint, bets: FullBetFormData): Promise<void>;
 	update_race_odds(race: bigint): Promise<void>;
 	update_race_odds_all(): Promise<void>;
+	is_bet_winning(type: bet_type, place: number): boolean;
 }
 
 class DatabaseBetManager implements BetManager {
+	is_bet_winning(type: bet_type, place: number): boolean {
+		let winners = [1];
+		if (["place", "show"].includes(type)) winners.push(2);
+		if (type == "show") winners.push(3);
+
+		return winners.includes(place);
+	}
+
 	async close_race_bets(race: bigint, placements: ContestantPlacementData) {
 		await new BetsCloser(race, placements).close();
 	}

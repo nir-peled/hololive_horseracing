@@ -19,6 +19,9 @@ export default async function BetDisplayLine({
 		amount,
 		race,
 		type,
+		isActive,
+		isEditable,
+		isWon,
 	},
 	locale,
 }: Props) {
@@ -34,15 +37,24 @@ export default async function BetDisplayLine({
 				<b>{jockey.name}</b>
 				<b>{horse.name}</b>
 			</td>
-			<td>{t(`bet-${type}`)}</td>
+			<td>
+				{isActive
+					? t("bet-status-active")
+					: isWon
+					? t("bet-status-won")
+					: t("bet-status-lost")}
+			</td>
 			<td>
 				<AmountDisplay amount={amount} />
 			</td>
+			<td>{t(`bet-${type}`)}</td>
 			<td>{`${bet_odds.numerator} / ${bet_odds.denominator}`}</td>
 			<td>
-				<Link href={`/${locale}/bets/${race}`} className="btn">
-					{t("edit-bet-button")}
-				</Link>
+				{isEditable && (
+					<Link href={`/${locale}/bets/${race}`} className="btn">
+						{t("edit-bet-button")}
+					</Link>
+				)}
 			</td>
 		</tr>
 	);

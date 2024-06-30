@@ -19,6 +19,7 @@ export default async function BetsTable({ locale, bets }: Props) {
 				<tr>
 					<th>{t("bet-race-name-header")}</th>
 					<th>{t("bet-contestants-header")}</th>
+					<th>{t("bet-status-header")}</th>
 					<th>{t("bet-amount-header")}</th>
 					<th>{t("bet-type-header")}</th>
 					<th>{t("bet-odds-header")}</th>

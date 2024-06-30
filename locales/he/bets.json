@@ -18,5 +18,10 @@
 	"bet-select-contestant-placeholder": "בחר/י מתחרה...",
 	"explain-odds-win": "W\\מנצח - הימור שהמתחרה יגיע מקום ראשון",
 	"explain-odds-place": "P\\מופיע - הימור שהמתחרה יגיע מקום ראשון או שני",
-	"explain-odds-show": "S\\מגיע - הימור שהמתחרה יגיע מקום ראשון, שני או שלישי"
+	"explain-odds-show": "S\\מגיע - הימור שהמתחרה יגיע מקום ראשון, שני או שלישי",
+	"bet-status-header": "סטטוס",
+	"bet-type-header": "סוג",
+	"bet-status-active": "לא נקבע",
+	"bet-status-won": "ניצח",
+	"bet-status-lost": "הפסיד"
 }

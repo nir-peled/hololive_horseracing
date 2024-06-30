@@ -18,5 +18,10 @@
 	"bet-select-contestant-placeholder": "اختار/ي خصم...",
 	"explain-odds-win": "W\\الفوز - راهن على أن المتسابق سيصل أولاً",
 	"explain-odds-place": "P\\المركز - الرهان على وصول المتسابق إلى المركز الأول أو الثاني",
-	"explain-odds-show": "S\\العرض - راهن على أن المتسابق سيصل أولاً أو ثانياً أو ثالثاً"
+	"explain-odds-show": "S\\العرض - راهن على أن المتسابق سيصل أولاً أو ثانياً أو ثالثاً",
+	"bet-status-header": "الحالة",
+	"bet-type-header": "النوع",
+	"bet-status-active": "معلقة",
+	"bet-status-won": "فاز",
+	"bet-status-lost": "مفقود"
 }

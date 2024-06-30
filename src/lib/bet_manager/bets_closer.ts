@@ -1,3 +1,4 @@
+import { bet_manager } from ".";
 import { database_factory } from "../database";
 import { Odds, Reward } from "../types";
 import {
@@ -157,11 +158,10 @@ export class BetsCloser {
 	}
 
 	#is_bet_wins(contestant: bigint, type: bet_type): boolean {
-		let winners = [this.placements.placements[0].contestant];
-		if (["place", "show"].includes(type))
-			winners.push(this.placements.placements[1].contestant);
-		if (type == "show") winners.push(this.placements.placements[2].contestant);
+		let placement = this.placements.placements.findIndex(
+			(p) => p.contestant == contestant
+		);
 
-		return winners.includes(contestant);
+		return bet_manager.is_bet_winning(type, placement + 1);
 	}
 }

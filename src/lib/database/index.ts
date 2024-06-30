@@ -119,7 +119,7 @@ export const bet_data_select = {
 	contestant: {
 		select: {
 			...competitors_display_data_select,
-			race: { select: { id: true, name: true, isEnded: true } },
+			race: { select: { id: true, name: true, isEnded: true, isOpenBets: true } },
 		},
 	},
 	user: {

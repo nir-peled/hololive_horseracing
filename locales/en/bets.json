@@ -18,5 +18,10 @@
 	"bet-select-contestant-placeholder": "Choose Contestant...",
 	"explain-odds-win": "Win - Bet that the contestant will arrive first",
 	"explain-odds-place": "Place - Bet that the contestant will arrive first or second",
-	"explain-odds-show": "Show - Bet that the contestant will arrive first, second or third"
+	"explain-odds-show": "Show - Bet that the contestant will arrive first, second or third",
+	"bet-status-header": "Status",
+	"bet-type-header": "Type",
+	"bet-status-active": "Unresolved",
+	"bet-status-won": "Won",
+	"bet-status-lost": "Lost"
 }

@@ -146,6 +146,9 @@ export interface BetData {
 	active: boolean;
 	amount: number;
 	type: bet_type;
+	isActive: boolean;
+	isEditable: boolean;
+	isWon?: boolean;
 }
 
 export interface FormBetDetails {
