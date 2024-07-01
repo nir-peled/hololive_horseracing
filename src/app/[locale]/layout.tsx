@@ -30,10 +30,7 @@ export default async function RootLayout({ children, params: { locale } }: Props
 		<html lang={locale} dir={dir}>
 			<body className={font.className}>
 				<Navbar locale={locale} />
-				<main className="flex min-h-screen flex-col items-center p-24">
-					{/* <div className="flex justify-center">{children}</div> */}
-					{children}
-				</main>
+				<main className="flex min-h-screen flex-col items-center p-24">{children}</main>
 			</body>
 		</html>
 	);
