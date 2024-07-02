@@ -29,7 +29,7 @@ export default async function RacesHistoryPage({ params: { locale } }: Props) {
 			<ProtectedLink href="/races/history" locale={locale}>
 				{t("races-history-label")}
 			</ProtectedLink>
-			<RacesList locale={locale} />
+			<RacesList locale={locale} active={false} />
 		</TranslationsProvider>
 	);
 }
