@@ -241,6 +241,8 @@ export interface DatabaseFactory {
 	user_database(): UserDatabase;
 	horse_database(): HorseDatabase;
 	race_database(): RaceDatabase;
+	bets_database(): BetsDatabase;
+	cache_database(): CacheDatabase;
 
 	get_encryptor(): Encryptor;
 }
