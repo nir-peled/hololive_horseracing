@@ -16,8 +16,8 @@ export async function generateStaticParams() {
 const namespaces = ["management"];
 
 export default async function ManagementPage({ params: { locale } }: Props) {
-	// temporary
 	const { t } = await initTranslations(locale, namespaces);
+
 	return (
 		<div className="flex flex-wrap lg:grid lg:grid-cols-2 place-content-between gap-4 mt-5">
 			<ProtectedLink href="/management/users" locale={locale} className="btn">
