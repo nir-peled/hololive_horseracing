@@ -42,8 +42,11 @@ class DatabaseBetManager implements BetManager {
 		if (contestants == null) return;
 
 		let bets_pools = await database_factory.bets_database().get_race_bets_by_pools(race);
-		let cuts = await database_factory.cache_database().get_cuts();
+
+		let cuts = await database_factory.race_database().get_race_cuts(race);
+		if (!cuts) cuts = await database_factory.cache_database().get_cuts();
 		let total_cuts = cuts.house + sum(cuts.jockeys);
+
 		let updates: ContestantOddsUpdate[] = [];
 
 		for (let [type, pool] of Object.entries(bets_pools)) {
