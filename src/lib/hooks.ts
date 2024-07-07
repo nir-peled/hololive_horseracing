@@ -136,7 +136,6 @@ export function useSubmitter<
 				});
 				submit_ok = response && response.ok;
 			} else {
-				console.log("try call destination function"); // debug
 				submit_ok = await destination(transed_data as D);
 			}
 		} catch (e) {

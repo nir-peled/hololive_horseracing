@@ -35,7 +35,6 @@ export function RaceResultsEditForm({ id, contestants }: Props) {
 		control,
 		handleSubmit,
 		formState: { isSubmitted, isSubmitSuccessful },
-		watch,
 	} = useForm<ContestantPlacementData>({
 		defaultValues: {
 			placements: contestants.map((c) => ({ contestant: c.id })),
@@ -64,7 +63,6 @@ export function RaceResultsEditForm({ id, contestants }: Props) {
 	);
 
 	function onDragEnd(result: DropResult) {
-		console.log(result);
 		let old_idx = result.source.index;
 		let new_idx = result.destination?.index;
 		if (new_idx === undefined || old_idx == new_idx) return;
