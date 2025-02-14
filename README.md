@@ -1,6 +1,7 @@
 # HoloRacing
 
-Horse Racing Betting Site by Nir Peled
+Horse Racing Betting Site by Nir Peled. 
+Written using Next.JS + Prisma. 
 
 # Usage
 
